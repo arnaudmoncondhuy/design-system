@@ -173,6 +173,7 @@
  */
 [data-theme="contrast"] {
     color-scheme: dark;
+    --app-theme-ratio: 7;
 
     --app-bg: #000000;
     --app-surface: #000000;
@@ -228,9 +229,10 @@
 
 /*
  * Une palette supplémentaire se déclare de la même façon, en ne reprenant que les alias
- * qu'elle déplace :
+ * qu'elle déplace. Ce bloc suffit : il n'y a rien à déclarer ailleurs.
  *
  *     [data-theme="ocean"] {
+ *         --app-theme-label: "Océan";
  *         color-scheme: light;
  *         --app-accent: #0e7490;
  *         --app-accent-hover: #155e75;
@@ -238,7 +240,12 @@
  *         --app-accent-ink: #164e63;
  *     }
  *
- * Elle devient alors une valeur acceptée de `App\Web\Theme\Theme`, qui la rend sur `<html>`.
+ * `--app-theme-label` est ce que le menu affiche ; sans lui, c'est la traduction
+ * `theme.ocean` du domaine `design_system` qui sert. `--app-theme-ratio` déclare le seuil de
+ * contraste que la palette se donne, quand il dépasse les 4,5:1 ordinaires.
+ *
+ * Une application déclare les siennes dans ses propres feuilles, sans reprendre celle-ci :
+ * `design_system.theme_stylesheets` dit lesquelles sont lues.
  */
 
 @media (prefers-reduced-motion: reduce) {

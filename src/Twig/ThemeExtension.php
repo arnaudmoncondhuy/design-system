@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ArnaudMoncondhuy\DesignSystem\Twig;
 
 use ArnaudMoncondhuy\DesignSystem\Theme\Theme;
+use ArnaudMoncondhuy\DesignSystem\Theme\ThemeCatalog;
 use ArnaudMoncondhuy\DesignSystem\Theme\ThemeStorage;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -15,8 +16,10 @@ use Twig\TwigFunction;
  */
 final class ThemeExtension extends AbstractExtension
 {
-    public function __construct(private readonly ThemeStorage $storage)
-    {
+    public function __construct(
+        private readonly ThemeStorage $storage,
+        private readonly ThemeCatalog $catalog,
+    ) {
     }
 
     #[\Override]
@@ -38,13 +41,13 @@ final class ThemeExtension extends AbstractExtension
     }
 
     /**
-     * Les palettes proposables, dans l'ordre du menu. La chaîne vide ouvre la liste : c'est
-     * l'absence de choix, celle qui rend la main au système.
+     * Les palettes proposables, dans l'ordre du menu. L'absence de choix n'en fait pas partie :
+     * c'est au gabarit d'ouvrir la liste par l'option qui rend la main au système.
      *
-     * @return list<string>
+     * @return list<Theme>
      */
     public function availableThemes(): array
     {
-        return ['', ...array_map(static fn (Theme $theme): string => $theme->value, Theme::cases())];
+        return $this->catalog->all();
     }
 }

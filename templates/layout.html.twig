@@ -44,9 +44,14 @@
                         <div class="app-field app-theme-picker" data-controller="theme">
                             <label class="app-sr-only" for="app-theme">{{ 'theme.label'|trans({}, 'design_system') }}</label>
                             <select id="app-theme" data-action="theme#change">
-                                {% for value in available_themes() %}
-                                    <option value="{{ value }}"{{ current_theme() == (value ?: null) ? ' selected' : '' }}>
-                                        {{ ('theme.' ~ (value ?: 'system'))|trans({}, 'design_system') }}
+                                {# L'absence de choix ouvre la liste : elle ne vient d'aucune feuille. #}
+                                <option value=""{{ current_theme() ? '' : ' selected' }}>
+                                    {{ 'theme.system'|trans({}, 'design_system') }}
+                                </option>
+                                {% for palette in available_themes() %}
+                                    {# Le libellé vient de la feuille quand elle en déclare un ; sinon de la traduction. #}
+                                    <option value="{{ palette.value }}"{{ current_theme() == palette.value ? ' selected' : '' }}>
+                                        {{ palette.label ?? ('theme.' ~ palette.value)|trans({}, 'design_system') }}
                                     </option>
                                 {% endfor %}
                             </select>

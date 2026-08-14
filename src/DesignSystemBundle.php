@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace ArnaudMoncondhuy\DesignSystem;
 
+use ArnaudMoncondhuy\DesignSystem\Theme\StylesheetThemes;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
+use Symfony\Component\Config\Resource\FileExistenceResource;
+use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -25,9 +28,16 @@ final class DesignSystemBundle extends AbstractBundle
     /** Le nom du cookie relu, tel que `config/services.php` l'injecte à l'adaptateur. */
     public const string COOKIE_PARAMETER = 'design_system.cookie_name';
 
+    /** Les palettes retenues : valeur => libellé déclaré par sa feuille, ou `null`. */
+    public const string THEMES_PARAMETER = 'design_system.themes';
+
+    /** Les feuilles où les palettes se déclarent, celle du paquet en tête. */
+    public const string STYLESHEETS_PARAMETER = 'design_system.theme_stylesheets';
+
     /**
-     * Deux clés, et chacune ne sert qu'à restreindre : sans configuration, le paquet monte la
-     * lecture par cookie et n'expose aucune route.
+     * Quatre clés, et chacune ne sert qu'à restreindre : sans configuration, le paquet monte la
+     * lecture par cookie, propose toutes les palettes que les feuilles déclarent, et n'expose
+     * aucune route.
      */
     public function configure(DefinitionConfigurator $definition): void
     {
@@ -49,6 +59,24 @@ final class DesignSystemBundle extends AbstractBundle
                     ->info(
                         'Le nom du cookie relu. Doit rester celui que le contrôleur Stimulus écrit : un désaccord '
                         ."ne produit aucune erreur, seulement un choix jamais relu."
+                    )
+                ->end()
+                ->arrayNode('theme_stylesheets')
+                    ->scalarPrototype()->cannotBeEmpty()->end()
+                    ->defaultValue(['%kernel.project_dir%/assets/styles/app.css'])
+                    ->info(
+                        'Les feuilles où l\'application déclare ses palettes, en plus de celle du paquet. Un bloc '
+                        .'`[data-theme="…"]` y suffit à en ajouter une : le menu la propose, et le catalogue la '
+                        .'connaît. Un fichier absent est ignoré.'
+                    )
+                ->end()
+                ->arrayNode('themes')
+                    ->scalarPrototype()->cannotBeEmpty()->end()
+                    ->defaultValue([])
+                    ->info(
+                        'Les palettes réellement proposées, dans l\'ordre du menu. Vide : toutes celles que les '
+                        .'feuilles déclarent. Nommer ici une palette qu\'aucune feuille ne déclare arrête la '
+                        .'compilation.'
                     )
                 ->end()
             ->end()
@@ -96,7 +124,11 @@ final class DesignSystemBundle extends AbstractBundle
      */
     public function loadExtension(array $config, ContainerConfigurator $configurator, ContainerBuilder $container): void
     {
+        $stylesheets = $this->stylesheets($config, $container);
+
         $container->setParameter(self::COOKIE_PARAMETER, $config['cookie_name'] ?? 'theme');
+        $container->setParameter(self::STYLESHEETS_PARAMETER, $stylesheets);
+        $container->setParameter(self::THEMES_PARAMETER, $this->themes($config, $stylesheets));
 
         $configurator->import('../config/services.php');
 
@@ -109,6 +141,77 @@ final class DesignSystemBundle extends AbstractBundle
             'none' === ($config['theme_storage'] ?? 'cookie')
                 ? Theme\NoThemeStorage::class
                 : Theme\CookieThemeStorage::class,
+        );
+    }
+
+    /**
+     * Les feuilles à lire, celle du paquet en tête pour que l'application puisse redéclarer une
+     * palette qu'elle porte.
+     *
+     * Chacune est déclarée au conteneur, présente ou non : écrire une palette dans une feuille,
+     * ou créer la feuille qui manquait, suffit alors à faire recompiler le catalogue.
+     *
+     * @param array<array-key, mixed> $config
+     *
+     * @return list<string>
+     */
+    private function stylesheets(array $config, ContainerBuilder $container): array
+    {
+        $stylesheets = [$this->getPath().'/public/tokens.css'];
+
+        /** @var list<string> $declared */
+        $declared = $config['theme_stylesheets'] ?? [];
+
+        foreach ($declared as $path) {
+            /** @var string $resolved */
+            $resolved = $container->getParameterBag()->resolveValue($path);
+            $stylesheets[] = $resolved;
+        }
+
+        foreach ($stylesheets as $path) {
+            $container->addResource(new FileExistenceResource($path));
+
+            if (is_file($path)) {
+                $container->addResource(new FileResource($path));
+            }
+        }
+
+        return $stylesheets;
+    }
+
+    /**
+     * Les palettes du catalogue. Sans liste configurée, ce sont toutes celles que les feuilles
+     * déclarent ; avec une liste, ce sont celles qu'elle nomme, dans son ordre.
+     *
+     * @param array<array-key, mixed> $config
+     * @param list<string>            $stylesheets
+     *
+     * @return array<string, ?string>
+     */
+    private function themes(array $config, array $stylesheets): array
+    {
+        $declared = StylesheetThemes::labels(...$stylesheets);
+
+        /** @var list<string> $wanted */
+        $wanted = $config['themes'] ?? [];
+
+        if ([] === $wanted) {
+            return $declared;
+        }
+
+        if ([] !== $unknown = array_diff($wanted, array_keys($declared))) {
+            throw new \InvalidArgumentException(\sprintf(
+                'design_system.themes propose %s, qu\'aucune feuille ne déclare : le menu l\'offrirait sans que rien '
+                ."ne repeigne. Les feuilles lues déclarent %s.\nFeuilles lues :\n  %s",
+                '« '.implode(' », « ', $unknown).' »',
+                [] === $declared ? 'aucune palette' : '« '.implode(' », « ', array_keys($declared)).' »',
+                implode("\n  ", $stylesheets),
+            ));
+        }
+
+        return array_replace(
+            array_fill_keys($wanted, null),
+            array_intersect_key($declared, array_flip($wanted)),
         );
     }
 }

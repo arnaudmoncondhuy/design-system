@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace ArnaudMoncondhuy\DesignSystem\Bridge;
 
+use ArnaudMoncondhuy\DesignSystem\Theme\StylesheetThemes;
 use ArnaudMoncondhuy\DesignSystem\Theme\Theme;
+use ArnaudMoncondhuy\DesignSystem\Theme\ThemeCatalog;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,9 +39,12 @@ final class DoctorCommand extends Command
     /** Les feuilles qui consomment les jetons, et qui n'ont donc pas le droit d'en inventer. */
     private const array CONSUMERS = ['base.css', 'components.css', 'styleguide.css'];
 
+    /** @param list<string> $stylesheets les feuilles où les palettes se déclarent */
     public function __construct(
         private readonly string $projectDirectory,
         private readonly string $cookieName,
+        private readonly array $stylesheets,
+        private readonly ThemeCatalog $catalog,
     ) {
         parent::__construct();
     }
@@ -62,6 +67,11 @@ final class DoctorCommand extends Command
         $console->writeln(\sprintf('Paquet  : %s', $this->bundleDirectory()));
         $console->writeln(\sprintf('Projet  : %s', $this->projectDirectory));
         $console->writeln(\sprintf('Cookie  : %s', $this->cookieName));
+        $console->writeln(\sprintf('Feuilles: %s', implode(', ', $this->stylesheets)));
+        $console->writeln(\sprintf('Palettes: %s', implode(', ', array_map(
+            static fn (Theme $theme): string => $theme->value.(null === $theme->label ? '' : ' ('.$theme->label.')'),
+            $this->catalog->all(),
+        )) ?: 'aucune'));
 
         $installation = $this->installation($fix);
 
@@ -108,37 +118,68 @@ final class DoctorCommand extends Command
     }
 
     /**
-     * Une palette déclarée dans l'enum sans bloc dans la feuille est proposée à l'écran et ne
-     * repeint rien. Un bloc sans cas d'enum n'est jamais rendu.
+     * Un bloc de palette qui ne déplace aucun alias se choisit sans que rien ne change, et une
+     * palette dont personne ne donne le libellé s'affiche sous sa clé de traduction.
      *
      * @return list<string>
      */
     private function palettes(): array
     {
-        $css = $this->read('tokens.css');
-        preg_match_all('/\[data-theme="([\w-]+)"\]/', $css, $matches);
-
-        $styled = array_unique($matches[1]);
-        $declared = array_map(static fn (Theme $theme): string => $theme->value, Theme::cases());
-
         $troubles = [];
 
-        foreach (array_diff($declared, $styled) as $orphan) {
-            $troubles[] = \sprintf(
-                '« %s » est un cas de Theme sans bloc [data-theme="%s"] : le menu la propose, elle ne repeint rien.',
-                $orphan,
-                $orphan,
+        foreach (StylesheetThemes::declarations(...$this->stylesheets) as $value => $properties) {
+            // `color-scheme` seul suffit à repeindre : il bascule tous les `light-dark()` d'un coup.
+            $moved = array_filter(
+                array_keys($properties),
+                static fn (string $property): bool => 'color-scheme' === $property
+                    || (str_starts_with($property, '--app-') && !str_starts_with($property, '--app-theme-')),
             );
+
+            if ([] === $moved) {
+                $troubles[] = \sprintf(
+                    '[data-theme="%s"] ne déplace ni alias ni color-scheme : la palette se choisit, et la page reste la même.',
+                    $value,
+                );
+            }
         }
 
-        foreach (array_diff($styled, $declared) as $orphan) {
-            $troubles[] = \sprintf(
-                '[data-theme="%s"] n\'a pas de cas dans Theme : la palette existe, rien ne la rend.',
-                $orphan,
-            );
+        foreach ($this->catalog->all() as $theme) {
+            if (null === $theme->label && !$this->translated($theme->value)) {
+                $troubles[] = \sprintf(
+                    '« %s » n\'a ni %s dans sa feuille ni traduction theme.%s : le menu affichera la clé.',
+                    $theme->value,
+                    StylesheetThemes::LABEL,
+                    $theme->value,
+                );
+            }
         }
 
         return $troubles;
+    }
+
+    /**
+     * Le domaine `design_system` fixe le nom des fichiers qui le portent : les chercher sous ce
+     * nom, dans le paquet et dans le projet, couvre tout endroit où une traduction peut vivre.
+     */
+    private function translated(string $value): bool
+    {
+        $directories = [$this->bundleDirectory().'/translations', $this->projectDirectory.'/translations'];
+
+        foreach ($directories as $directory) {
+            foreach (glob($directory.'/design_system.*.y*ml') ?: [] as $file) {
+                $content = (string) file_get_contents($file);
+
+                if (1 !== preg_match('/^theme:\R((?:[ \t]+\S.*\R?)+)/m', $content, $block)) {
+                    continue;
+                }
+
+                if (1 === preg_match('/^\s+'.preg_quote($value, '/').'\s*:/m', $block[1])) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -1,5 +1,9 @@
-"""Lit tokens.css, résout les alias et les light-dark(), mesure chaque paire dans les trois
-palettes. Aucune valeur n'est recopiée : ce que ce script juge est ce que le navigateur voit."""
+"""Lit des feuilles de jetons, y découvre les palettes, résout les alias et les light-dark(),
+et mesure chaque paire dans chacune. Aucune valeur n'est recopiée, aucune palette n'est connue
+d'avance : ce que ce script juge est ce que le navigateur voit.
+
+    python3 qa/contrast.py public/tokens.css [autres feuilles…]
+"""
 import re, sys
 
 def lum(h):
@@ -13,16 +17,34 @@ def ratio(a, b):
     la, lb = lum(a), lum(b)
     return (max(la, lb) + 0.05) / (min(la, lb) + 0.05)
 
-def bloc(css, selecteur):
-    i = css.index(selecteur)
-    debut = css.index('{', i) + 1
-    prof, j = 1, debut
-    while prof:
-        if css[j] == '{': prof += 1
-        elif css[j] == '}': prof -= 1
-        j += 1
-    return dict((m.group(1), m.group(2).strip())
-                for m in re.finditer(r'(--app-[\w-]+)\s*:\s*([^;]+);', css[debut:j-1]))
+def sans_commentaires(css):
+    """Un bloc montré en exemple dans un commentaire n'est pas une palette."""
+    return re.sub(r'/\*.*?\*/', '', css, flags=re.S)
+
+def fermeture(css, ouvrante):
+    prof = 0
+    for i in range(ouvrante, len(css)):
+        if css[i] == '{': prof += 1
+        elif css[i] == '}':
+            prof -= 1
+            if prof == 0: return i
+    return len(css) - 1
+
+def regles(css):
+    """Rend (sélecteur, déclarations) pour chaque règle, en descendant dans les at-rules."""
+    out, debut, i = [], 0, 0
+    while i < len(css):
+        if css[i] == '{':
+            prelude, fin = css[debut:i].strip(), fermeture(css, i)
+            corps = css[i+1:fin]
+            out.extend(regles(corps)) if prelude.startswith('@') else out.append((prelude, corps))
+            i, debut = fin, fin + 1
+        i += 1
+    return out
+
+def declarations(corps):
+    return {m.group(1): m.group(2).strip()
+            for m in re.finditer(r'([-\w]+)\s*:\s*([^;]+)', corps)}
 
 def split_top(s):
     """Coupe sur la virgule de premier niveau, en ignorant celles des parenthèses imbriquées."""
@@ -37,25 +59,33 @@ def split_top(s):
     out.append(cur)
     return [p.strip() for p in out]
 
-css = open(sys.argv[1] if len(sys.argv) > 1 else 'public/tokens.css').read()
-BASE = bloc(css, ':root {')
-CONTRASTE = bloc(css, '[data-theme="contrast"]')
+feuilles = sys.argv[1:] or ['public/tokens.css']
+css = sans_commentaires('\n'.join(open(f).read() for f in feuilles))
 
-def resoudre(nom, theme, vu=None):
+BASE, PALETTES = {}, {}
+for prelude, corps in regles(css):
+    decl = declarations(corps)
+    for selecteur in (s.strip() for s in prelude.split(',')):
+        if selecteur == ':root':
+            BASE.update(decl)
+        elif m := re.fullmatch(r'\[data-theme="([\w-]+)"\]', selecteur):
+            PALETTES.setdefault(m.group(1), {}).update(decl)
+
+def resoudre(nom, palette, cote, vu=None):
     vu = vu or set()
     if nom in vu: sys.exit(f'boucle sur {nom}')
     vu.add(nom)
-    src = CONTRASTE if (theme == 'contraste' and nom in CONTRASTE) else BASE
+    src = palette if nom in palette else BASE
     if nom not in src: sys.exit(f'jeton introuvable : {nom}')
     v = src[nom]
     if v.startswith('#'): return v
     m = re.fullmatch(r'var\((--app-[\w-]+)\)', v)
-    if m: return resoudre(m.group(1), theme, vu)
+    if m: return resoudre(m.group(1), palette, cote, vu)
     m = re.fullmatch(r'light-dark\((.*)\)', v, re.S)
     if m:
-        part = split_top(m.group(1))[0 if theme == 'clair' else 1]
+        part = split_top(m.group(1))[0 if cote == 'clair' else 1]
         mv = re.fullmatch(r'var\((--app-[\w-]+)\)', part)
-        return resoudre(mv.group(1), theme, vu) if mv else part
+        return resoudre(mv.group(1), palette, cote, vu) if mv else part
     sys.exit(f'valeur non résolue pour {nom} : {v}')
 
 PAIRS = [
@@ -80,27 +110,36 @@ PAIRS = [
  ('bord de champ / carte',  'line-control','surface',      3.0),
  ('bord de champ / page',   'line-control','bg',           3.0),
  ('bord de champ / relevé', 'line-control','raised',       3.0),
- # Décoratif en clair et en sombre : c'est le fond teinté qui donne sa forme à l'étiquette,
- # et le texte qui porte le sens. Le filet ne devient structurant que sur la palette à
- # contraste renforcé, où tous les fonds sont noirs — d'où le seuil réservé à celle-ci.
- ('filet d\'étiquette',     'line',        'raised',       3.0, 'contraste'),
+ # Décoratif sur une palette ordinaire : c'est le fond teinté qui donne sa forme à l'étiquette,
+ # et le texte qui porte le sens. Le filet ne devient structurant que là où une palette relève
+ # son seuil, parce qu'elle a renoncé aux fonds teintés — d'où la réserve.
+ ('filet d\'étiquette',     'line',        'raised',       3.0, 'renforce'),
 ]
 
-SEUIL_RENFORCE = 7.0   # le niveau le plus exigeant, visé par la seule palette « contraste »
+# Sans attribut sur <html>, `color-scheme: light dark` laisse le système trancher : les deux
+# issues se mesurent. Chaque palette déclarée se mesure ensuite pour elle-même, du côté de
+# light-dark() que son propre `color-scheme` fige.
+MESURES = [('sans attribut, système clair', {}, 'clair', 4.5),
+           ('sans attribut, système sombre', {}, 'sombre', 4.5)]
+
+for nom, palette in PALETTES.items():
+    cote = 'sombre' if palette.get('color-scheme', '').split() == ['dark'] else 'clair'
+    MESURES.append((nom, palette, cote, float(palette.get('--app-theme-ratio', 4.5))))
+
 fautes = 0
-for theme in ('clair', 'sombre', 'contraste'):
-    renforce = theme == 'contraste'
-    print(f"\n=== {theme}{'  (seuil texte porté à 7:1)' if renforce else ''} ===")
+for nom, palette, cote, seuil in MESURES:
+    renforce = seuil > 4.5
+    print(f"\n=== {nom}{f'  (seuil texte porté à {seuil:g}:1)' if renforce else ''} ===")
     pire = 99
     for label, fg, bg, need, *reserve in PAIRS:
-        if reserve and reserve[0] != theme:
+        if reserve and not renforce:
             continue
         if renforce and need == 4.5:
-            need = SEUIL_RENFORCE
-        r = ratio(resoudre(f'--app-{fg}', theme), resoudre(f'--app-{bg}', theme))
+            need = seuil
+        r = ratio(resoudre(f'--app-{fg}', palette, cote), resoudre(f'--app-{bg}', palette, cote))
         pire = min(pire, r / need)
         if r < need: fautes += 1
         print(f"  {'OK ' if r >= need else 'NON'} {r:6.2f} : {need}   {label}")
     print(f"  marge la plus faible : ×{pire:.2f}")
-print(f"\n{fautes} paire(s) sous le seuil.")
+print(f"\n{fautes} paire(s) sous le seuil, sur {len(MESURES)} palette(s).")
 sys.exit(1 if fautes else 0)
