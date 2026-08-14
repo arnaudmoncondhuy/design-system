@@ -22,7 +22,8 @@ quarante lignes et n'a touché aucun composant.
 - **Chaque paire texte/fond atteint son seuil**, mesuré et non estimé. `qa/contrast.py` lit les
   feuilles qu'on lui donne, y découvre les palettes, résout les alias et les `light-dark()`, et
   compare les 22 paires sur chacune. Une palette vise 4,5:1, ou le seuil qu'elle se donne par
-  `--app-theme-ratio`. Pour y joindre celles d'une application :
+  `--app-theme-ratio`. Un fond en dégradé porte du texte sur toute sa longueur : chacun de ses
+  arrêts est mesuré, et c'est le pire qui décide. Pour y joindre les palettes d'une application :
 
   ```
   python3 qa/contrast.py public/tokens.css public/themes/*.css …/assets/styles/themes/*.css

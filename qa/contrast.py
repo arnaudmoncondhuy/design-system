@@ -74,20 +74,30 @@ for prelude, corps in regles(css):
             PALETTES.setdefault(m.group(1), {}).update(decl)
 
 def resoudre(nom, palette, cote, vu=None):
+    """Rend les couleurs qu'un jeton peut prendre : une seule, ou tous les arrêts d'un dégradé.
+
+    Un fond en dégradé porte du texte sur toute sa longueur : chacun de ses arrêts est un fond,
+    et c'est le pire d'entre eux qui décide."""
     vu = vu or set()
     if nom in vu: sys.exit(f'boucle sur {nom}')
     vu.add(nom)
     src = palette if nom in palette else BASE
     if nom not in src: sys.exit(f'jeton introuvable : {nom}')
     v = src[nom]
-    if v.startswith('#'): return v
+    if v.startswith('#'): return [v]
     m = re.fullmatch(r'var\((--app-[\w-]+)\)', v)
     if m: return resoudre(m.group(1), palette, cote, vu)
     m = re.fullmatch(r'light-dark\((.*)\)', v, re.S)
     if m:
         part = split_top(m.group(1))[0 if cote == 'clair' else 1]
         mv = re.fullmatch(r'var\((--app-[\w-]+)\)', part)
-        return resoudre(mv.group(1), palette, cote, vu) if mv else part
+        return resoudre(mv.group(1), palette, cote, vu) if mv else [part]
+    if 'gradient(' in v:
+        arrets = []
+        for m in re.finditer(r'var\((--app-[\w-]+)\)|(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3})\b', v):
+            arrets += resoudre(m.group(1), palette, cote, set(vu)) if m.group(1) else [m.group(2)]
+        if not arrets: sys.exit(f'dégradé sans arrêt lisible pour {nom} : {v}')
+        return arrets
     sys.exit(f'valeur non résolue pour {nom} : {v}')
 
 PAIRS = [
@@ -138,7 +148,9 @@ for nom, palette, cote, seuil in MESURES:
             continue
         if renforce and need == 4.5:
             need = seuil
-        r = ratio(resoudre(f'--app-{fg}', palette, cote), resoudre(f'--app-{bg}', palette, cote))
+        encres = resoudre(f'--app-{fg}', palette, cote)
+        fonds = resoudre(f'--app-{bg}', palette, cote)
+        r = min(ratio(encre, fond) for encre in encres for fond in fonds)
         pire = min(pire, r / need)
         if r < need: fautes += 1
         print(f"  {'OK ' if r >= need else 'NON'} {r:6.2f} : {need}   {label}")
