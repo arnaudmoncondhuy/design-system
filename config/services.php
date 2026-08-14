@@ -30,7 +30,11 @@ return static function (Symfony\Component\DependencyInjection\Loader\Configurato
     $services->set(NoThemeStorage::class);
 
     $services->set(ThemeExtension::class)
-        ->args([service(ArnaudMoncondhuy\DesignSystem\Theme\ThemeStorage::class), service(ThemeCatalog::class)])
+        ->args([
+            service(ArnaudMoncondhuy\DesignSystem\Theme\ThemeStorage::class),
+            service(ThemeCatalog::class),
+            param(DesignSystemBundle::LINKS_PARAMETER),
+        ])
         ->tag('twig.extension');
 
     // La vitrine n'est joignable que si l'application importe `config/routes.php`.

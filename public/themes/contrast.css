@@ -1,0 +1,67 @@
+/*
+ * CONTRASTE RENFORCÉ — destinée à la basse vision.
+ *
+ * Elle abandonne les demi-teintes : fond noir, encre blanche, filets blancs pleins, accents
+ * saturés. Chaque paire texte/fond dépasse 7:1, le seuil le plus exigeant, là où les deux
+ * autres palettes visent 4,5:1. Les nuances qui portaient une information — un fond de carte
+ * plus clair, une ombre, un filet discret — deviennent des bordures franches : ce qui ne se
+ * distingue plus par la teinte se distingue par le trait.
+ *
+ * Elle ne redéfinit que des alias. Aucun composant n'est repris ici, et aucun n'a besoin de
+ * la connaître.
+ */
+[data-theme="contrast"] {
+    color-scheme: dark;
+    --app-theme-ratio: 7;
+
+    --app-bg: #000000;
+    --app-surface: #000000;
+    --app-raised: #1a1a1a;
+    --app-hover: #333333;
+
+    --app-ink: #ffffff;
+    --app-ink-soft: #ffffff;
+    --app-ink-muted: #e6e6e6;
+    --app-ink-inverse: #000000;
+
+    /* Un filet ne se devine plus : il se voit, et il est le même partout. */
+    --app-line: #ffffff;
+    --app-line-strong: #ffffff;
+    --app-line-control: #ffffff;
+
+    --app-accent: #ffff00;
+    --app-accent-hover: #ffffff;
+    --app-accent-soft: #000000;
+    --app-accent-ink: #ffff00;
+
+    --app-success: #00ff00;
+    --app-success-soft: #000000;
+    --app-success-ink: #00ff00;
+
+    --app-warning: #ffb000;
+    --app-warning-soft: #000000;
+    --app-warning-ink: #ffb000;
+
+    --app-danger: #ff8b8b;
+    --app-danger-soft: #000000;
+    --app-danger-ink: #ff8b8b;
+
+    --app-info: #00ffff;
+    --app-info-soft: #000000;
+    --app-info-ink: #00ffff;
+
+    /* Une ombre ne porte rien sur du noir pur, et le halo de focus reprend le blanc, seule
+       couleur qui tranche sur toutes les autres de cette palette. */
+    --app-shadow-sm: none;
+    --app-shadow: none;
+    --app-shadow-pop: none;
+    --app-shadow-focus: 0 0 0 3px #ffffff;
+
+    /* Le voile devient opaque : sur cette palette, ce qui est derrière ne doit pas transparaître
+       et venir troubler la lecture. */
+    --app-backdrop: rgb(0 0 0 / .92);
+
+    /* Le texte grandit, et un lien se repère sans dépendre de sa couleur. */
+    --app-font-size: 17px;
+    --app-link-decoration: underline;
+}

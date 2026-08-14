@@ -21,8 +21,12 @@ quarante lignes et n'a touché aucun composant.
   la relecture attrape ; tout passe par un alias.
 - **Chaque paire texte/fond atteint son seuil**, mesuré et non estimé. `qa/contrast.py` lit les
   feuilles qu'on lui donne, y découvre les palettes, résout les alias et les `light-dark()`, et
-  compare les 22 paires sur chacune — y compris celles qu'une application ajoute. Une palette
-  vise 4,5:1, ou le seuil qu'elle se donne par `--app-theme-ratio`.
+  compare les 22 paires sur chacune. Une palette vise 4,5:1, ou le seuil qu'elle se donne par
+  `--app-theme-ratio`. Pour y joindre celles d'une application :
+
+  ```
+  python3 qa/contrast.py public/tokens.css public/themes/*.css …/assets/styles/themes/*.css
+  ```
 - **Le thème est rendu par le serveur**, donc sans clignotement au chargement et sans script
   bloquant dans le `<head>`.
 - **Sans attribut, la préférence du système s'applique** : `color-scheme: light dark` suffit,
@@ -108,7 +112,10 @@ design_system:
     theme_storage: cookie   # ou « none » : rien n'est retenu
     cookie_name: theme
 
-    # Les feuilles où l'application déclare ses palettes. Celle du paquet est toujours lue.
+    # Les dossiers dont chaque fichier est une palette : lue, servie, proposée.
+    theme_directories: ['%kernel.project_dir%/assets/styles/themes']
+
+    # Des feuilles que l'application sert déjà, simplement lues.
     theme_stylesheets: ['%kernel.project_dir%/assets/styles/app.css']
 
     # Les palettes réellement proposées, dans l'ordre du menu. Absente : toutes.
@@ -145,11 +152,11 @@ grilles. Le préfixe `app-` se renomme d'un remplacement, dans `public/` et dans
 
 ## Ajouter une palette
 
-**Un bloc, dans un seul fichier.** Il ne reprend que les alias qu'il déplace, et rien n'est à
-déclarer ailleurs — ni enum, ni configuration, ni traduction :
+**Une palette, un fichier.** On le dépose, et c'est tout : rien à déclarer ailleurs — ni enum,
+ni configuration, ni traduction, ni même un `<link>` à poser.
 
 ```css
-/* assets/styles/app.css, dans l'application */
+/* assets/styles/themes/ocean.css */
 [data-theme="ocean"] {
     --app-theme-label: "Océan";
     color-scheme: light;
@@ -160,8 +167,9 @@ déclarer ailleurs — ni enum, ni configuration, ni traduction :
 }
 ```
 
-Le menu la propose au rechargement suivant, le cookie l'accepte, `design-system:doctor` la
-compte, et `qa/contrast.py` la mesure.
+Le fichier est **lu, servi et proposé du seul fait d'être là** : le menu l'offre au rechargement
+suivant, le gabarit pose son `<link>`, le cookie l'accepte, `design-system:doctor` la compte, et
+`qa/contrast.py` la mesure. Le retirer la retire partout.
 
 Deux propriétés ne peignent rien et ne servent qu'à déclarer la palette :
 
@@ -170,22 +178,27 @@ Deux propriétés ne peignent rien et ne servent qu'à déclarer la palette :
 | `--app-theme-label` | Ce que le menu affiche. Sans elle, c'est la traduction `theme.<valeur>` du domaine `design_system` — ce dont vivent les trois palettes du paquet, qui restent ainsi traduisibles. |
 | `--app-theme-ratio` | Le seuil de contraste que la palette se donne, quand il dépasse les 4,5:1 ordinaires. `qa/contrast.py` l'applique à toutes les paires de texte. |
 
-Le paquet lit ces blocs **à la compilation du conteneur**, jamais à l'exécution : il n'y a ni
-analyse de feuille dans une requête, ni liste à tenir à jour à côté. Les feuilles lues sont
-déclarées au conteneur, y compris quand elles n'existent pas encore — écrire la palette, ou
-créer le fichier qui manquait, suffit à faire recompiler le catalogue.
+Le paquet lit ces fichiers **à la compilation du conteneur**, jamais à l'exécution : il n'y a ni
+analyse de feuille dans une requête, ni liste à tenir à jour à côté. Les dossiers de palettes
+sont déclarés au conteneur, y compris quand ils n'existent pas encore — déposer un fichier, ou
+créer le dossier qui manquait, suffit à faire recompiler le catalogue.
 
 C'est ce qui fait disparaître toute une famille de pannes : une palette proposée qui ne repeint
 rien, ou un bloc que rien ne rend, ne peuvent plus exister — la déclaration et la peinture sont
-le même bloc.
+le même fichier.
 
-### Où le déclarer
+### Où le déposer
 
-- **Dans l'application** — n'importe quelle feuille nommée par `theme_stylesheets`, dont, par
-  défaut, `assets/styles/app.css`. C'est un fichier qui existe déjà et que la page charge déjà :
-  ajouter une palette ne crée donc aucun fichier.
-- **Dans le paquet** — `public/tokens.css`, pour une palette qui appartient au design system
-  lui-même.
+- **Dans l'application** — `assets/styles/themes/`, et rien d'autre à faire. `theme_directories`
+  en nomme d'autres si besoin ; ils doivent vivre sous les ressources du projet, faute de quoi
+  la compilation s'arrête en le disant — une palette qu'AssetMapper ne peut pas servir serait
+  proposée sans jamais arriver au navigateur.
+- **Dans le paquet** — `public/themes/`, pour une palette qui appartient au design system
+  lui-même. C'est là que vit « contraste renforcé ».
+
+`theme_stylesheets` couvre l'autre cas : une feuille que l'application sert **déjà** — sa
+`app.css`, par exemple — et où une palette est écrite au milieu d'autre chose. Le paquet l'y lit,
+mais ne pose aucun lien : ce serait un second téléchargement du même fichier.
 
 Une palette portée par le paquet peut être redéclarée par l'application : les feuilles sont lues
-dans l'ordre, celle du paquet en tête.
+dans l'ordre, celles du paquet en tête.

@@ -27,6 +27,11 @@
             <link rel="stylesheet" href="{{ asset('bundles/designsystem/tokens.css') }}">
             <link rel="stylesheet" href="{{ asset('bundles/designsystem/base.css') }}">
             <link rel="stylesheet" href="{{ asset('bundles/designsystem/components.css') }}">
+
+            {# Une palette déposée dans un dossier de palettes se sert d'elle-même. #}
+            {% for sheet in theme_stylesheets() %}
+                <link rel="stylesheet" href="{{ asset(sheet) }}">
+            {% endfor %}
         {% endblock %}
 
         {% block javascripts %}{% endblock %}

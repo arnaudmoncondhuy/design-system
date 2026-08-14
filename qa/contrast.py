@@ -2,9 +2,11 @@
 et mesure chaque paire dans chacune. Aucune valeur n'est recopiée, aucune palette n'est connue
 d'avance : ce que ce script juge est ce que le navigateur voit.
 
-    python3 qa/contrast.py public/tokens.css [autres feuilles…]
+Sans argument, il lit les feuilles du paquet. Pour y joindre celles d'une application :
+
+    python3 qa/contrast.py public/tokens.css public/themes/*.css chemin/vers/assets/styles/themes/*.css
 """
-import re, sys
+import glob, re, sys
 
 def lum(h):
     h = h.lstrip('#')
@@ -59,7 +61,7 @@ def split_top(s):
     out.append(cur)
     return [p.strip() for p in out]
 
-feuilles = sys.argv[1:] or ['public/tokens.css']
+feuilles = sys.argv[1:] or ['public/tokens.css', *sorted(glob.glob('public/themes/*.css'))]
 css = sans_commentaires('\n'.join(open(f).read() for f in feuilles))
 
 BASE, PALETTES = {}, {}

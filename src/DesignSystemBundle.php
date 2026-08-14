@@ -6,6 +6,7 @@ namespace ArnaudMoncondhuy\DesignSystem;
 
 use ArnaudMoncondhuy\DesignSystem\Theme\StylesheetThemes;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
+use Symfony\Component\Config\Resource\DirectoryResource;
 use Symfony\Component\Config\Resource\FileExistenceResource;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Console\Command\Command;
@@ -33,6 +34,9 @@ final class DesignSystemBundle extends AbstractBundle
 
     /** Les feuilles où les palettes se déclarent, celle du paquet en tête. */
     public const string STYLESHEETS_PARAMETER = 'design_system.theme_stylesheets';
+
+    /** Les feuilles de palette que le gabarit doit faire servir, en chemins d'AssetMapper. */
+    public const string LINKS_PARAMETER = 'design_system.theme_links';
 
     /**
      * Quatre clés, et chacune ne sert qu'à restreindre : sans configuration, le paquet monte la
@@ -68,6 +72,15 @@ final class DesignSystemBundle extends AbstractBundle
                         'Les feuilles où l\'application déclare ses palettes, en plus de celle du paquet. Un bloc '
                         .'`[data-theme="…"]` y suffit à en ajouter une : le menu la propose, et le catalogue la '
                         .'connaît. Un fichier absent est ignoré.'
+                    )
+                ->end()
+                ->arrayNode('theme_directories')
+                    ->scalarPrototype()->cannotBeEmpty()->end()
+                    ->defaultValue(['%kernel.project_dir%/assets/styles/themes'])
+                    ->info(
+                        'Les dossiers dont chaque fichier `.css` est une palette. Le paquet les lit et les fait '
+                        .'servir : y déposer un fichier suffit, il n\'y a ni feuille à modifier ni lien à poser. '
+                        .'Un dossier absent est ignoré.'
                     )
                 ->end()
                 ->arrayNode('themes')
@@ -127,8 +140,9 @@ final class DesignSystemBundle extends AbstractBundle
         $stylesheets = $this->stylesheets($config, $container);
 
         $container->setParameter(self::COOKIE_PARAMETER, $config['cookie_name'] ?? 'theme');
-        $container->setParameter(self::STYLESHEETS_PARAMETER, $stylesheets);
-        $container->setParameter(self::THEMES_PARAMETER, $this->themes($config, $stylesheets));
+        $container->setParameter(self::STYLESHEETS_PARAMETER, $stylesheets['read']);
+        $container->setParameter(self::LINKS_PARAMETER, $stylesheets['links']);
+        $container->setParameter(self::THEMES_PARAMETER, $this->themes($config, $stylesheets['read']));
 
         $configurator->import('../config/services.php');
 
@@ -148,27 +162,70 @@ final class DesignSystemBundle extends AbstractBundle
      * Les feuilles à lire, celle du paquet en tête pour que l'application puisse redéclarer une
      * palette qu'elle porte.
      *
-     * Chacune est déclarée au conteneur, présente ou non : écrire une palette dans une feuille,
-     * ou créer la feuille qui manquait, suffit alors à faire recompiler le catalogue.
+     * Deux origines, et elles ne se recouvrent pas. Les dossiers de palettes tiennent un fichier
+     * par palette, que le paquet lit *et* fait servir. Les feuilles nommées une à une sont
+     * seulement lues : l'application les sert déjà, et un second lien les téléchargerait deux
+     * fois.
+     *
+     * Tout est déclaré au conteneur, présent ou non : déposer un fichier, ou créer le dossier
+     * qui manquait, suffit alors à faire recompiler le catalogue.
      *
      * @param array<array-key, mixed> $config
      *
-     * @return list<string>
+     * @return array{read: list<string>, links: list<string>}
      */
     private function stylesheets(array $config, ContainerBuilder $container): array
     {
-        $stylesheets = [$this->getPath().'/public/tokens.css'];
+        $read = [$this->getPath().'/public/tokens.css'];
+        $links = [];
+
+        $directories = [$this->getPath().'/public/themes'];
 
         /** @var list<string> $declared */
-        $declared = $config['theme_stylesheets'] ?? [];
+        $declared = $config['theme_directories'] ?? [];
 
-        foreach ($declared as $path) {
+        foreach ($declared as $directory) {
             /** @var string $resolved */
-            $resolved = $container->getParameterBag()->resolveValue($path);
-            $stylesheets[] = $resolved;
+            $resolved = $container->getParameterBag()->resolveValue($directory);
+            $directories[] = rtrim($resolved, '/');
         }
 
-        foreach ($stylesheets as $path) {
+        foreach ($directories as $directory) {
+            $container->addResource(new FileExistenceResource($directory));
+
+            if (is_dir($directory)) {
+                // Le dossier lui-même est suivi : un fichier déposé ou retiré recompile.
+                $container->addResource(new DirectoryResource($directory, '/\.css$/'));
+            }
+
+            foreach (glob($directory.'/*.css') ?: [] as $path) {
+                $link = $this->assetPath($path, $container);
+
+                if (null === $link) {
+                    throw new \InvalidArgumentException(\sprintf(
+                        "%s est une palette qu'aucun chemin d'AssetMapper ne désigne : elle serait proposée dans le "
+                        ."menu sans que le navigateur la reçoive.\nUn dossier de palettes vit sous les ressources du "
+                        .'projet — %s —, ou sous le `public/` du paquet.',
+                        $path,
+                        $container->getParameter('kernel.project_dir').'/assets/',
+                    ));
+                }
+
+                $read[] = $path;
+                $links[] = $link;
+            }
+        }
+
+        /** @var list<string> $named */
+        $named = $config['theme_stylesheets'] ?? [];
+
+        foreach ($named as $path) {
+            /** @var string $resolved */
+            $resolved = $container->getParameterBag()->resolveValue($path);
+            $read[] = $resolved;
+        }
+
+        foreach ($read as $path) {
             $container->addResource(new FileExistenceResource($path));
 
             if (is_file($path)) {
@@ -176,7 +233,28 @@ final class DesignSystemBundle extends AbstractBundle
             }
         }
 
-        return $stylesheets;
+        return ['read' => $read, 'links' => array_values(array_filter($links))];
+    }
+
+    /**
+     * Le chemin par lequel AssetMapper sert une feuille, ou `null` quand elle vit hors des deux
+     * espaces qu'il connaît — le `public/` du paquet et les ressources du projet.
+     */
+    private function assetPath(string $path, ContainerBuilder $container): ?string
+    {
+        $inBundle = $this->getPath().'/public/';
+
+        if (str_starts_with($path, $inBundle)) {
+            $namespace = strtolower((string) preg_replace('/Bundle$/', '', $this->getName()));
+
+            return 'bundles/'.$namespace.'/'.substr($path, \strlen($inBundle));
+        }
+
+        /** @var string $projectDirectory */
+        $projectDirectory = $container->getParameter('kernel.project_dir');
+        $inProject = $projectDirectory.'/assets/';
+
+        return str_starts_with($path, $inProject) ? substr($path, \strlen($inProject)) : null;
     }
 
     /**

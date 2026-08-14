@@ -16,9 +16,11 @@ use Twig\TwigFunction;
  */
 final class ThemeExtension extends AbstractExtension
 {
+    /** @param list<string> $stylesheets les feuilles de palette, en chemins d'AssetMapper */
     public function __construct(
         private readonly ThemeStorage $storage,
         private readonly ThemeCatalog $catalog,
+        private readonly array $stylesheets = [],
     ) {
     }
 
@@ -28,6 +30,7 @@ final class ThemeExtension extends AbstractExtension
         return [
             new TwigFunction('current_theme', $this->currentTheme(...)),
             new TwigFunction('available_themes', $this->availableThemes(...)),
+            new TwigFunction('theme_stylesheets', $this->themeStylesheets(...)),
         ];
     }
 
@@ -49,5 +52,16 @@ final class ThemeExtension extends AbstractExtension
     public function availableThemes(): array
     {
         return $this->catalog->all();
+    }
+
+    /**
+     * Les feuilles de palette que le gabarit pose lui-même : un fichier déposé dans un dossier
+     * de palettes est servi sans que l'application ait de lien à écrire.
+     *
+     * @return list<string>
+     */
+    public function themeStylesheets(): array
+    {
+        return $this->stylesheets;
     }
 }
