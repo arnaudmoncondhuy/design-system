@@ -41,7 +41,8 @@
     height: 3rem;
     border: 1px solid var(--app-line);
     border-radius: var(--app-radius-ui);
-    background: var(--app-sg-color);
+    /* La couleur est posée par l'instance ; le repli rend visible le cas où elle manque. */
+    background: var(--app-sg-color, var(--app-line));
 }
 
 .app-sg-palette {
