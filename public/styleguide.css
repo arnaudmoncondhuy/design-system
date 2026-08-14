@@ -1,0 +1,51 @@
+/*
+ * La vitrine. Ces règles ne servent qu'à la page `/styleguide` et n'appartiennent pas au
+ * catalogue : rien ici n'est destiné à être employé par un écran du projet.
+ */
+
+.app-sg-section {
+    margin-bottom: calc(var(--app-gap) * 6);
+}
+
+/* La zone de démonstration : les composants s'y posent en ligne, avec de l'air autour. */
+.app-sg-demo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--app-gap) * 1.5);
+    padding: calc(var(--app-gap) * 2.5);
+    border: 1px dashed var(--app-line-strong);
+    border-radius: var(--app-radius);
+}
+
+.app-sg-demo[data-stacked] {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+/* Le nom du jeton, sous son échantillon. */
+.app-sg-swatch {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--app-gap) * .5);
+    font-family: var(--app-font-mono);
+    font-size: .6875rem;
+    color: var(--app-ink-muted);
+}
+
+/* La couleur s'écrit sur l'instance, en variable : `style="--app-sg-color: var(--app-accent)"`. */
+.app-sg-swatch::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 3rem;
+    border: 1px solid var(--app-line);
+    border-radius: var(--app-radius-ui);
+    background: var(--app-sg-color);
+}
+
+.app-sg-palette {
+    display: grid;
+    gap: calc(var(--app-gap) * 1.5);
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+}

@@ -1,0 +1,110 @@
+# Catalogue du paquet, domaine « design_system ».
+#
+# Ces clés appartiennent au design system : le choix de palette, le lien d'évitement, les
+# libellés de la vitrine. Une application ne les redéclare pas ; elle peut les surcharger en
+# posant un fichier de même domaine dans ses propres traductions.
+
+theme:
+    label: Thème
+    system: Selon mon système
+    light: Clair
+    dark: Sombre
+    contrast: Contraste renforcé
+
+skip:
+    content: Aller au contenu
+
+action:
+    save: Enregistrer
+    cancel: Annuler
+    confirm: Confirmer
+    close: Fermer
+
+# Ce qui suit ne sert qu'à la page /styleguide, absente de la production.
+styleguide:
+    title: Catalogue
+    intro: Chaque composant du design system, dans chacun de ses états. Le menu en haut à droite change de palette — dont « Contraste renforcé », destinée à la basse vision.
+
+    section:
+        tokens: Jetons
+        buttons: Boutons
+        badges: Étiquettes
+        cards: Cartes
+        forms: Formulaires
+        tables: Tableaux
+        alerts: Messages
+        navigation: Navigation
+        modal: Fenêtre modale
+
+    tokens:
+        hint: les seuls noms qu'un composant a le droit d'employer
+    buttons:
+        hint: une classe, des attributs pour l'intention, la taille et l'état
+
+    variant:
+        primary: Action principale
+        subtle: Action secondaire
+        ghost: Discrète
+        success: Valider
+        danger: Supprimer
+
+    size:
+        small: Petit
+        normal: Normal
+        large: Grand
+
+    state:
+        disabled: Indisponible
+        busy: En cours
+        icon: Ajouter
+        block: Pleine largeur
+
+    tone:
+        neutral: Neutre
+        accent: Accent
+        success: Terminé
+        warning: En attente
+        danger: Échec
+        info: Information
+
+    card:
+        title: Titre de la carte
+        meta: Sous-titre discret
+        body: Le corps d'une carte accueille du texte, une liste, un graphique — ce que l'écran demande.
+        interactive: Carte cliquable
+        interactive_meta: La carte entière est le lien
+
+    form:
+        text: Champ texte
+        placeholder: Saisir une valeur
+        hint: Une précision qui aide à remplir le champ.
+        select: Liste déroulante
+        option_one: Première option
+        option_two: Seconde option
+        invalid: Champ refusé
+        error: Cette adresse est incomplète.
+        disabled: Champ verrouillé
+
+    table:
+        name: Intitulé
+        status: État
+        date: Date
+        row_one: Première ligne
+        row_two: Seconde ligne
+
+    alert:
+        neutral: Un message sans intention particulière.
+        info: Une information utile, sans conséquence.
+        success: L'opération s'est terminée.
+        warning: Quelque chose demande votre attention.
+        danger: L'opération a échoué.
+
+    tab:
+        one: Vue d'ensemble
+        two: Détail
+        three: Historique
+
+    modal:
+        open: Ouvrir la fenêtre
+        title: Confirmer la suppression
+        body: Cette action ne peut pas être annulée.

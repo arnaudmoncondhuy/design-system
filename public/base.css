@@ -1,0 +1,208 @@
+/*
+ * Ce que la page vaut avant qu'un composant s'y pose : la remise à zéro, la typographie, la
+ * charpente et le halo de focus.
+ *
+ * Les règles portent sur des éléments — `body`, `a`, `h1` — et sur la charpente `app-shell`.
+ * Tout ce qui se répète d'un écran à l'autre vit dans `components.css`.
+ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    scrollbar-gutter: stable;
+}
+
+body {
+    margin: 0;
+    min-height: 100dvh;
+    font-family: var(--app-font);
+    font-size: var(--app-font-size);
+    line-height: 1.55;
+    color: var(--app-ink);
+    background: var(--app-bg);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    margin: 0;
+    font-weight: 650;
+    line-height: 1.25;
+    letter-spacing: -.01em;
+}
+
+h1 {
+    font-size: 1.6rem;
+}
+
+h2 {
+    font-size: 1.25rem;
+}
+
+h3 {
+    font-size: 1.05rem;
+}
+
+p {
+    margin: 0;
+}
+
+a {
+    color: var(--app-accent);
+    text-decoration: var(--app-link-decoration);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+code,
+kbd,
+pre {
+    font-family: var(--app-font-mono);
+    font-size: .875em;
+}
+
+code {
+    padding: .1em .35em;
+    border-radius: 4px;
+    background: var(--app-raised);
+    color: var(--app-ink-soft);
+}
+
+hr {
+    height: 1px;
+    margin: calc(var(--app-gap) * 3) 0;
+    border: 0;
+    background: var(--app-line);
+}
+
+/* Un seul halo de focus pour toute l'application, et seulement au clavier. */
+:focus-visible {
+    outline: 2px solid var(--app-accent);
+    outline-offset: 2px;
+}
+
+/* ═══ Charpente ════════════════════════════════════════════════════════════════════════ */
+
+/* Lien d'évitement : hors du cadre tant qu'aucun clavier ne l'atteint, il descend en place
+   dès qu'il prend le focus. Il reste dans le flux de lecture d'un lecteur d'écran. */
+.app-skip-link {
+    position: fixed;
+    top: calc(var(--app-gap) * -10);
+    left: var(--app-gap);
+    z-index: 10;
+    padding: calc(var(--app-gap) * 1.25) calc(var(--app-gap) * 2);
+    border: 1px solid var(--app-line-control);
+    border-radius: var(--app-radius-ui);
+    background: var(--app-surface);
+    color: var(--app-ink);
+    box-shadow: var(--app-shadow);
+    transition: top var(--app-speed) var(--app-ease);
+}
+
+.app-skip-link:focus {
+    top: var(--app-gap);
+    text-decoration: none;
+}
+
+.app-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--app-gap) * 2);
+    padding: calc(var(--app-gap) * 1.5) calc(var(--app-gap) * 3);
+    background: var(--app-surface);
+    border-bottom: 1px solid var(--app-line);
+}
+
+.app-header-brand {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--app-ink);
+}
+
+.app-header-brand:hover {
+    text-decoration: none;
+}
+
+/* Pousse ce qui suit contre le bord droit de l'en-tête. */
+.app-header-spacer {
+    flex: 1;
+}
+
+/* Le choix de palette : un champ ordinaire, dont l'étiquette n'est lue que par les lecteurs
+   d'écran. Un menu déroulant plutôt qu'une bascule, parce qu'il y a plus de deux réponses et
+   qu'aucune ne se devine depuis l'icône de la précédente. */
+.app-theme-picker {
+    max-width: 13rem;
+}
+
+.app-main {
+    flex: 1;
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: calc(var(--app-gap) * 4) calc(var(--app-gap) * 3);
+}
+
+.app-footer {
+    padding: calc(var(--app-gap) * 3);
+    text-align: center;
+    font-size: .8125rem;
+    color: var(--app-ink-muted);
+}
+
+/* ═══ Messages éphémères ═══════════════════════════════════════════════════════════════ */
+
+.app-flashes {
+    display: flex;
+    flex-direction: column;
+    gap: var(--app-gap);
+    margin-bottom: calc(var(--app-gap) * 3);
+}
+
+/* ═══ Utilitaires ══════════════════════════════════════════════════════════════════════ */
+
+/* Empile ses enfants ; l'écart se règle par `--app-stack-gap` sur l'instance. */
+.app-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--app-stack-gap, calc(var(--app-gap) * 2));
+}
+
+/* Aligne ses enfants sur une ligne, et les fait passer à la suivante quand la place manque. */
+.app-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--app-row-gap, var(--app-gap));
+}
+
+.app-muted {
+    color: var(--app-ink-muted);
+}
+
+/* Réservé aux lecteurs d'écran : lu à voix haute, invisible à l'œil. */
+.app-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}

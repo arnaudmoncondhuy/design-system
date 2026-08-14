@@ -1,0 +1,480 @@
+/*
+ * Le catalogue : ce qui se répète d'un écran à l'autre.
+ *
+ * Une classe déclare le composant, un attribut décline ce qu'il devient. `data-variant` et
+ * `data-tone` portent l'intention, `data-size` la taille, et les attributs standards
+ * — `disabled`, `aria-busy`, `aria-current` — portent l'état.
+ *
+ * Aucune règle ne cite une couleur en dur ni un jeton de l'étage 1 : tout passe par les alias
+ * de `tokens.css`.
+ */
+
+/* ═══ Boutons ══════════════════════════════════════════════════════════════════════════ */
+
+.app-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--app-gap);
+    padding: calc(var(--app-gap) * 1.25) calc(var(--app-gap) * 2);
+    border: 1px solid transparent;
+    border-radius: var(--app-radius-ui);
+    font: inherit;
+    font-size: .9375rem;
+    font-weight: 550;
+    line-height: 1.2;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    background: var(--app-accent);
+    color: var(--app-ink-inverse);
+    transition: background var(--app-speed) var(--app-ease),
+                border-color var(--app-speed) var(--app-ease),
+                color var(--app-speed) var(--app-ease);
+}
+
+.app-btn:hover {
+    background: var(--app-accent-hover);
+    text-decoration: none;
+}
+
+/* Bordé sur fond de surface : l'action secondaire d'un écran. */
+.app-btn[data-variant="subtle"] {
+    background: var(--app-surface);
+    border-color: var(--app-line-control);
+    color: var(--app-ink);
+}
+
+.app-btn[data-variant="subtle"]:hover {
+    background: var(--app-hover);
+}
+
+/* Sans fond ni filet : annuler, fermer, revenir. */
+.app-btn[data-variant="ghost"] {
+    background: transparent;
+    color: var(--app-ink-soft);
+}
+
+.app-btn[data-variant="ghost"]:hover {
+    background: var(--app-hover);
+    color: var(--app-ink);
+}
+
+/* L'encre inverse suit le schéma : blanche sur le rouge foncé du thème clair, sombre sur le
+   rouge clair du thème sombre. Une encre blanche fixe tomberait sous le contraste AA dans le
+   second cas. */
+.app-btn[data-variant="danger"] {
+    background: var(--app-danger);
+    color: var(--app-ink-inverse);
+}
+
+.app-btn[data-variant="danger"]:hover {
+    filter: brightness(1.1);
+}
+
+.app-btn[data-variant="success"] {
+    background: var(--app-success);
+    color: var(--app-ink-inverse);
+}
+
+.app-btn[data-variant="success"]:hover {
+    filter: brightness(1.1);
+}
+
+.app-btn[data-size="sm"] {
+    padding: calc(var(--app-gap) * .75) calc(var(--app-gap) * 1.5);
+    font-size: .8125rem;
+}
+
+.app-btn[data-size="lg"] {
+    padding: calc(var(--app-gap) * 1.75) calc(var(--app-gap) * 3);
+    font-size: 1rem;
+}
+
+/* Carré, sans texte : l'étiquette accessible passe alors par `aria-label`. */
+.app-btn[data-icon] {
+    padding: calc(var(--app-gap) * 1.25);
+    aspect-ratio: 1;
+}
+
+.app-btn[data-block] {
+    display: flex;
+    width: 100%;
+}
+
+.app-btn:disabled,
+.app-btn[aria-disabled="true"] {
+    opacity: .5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Action en cours : le bouton reste lisible mais n'accepte plus de second clic. */
+.app-btn[aria-busy="true"] {
+    cursor: progress;
+    pointer-events: none;
+}
+
+.app-btn[aria-busy="true"]::before {
+    content: "";
+    width: 1em;
+    height: 1em;
+    border: 2px solid currentcolor;
+    border-top-color: transparent;
+    border-radius: var(--app-radius-pill);
+    animation: app-spin .7s linear infinite;
+}
+
+@keyframes app-spin {
+    to {
+        transform: rotate(1turn);
+    }
+}
+
+/* Un mouvement perpétuel s'arrête quand le système demande moins d'animation. L'anneau reste
+   affiché : c'est lui qui dit que l'action est en cours, pas sa rotation. */
+@media (prefers-reduced-motion: reduce) {
+    .app-btn[aria-busy="true"]::before {
+        animation: none;
+    }
+}
+
+/* ═══ Cartes ═══════════════════════════════════════════════════════════════════════════ */
+
+.app-card {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--app-gap) * 1.5);
+    padding: calc(var(--app-gap) * 2.5);
+    background: var(--app-surface);
+    border: 1px solid var(--app-line);
+    border-radius: var(--app-radius);
+    box-shadow: var(--app-shadow-sm);
+}
+
+.app-card-title {
+    font-size: 1rem;
+    font-weight: 650;
+}
+
+.app-card-meta {
+    font-size: .8125rem;
+    color: var(--app-ink-muted);
+}
+
+.app-card-footer {
+    display: flex;
+    gap: var(--app-gap);
+    padding-top: calc(var(--app-gap) * 1.5);
+    border-top: 1px solid var(--app-line);
+}
+
+/* Carte cliquable : c'est la carte entière qui est le lien. */
+.app-card[data-interactive] {
+    cursor: pointer;
+    transition: box-shadow var(--app-speed) var(--app-ease),
+                border-color var(--app-speed) var(--app-ease);
+}
+
+.app-card[data-interactive]:hover {
+    border-color: var(--app-line-strong);
+    box-shadow: var(--app-shadow);
+}
+
+/* ═══ Badges ═══════════════════════════════════════════════════════════════════════════ */
+
+.app-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--app-gap) * .5);
+    padding: calc(var(--app-gap) * .25) calc(var(--app-gap) * 1.25);
+    /* Le filet est discret tant que le thème le veut discret ; sur une palette à contraste
+       renforcé, où tous les fonds sont noirs, c'est lui qui redonne sa forme à l'étiquette. */
+    border: 1px solid var(--app-line);
+    border-radius: var(--app-radius-pill);
+    font-size: .75rem;
+    font-weight: 600;
+    line-height: 1.6;
+    white-space: nowrap;
+    background: var(--app-raised);
+    color: var(--app-ink-soft);
+}
+
+.app-badge[data-tone="accent"] {
+    background: var(--app-accent-soft);
+    color: var(--app-accent-ink);
+}
+
+.app-badge[data-tone="success"] {
+    background: var(--app-success-soft);
+    color: var(--app-success-ink);
+}
+
+.app-badge[data-tone="warning"] {
+    background: var(--app-warning-soft);
+    color: var(--app-warning-ink);
+}
+
+.app-badge[data-tone="danger"] {
+    background: var(--app-danger-soft);
+    color: var(--app-danger-ink);
+}
+
+.app-badge[data-tone="info"] {
+    background: var(--app-info-soft);
+    color: var(--app-info-ink);
+}
+
+/* ═══ Formulaires ══════════════════════════════════════════════════════════════════════ */
+
+.app-field {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--app-gap) * .75);
+}
+
+.app-field-label {
+    font-size: .875rem;
+    font-weight: 600;
+    color: var(--app-ink-soft);
+}
+
+.app-field :is(input, select, textarea) {
+    width: 100%;
+    padding: calc(var(--app-gap) * 1.25) calc(var(--app-gap) * 1.5);
+    border: 1px solid var(--app-line-control);
+    border-radius: var(--app-radius-ui);
+    font: inherit;
+    color: var(--app-ink);
+    background: var(--app-surface);
+    transition: border-color var(--app-speed) var(--app-ease),
+                box-shadow var(--app-speed) var(--app-ease);
+}
+
+.app-field :is(input, select, textarea):focus {
+    outline: none;
+    border-color: var(--app-accent);
+    box-shadow: var(--app-shadow-focus);
+}
+
+.app-field textarea {
+    min-height: 6rem;
+    resize: vertical;
+}
+
+.app-field :is(input, select, textarea):disabled {
+    background: var(--app-raised);
+    color: var(--app-ink-muted);
+    cursor: not-allowed;
+}
+
+.app-field-hint {
+    font-size: .8125rem;
+    color: var(--app-ink-muted);
+}
+
+.app-field-error {
+    font-size: .8125rem;
+    font-weight: 550;
+    color: var(--app-danger);
+}
+
+/* Champ refusé : le filet rouge double le message, pour qui ne distingue pas la couleur. */
+.app-field[data-invalid] :is(input, select, textarea) {
+    border-color: var(--app-danger);
+}
+
+.app-field[data-invalid] :is(input, select, textarea):focus {
+    box-shadow: 0 0 0 3px var(--app-danger-soft);
+}
+
+/* ═══ Tables ═══════════════════════════════════════════════════════════════════════════ */
+
+/* La table déborde en défilant dans son propre cadre : la page, elle, ne défile jamais
+   horizontalement. */
+.app-table-wrap {
+    overflow-x: auto;
+    background: var(--app-surface);
+    border: 1px solid var(--app-line);
+    border-radius: var(--app-radius);
+}
+
+.app-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .9375rem;
+}
+
+.app-table :is(th, td) {
+    padding: calc(var(--app-gap) * 1.5) calc(var(--app-gap) * 2);
+    text-align: left;
+    border-bottom: 1px solid var(--app-line);
+}
+
+/* L'entête porte du contenu, pas une mention accessoire : elle prend l'encre atténuée, et non
+   l'estompée, qui ne tiendrait pas 4,5:1 sur un fond relevé. */
+.app-table th {
+    font-size: .75rem;
+    font-weight: 650;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--app-ink-soft);
+    background: var(--app-raised);
+}
+
+.app-table tbody tr:last-child :is(th, td) {
+    border-bottom: 0;
+}
+
+.app-table tbody tr:hover {
+    background: var(--app-hover);
+}
+
+/* ═══ Alertes ══════════════════════════════════════════════════════════════════════════ */
+
+.app-alert {
+    display: flex;
+    gap: calc(var(--app-gap) * 1.5);
+    padding: calc(var(--app-gap) * 1.75) calc(var(--app-gap) * 2);
+    border-radius: var(--app-radius-ui);
+    border-left: 3px solid var(--app-ink-muted);
+    font-size: .9375rem;
+    background: var(--app-raised);
+    color: var(--app-ink);
+}
+
+.app-alert[data-tone="success"] {
+    background: var(--app-success-soft);
+    border-left-color: var(--app-success);
+    color: var(--app-success-ink);
+}
+
+.app-alert[data-tone="warning"] {
+    background: var(--app-warning-soft);
+    border-left-color: var(--app-warning);
+    color: var(--app-warning-ink);
+}
+
+.app-alert[data-tone="danger"] {
+    background: var(--app-danger-soft);
+    border-left-color: var(--app-danger);
+    color: var(--app-danger-ink);
+}
+
+.app-alert[data-tone="info"] {
+    background: var(--app-info-soft);
+    border-left-color: var(--app-info);
+    color: var(--app-info-ink);
+}
+
+/* ═══ Modale ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Un `<dialog>` ouvert par `showModal()` : le navigateur porte la pile, le piège au clavier
+   et la fermeture par Échap. */
+.app-modal {
+    width: min(32rem, calc(100vw - var(--app-gap) * 4));
+    padding: calc(var(--app-gap) * 3);
+    border: 1px solid var(--app-line);
+    border-radius: var(--app-radius);
+    background: var(--app-surface);
+    color: var(--app-ink);
+    box-shadow: var(--app-shadow-pop);
+}
+
+.app-modal::backdrop {
+    background: rgb(0 0 0 / .45);
+}
+
+.app-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--app-gap);
+    margin-bottom: calc(var(--app-gap) * 2);
+}
+
+.app-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--app-gap);
+    margin-top: calc(var(--app-gap) * 3);
+}
+
+/* ═══ Titres de section ════════════════════════════════════════════════════════════════ */
+
+.app-section-title {
+    display: flex;
+    align-items: baseline;
+    gap: var(--app-gap);
+    margin-bottom: calc(var(--app-gap) * 2);
+    padding-bottom: var(--app-gap);
+    border-bottom: 1px solid var(--app-line);
+}
+
+/* ═══ Grilles ══════════════════════════════════════════════════════════════════════════ */
+
+/* Le nombre de colonnes est un plafond, pas une consigne : chaque colonne cesse de rétrécir
+   sous 15rem et la grille se replie d'elle-même. */
+.app-grid {
+    display: grid;
+    gap: calc(var(--app-gap) * 2);
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+}
+
+.app-grid[data-cols="2"] {
+    grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+}
+
+.app-grid[data-cols="4"] {
+    grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
+}
+
+/* ═══ Avatar ═══════════════════════════════════════════════════════════════════════════ */
+
+.app-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--app-radius-pill);
+    font-size: .8125rem;
+    font-weight: 650;
+    background: var(--app-accent-soft);
+    color: var(--app-accent-ink);
+    overflow: hidden;
+}
+
+.app-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ═══ Onglets ══════════════════════════════════════════════════════════════════════════ */
+
+.app-tabs {
+    display: flex;
+    gap: calc(var(--app-gap) * .5);
+    border-bottom: 1px solid var(--app-line);
+}
+
+.app-tabs-item {
+    padding: calc(var(--app-gap) * 1.25) calc(var(--app-gap) * 2);
+    border-bottom: 2px solid transparent;
+    font-size: .9375rem;
+    font-weight: 550;
+    color: var(--app-ink-muted);
+    margin-bottom: -1px;
+}
+
+.app-tabs-item:hover {
+    color: var(--app-ink);
+    text-decoration: none;
+}
+
+/* L'onglet courant se marque par `aria-current`, que le lecteur d'écran annonce déjà. */
+.app-tabs-item[aria-current="page"] {
+    border-bottom-color: var(--app-accent);
+    color: var(--app-accent);
+}

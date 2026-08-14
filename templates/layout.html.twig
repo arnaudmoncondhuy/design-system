@@ -1,0 +1,79 @@
+{#
+    Le squelette du design system. Une application l'étend, et n'a rien d'autre à écrire pour
+    obtenir la charpente, le choix de palette et le lien d'évitement.
+
+    `data-theme` n'est posé que si un choix a été exprimé. Absent, c'est `color-scheme: light dark`
+    de tokens.css qui laisse la préférence du système trancher — sans script, donc sans que la
+    page s'affiche d'abord dans la mauvaise palette.
+
+    Les blocs qu'une application remplit : `title`, `javascripts`, `brand`, `header_actions`,
+    `body`, `footer`. `stylesheets` appelle `parent()` pour garder les feuilles du paquet.
+#}
+<!DOCTYPE html>
+<html lang="{% block lang %}fr{% endblock %}"{% if current_theme() %} data-theme="{{ current_theme() }}"{% endif %}>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}{% endblock %}</title>
+        {% block head %}{% endblock %}
+
+        {% block stylesheets %}
+            {#
+                L'ordre est celui dans lequel le navigateur doit les lire : les jetons d'abord,
+                puisque tout le reste les cite ; les composants ensuite, qui l'emportent sur la
+                base. `bundles/designsystem` est l'espace qu'AssetMapper donne au dossier
+                `public/` d'un bundle, sans qu'on le déclare.
+            #}
+            <link rel="stylesheet" href="{{ asset('bundles/designsystem/tokens.css') }}">
+            <link rel="stylesheet" href="{{ asset('bundles/designsystem/base.css') }}">
+            <link rel="stylesheet" href="{{ asset('bundles/designsystem/components.css') }}">
+        {% endblock %}
+
+        {% block javascripts %}{% endblock %}
+    </head>
+    <body>
+        <a class="app-skip-link" href="#app-content">{{ 'skip.content'|trans({}, 'design_system') }}</a>
+
+        <div class="app-shell">
+            {% block header %}
+                <header class="app-header">
+                    {% block brand %}<span class="app-header-brand">{% block brand_label %}{% endblock %}</span>{% endblock %}
+                    <span class="app-header-spacer"></span>
+                    {% block header_actions %}{% endblock %}
+                    {% block theme_picker %}
+                        <div class="app-field app-theme-picker" data-controller="theme">
+                            <label class="app-sr-only" for="app-theme">{{ 'theme.label'|trans({}, 'design_system') }}</label>
+                            <select id="app-theme" data-action="theme#change">
+                                {% for value in available_themes() %}
+                                    <option value="{{ value }}"{{ current_theme() == (value ?: null) ? ' selected' : '' }}>
+                                        {{ ('theme.' ~ (value ?: 'system'))|trans({}, 'design_system') }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endblock %}
+                </header>
+            {% endblock %}
+
+            {# `tabindex="-1"` rend la cible atteignable par le lien d'évitement : sans lui, le
+               focus ne suit pas l'ancre et seul le défilement se produit. #}
+            <main class="app-main" id="app-content" tabindex="-1">
+                {% block flashes %}
+                    {% if app.flashes is not empty %}
+                        <div class="app-flashes">
+                            {% for tone, messages in app.flashes %}
+                                {% for message in messages %}
+                                    <p class="app-alert" data-tone="{{ tone }}" role="status">{{ message }}</p>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endblock %}
+
+                {% block body %}{% endblock %}
+            </main>
+
+            {% block footer %}{% endblock %}
+        </div>
+    </body>
+</html>

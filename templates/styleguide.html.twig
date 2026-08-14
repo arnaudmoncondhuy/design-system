@@ -1,0 +1,225 @@
+{% extends '@DesignSystem/layout.html.twig' %}
+
+{% block title %}{{ 'styleguide.title'|trans({}, 'design_system') }}{% endblock %}
+
+{% block brand_label %}{{ 'styleguide.title'|trans({}, 'design_system') }}{% endblock %}
+
+{# La feuille de la vitrine ne sert qu'à cette page : elle ne part pas dans le lot commun. #}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/designsystem/styleguide.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="app-stack">
+        <div>
+            <h1>{{ 'styleguide.title'|trans({}, 'design_system') }}</h1>
+            <p class="app-muted">{{ 'styleguide.intro'|trans({}, 'design_system') }}</p>
+        </div>
+
+        <section class="app-sg-section">
+            <div class="app-section-title">
+                <h2>{{ 'styleguide.section.tokens'|trans({}, 'design_system') }}</h2>
+                <span class="app-muted">{{ 'styleguide.tokens.hint'|trans({}, 'design_system') }}</span>
+            </div>
+            <div class="app-sg-palette">
+                {% for token in [
+                    'app-bg', 'app-surface', 'app-raised', 'app-hover',
+                    'app-ink', 'app-ink-soft', 'app-ink-muted',
+                    'app-line', 'app-line-strong',
+                    'app-accent', 'app-accent-hover', 'app-accent-soft',
+                    'app-success', 'app-warning', 'app-danger', 'app-info',
+                ] %}
+                    <span class="app-sg-swatch" style="--app-sg-color: var(--{{ token }})">--{{ token }}</span>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="app-sg-section">
+            <div class="app-section-title">
+                <h2>{{ 'styleguide.section.buttons'|trans({}, 'design_system') }}</h2>
+                <span class="app-muted">{{ 'styleguide.buttons.hint'|trans({}, 'design_system') }}</span>
+            </div>
+            <div class="app-stack">
+                <div class="app-sg-demo">
+                    <button type="button" class="app-btn">{{ 'styleguide.variant.primary'|trans({}, 'design_system') }}</button>
+                    <button type="button" class="app-btn" data-variant="subtle">{{ 'styleguide.variant.subtle'|trans({}, 'design_system') }}</button>
+                    <button type="button" class="app-btn" data-variant="ghost">{{ 'styleguide.variant.ghost'|trans({}, 'design_system') }}</button>
+                    <button type="button" class="app-btn" data-variant="success">{{ 'styleguide.variant.success'|trans({}, 'design_system') }}</button>
+                    <button type="button" class="app-btn" data-variant="danger">{{ 'styleguide.variant.danger'|trans({}, 'design_system') }}</button>
+                </div>
+                <div class="app-sg-demo">
+                    <button type="button" class="app-btn" data-size="sm">{{ 'styleguide.size.small'|trans({}, 'design_system') }}</button>
+                    <button type="button" class="app-btn">{{ 'styleguide.size.normal'|trans({}, 'design_system') }}</button>
+                    <button type="button" class="app-btn" data-size="lg">{{ 'styleguide.size.large'|trans({}, 'design_system') }}</button>
+                </div>
+                <div class="app-sg-demo">
+                    <button type="button" class="app-btn" disabled>{{ 'styleguide.state.disabled'|trans({}, 'design_system') }}</button>
+                    <button type="button" class="app-btn" aria-busy="true">{{ 'styleguide.state.busy'|trans({}, 'design_system') }}</button>
+                    <button type="button" class="app-btn" data-variant="subtle" data-icon aria-label="{{ 'styleguide.state.icon'|trans({}, 'design_system') }}">
+                        <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="app-sg-demo" data-stacked>
+                    <button type="button" class="app-btn" data-block>{{ 'styleguide.state.block'|trans({}, 'design_system') }}</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="app-sg-section">
+            <div class="app-section-title">
+                <h2>{{ 'styleguide.section.badges'|trans({}, 'design_system') }}</h2>
+            </div>
+            <div class="app-sg-demo">
+                <span class="app-badge">{{ 'styleguide.tone.neutral'|trans({}, 'design_system') }}</span>
+                <span class="app-badge" data-tone="accent">{{ 'styleguide.tone.accent'|trans({}, 'design_system') }}</span>
+                <span class="app-badge" data-tone="success">{{ 'styleguide.tone.success'|trans({}, 'design_system') }}</span>
+                <span class="app-badge" data-tone="warning">{{ 'styleguide.tone.warning'|trans({}, 'design_system') }}</span>
+                <span class="app-badge" data-tone="danger">{{ 'styleguide.tone.danger'|trans({}, 'design_system') }}</span>
+                <span class="app-badge" data-tone="info">{{ 'styleguide.tone.info'|trans({}, 'design_system') }}</span>
+            </div>
+        </section>
+
+        <section class="app-sg-section">
+            <div class="app-section-title">
+                <h2>{{ 'styleguide.section.cards'|trans({}, 'design_system') }}</h2>
+            </div>
+            <div class="app-grid">
+                <article class="app-card">
+                    <div>
+                        <p class="app-card-title">{{ 'styleguide.card.title'|trans({}, 'design_system') }}</p>
+                        <p class="app-card-meta">{{ 'styleguide.card.meta'|trans({}, 'design_system') }}</p>
+                    </div>
+                    <p>{{ 'styleguide.card.body'|trans({}, 'design_system') }}</p>
+                    <div class="app-card-footer">
+                        <button type="button" class="app-btn" data-size="sm">{{ 'action.save'|trans({}, 'design_system') }}</button>
+                        <button type="button" class="app-btn" data-variant="ghost" data-size="sm">{{ 'action.cancel'|trans({}, 'design_system') }}</button>
+                    </div>
+                </article>
+                <article class="app-card" data-interactive>
+                    <div class="app-row">
+                        <span class="app-avatar">AM</span>
+                        <div>
+                            <p class="app-card-title">{{ 'styleguide.card.interactive'|trans({}, 'design_system') }}</p>
+                            <p class="app-card-meta">{{ 'styleguide.card.interactive_meta'|trans({}, 'design_system') }}</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="app-sg-section">
+            <div class="app-section-title">
+                <h2>{{ 'styleguide.section.forms'|trans({}, 'design_system') }}</h2>
+            </div>
+            <div class="app-sg-demo" data-stacked>
+                <div class="app-field">
+                    <label class="app-field-label" for="sg-text">{{ 'styleguide.form.text'|trans({}, 'design_system') }}</label>
+                    <input id="sg-text" type="text" placeholder="{{ 'styleguide.form.placeholder'|trans({}, 'design_system') }}"
+                           aria-describedby="sg-text-hint">
+                    <span class="app-field-hint" id="sg-text-hint">{{ 'styleguide.form.hint'|trans({}, 'design_system') }}</span>
+                </div>
+                <div class="app-field">
+                    <label class="app-field-label" for="sg-select">{{ 'styleguide.form.select'|trans({}, 'design_system') }}</label>
+                    <select id="sg-select">
+                        <option>{{ 'styleguide.form.option_one'|trans({}, 'design_system') }}</option>
+                        <option>{{ 'styleguide.form.option_two'|trans({}, 'design_system') }}</option>
+                    </select>
+                </div>
+                <div class="app-field" data-invalid>
+                    <label class="app-field-label" for="sg-invalid">{{ 'styleguide.form.invalid'|trans({}, 'design_system') }}</label>
+                    {# `aria-invalid` porte le refus, `aria-describedby` rattache le motif au
+                       champ : sans lui, un lecteur d'écran annonce l'erreur sans dire de quoi
+                       elle parle. Le filet rouge ne suffit pas — il ne se voit pas de tous. #}
+                    <input id="sg-invalid" type="email" value="arnaud@"
+                           aria-invalid="true" aria-describedby="sg-invalid-error">
+                    <span class="app-field-error" id="sg-invalid-error">{{ 'styleguide.form.error'|trans({}, 'design_system') }}</span>
+                </div>
+                <div class="app-field">
+                    <label class="app-field-label" for="sg-disabled">{{ 'styleguide.form.disabled'|trans({}, 'design_system') }}</label>
+                    <input id="sg-disabled" type="text" value="—" disabled>
+                </div>
+            </div>
+        </section>
+
+        <section class="app-sg-section">
+            <div class="app-section-title">
+                <h2>{{ 'styleguide.section.tables'|trans({}, 'design_system') }}</h2>
+            </div>
+            <div class="app-table-wrap">
+                <table class="app-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ 'styleguide.table.name'|trans({}, 'design_system') }}</th>
+                            <th scope="col">{{ 'styleguide.table.status'|trans({}, 'design_system') }}</th>
+                            <th scope="col">{{ 'styleguide.table.date'|trans({}, 'design_system') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ 'styleguide.table.row_one'|trans({}, 'design_system') }}</td>
+                            <td><span class="app-badge" data-tone="success">{{ 'styleguide.tone.success'|trans({}, 'design_system') }}</span></td>
+                            <td class="app-muted">12/03/2026</td>
+                        </tr>
+                        <tr>
+                            <td>{{ 'styleguide.table.row_two'|trans({}, 'design_system') }}</td>
+                            <td><span class="app-badge" data-tone="warning">{{ 'styleguide.tone.warning'|trans({}, 'design_system') }}</span></td>
+                            <td class="app-muted">28/05/2026</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="app-sg-section">
+            <div class="app-section-title">
+                <h2>{{ 'styleguide.section.alerts'|trans({}, 'design_system') }}</h2>
+            </div>
+            <div class="app-stack" style="--app-stack-gap: var(--app-gap)">
+                <p class="app-alert">{{ 'styleguide.alert.neutral'|trans({}, 'design_system') }}</p>
+                <p class="app-alert" data-tone="info">{{ 'styleguide.alert.info'|trans({}, 'design_system') }}</p>
+                <p class="app-alert" data-tone="success">{{ 'styleguide.alert.success'|trans({}, 'design_system') }}</p>
+                <p class="app-alert" data-tone="warning">{{ 'styleguide.alert.warning'|trans({}, 'design_system') }}</p>
+                <p class="app-alert" data-tone="danger">{{ 'styleguide.alert.danger'|trans({}, 'design_system') }}</p>
+            </div>
+        </section>
+
+        <section class="app-sg-section">
+            <div class="app-section-title">
+                <h2>{{ 'styleguide.section.navigation'|trans({}, 'design_system') }}</h2>
+            </div>
+            <nav class="app-tabs">
+                <a class="app-tabs-item" href="#" aria-current="page">{{ 'styleguide.tab.one'|trans({}, 'design_system') }}</a>
+                <a class="app-tabs-item" href="#">{{ 'styleguide.tab.two'|trans({}, 'design_system') }}</a>
+                <a class="app-tabs-item" href="#">{{ 'styleguide.tab.three'|trans({}, 'design_system') }}</a>
+            </nav>
+        </section>
+
+        <section class="app-sg-section">
+            <div class="app-section-title">
+                <h2>{{ 'styleguide.section.modal'|trans({}, 'design_system') }}</h2>
+            </div>
+            <div class="app-sg-demo" data-controller="dialog">
+                <button type="button" class="app-btn" data-action="dialog#open">{{ 'styleguide.modal.open'|trans({}, 'design_system') }}</button>
+                <dialog class="app-modal" data-dialog-target="dialog" aria-labelledby="sg-modal-title">
+                    <div class="app-modal-header">
+                        <h3 id="sg-modal-title">{{ 'styleguide.modal.title'|trans({}, 'design_system') }}</h3>
+                        <button type="button" class="app-btn" data-variant="ghost" data-size="sm" data-icon
+                                data-action="dialog#close" aria-label="{{ 'action.close'|trans({}, 'design_system') }}">
+                            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <p>{{ 'styleguide.modal.body'|trans({}, 'design_system') }}</p>
+                    <div class="app-modal-footer">
+                        <button type="button" class="app-btn" data-variant="ghost" data-action="dialog#close">{{ 'action.cancel'|trans({}, 'design_system') }}</button>
+                        <button type="button" class="app-btn" data-variant="danger" data-action="dialog#close">{{ 'action.confirm'|trans({}, 'design_system') }}</button>
+                    </div>
+                </dialog>
+            </div>
+        </section>
+    </div>
+{% endblock %}

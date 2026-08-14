@@ -1,0 +1,8 @@
+# Dépendances installées par Composer. Un paquet ne fige pas les siennes : c'est
+# l'application qui l'installe qui arbitre les versions.
+/vendor/
+/composer.lock
+
+# Caches des outils qualité.
+/var/
+/.php-cs-fixer.cache

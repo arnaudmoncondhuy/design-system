@@ -1,0 +1,241 @@
+/*
+ * Les jetons du design system, en deux étages.
+ *
+ * Étage 1 — les échelles. De la matière brute, numérotée du plus clair au plus foncé.
+ * Aucune règle de `base.css` ni de `components.css` ne les cite.
+ *
+ * Étage 2 — les alias. Ils nomment un rôle, pas une couleur : `--app-accent`, `--app-danger`,
+ * `--app-line`. C'est le seul étage qu'un composant a le droit d'employer.
+ *
+ * Une palette se change donc en réécrivant l'étage 2, sans toucher à un seul composant.
+ *
+ * `light-dark()` choisit entre les deux valeurs selon le `color-scheme` en vigueur. Le
+ * sélecteur `:root` déclare `light dark` : sans attribut sur `<html>`, la préférence du système
+ * tranche. `[data-theme]` fige l'un des deux et l'emporte alors sur le système.
+ */
+
+:root {
+    color-scheme: light dark;
+
+    /* ═══ Étage 1 — échelles ═══════════════════════════════════════════════════════════ */
+
+    --app-indigo-50: #eef2ff;
+    --app-indigo-100: #e0e7ff;
+    --app-indigo-200: #c7d2fe;
+    --app-indigo-300: #a5b4fc;
+    --app-indigo-400: #818cf8;
+    --app-indigo-500: #6366f1;
+    --app-indigo-600: #4f46e5;
+    --app-indigo-700: #4338ca;
+    --app-indigo-800: #3730a3;
+    --app-indigo-900: #312e81;
+
+    /* Les pas en 50 sont des intercalaires : la rampe d'origine n'offrait, entre deux de ses
+       échelons, aucune valeur qui atteigne le contraste exigé sur tous les fonds. */
+    --app-slate-0: #ffffff;
+    --app-slate-50: #f8fafc;
+    --app-slate-100: #f1f5f9;
+    --app-slate-200: #e2e8f0;
+    --app-slate-250: #b4c0ce;
+    --app-slate-300: #cbd5e1;
+    --app-slate-350: #8b98ab;
+    --app-slate-400: #94a3b8;
+    --app-slate-450: #78889c;
+    --app-slate-500: #64748b;
+    --app-slate-550: #5e6b7d;
+    --app-slate-600: #475569;
+    --app-slate-700: #334155;
+    --app-slate-800: #1e293b;
+    --app-slate-900: #0f172a;
+    --app-slate-950: #080d17;
+
+    --app-green-100: #d1fae5;
+    --app-green-500: #10b981;
+    --app-green-700: #047857;
+    --app-green-900: #022c22;
+
+    --app-amber-100: #fef3c7;
+    --app-amber-500: #f59e0b;
+    --app-amber-700: #b45309;
+    --app-amber-900: #451a03;
+
+    --app-red-100: #fee2e2;
+    --app-red-400: #f87171;
+    --app-red-500: #ef4444;
+    --app-red-700: #b91c1c;
+    --app-red-900: #450a0a;
+
+    --app-blue-100: #dbeafe;
+    --app-blue-500: #3b82f6;
+    --app-blue-700: #1d4ed8;
+    --app-blue-900: #172554;
+
+    /* ═══ Étage 2 — alias ══════════════════════════════════════════════════════════════ */
+
+    /* Fonds, du plus enfoncé au plus relevé. */
+    --app-bg: light-dark(var(--app-slate-100), var(--app-slate-950));
+    --app-surface: light-dark(var(--app-slate-0), var(--app-slate-800));
+    --app-raised: light-dark(var(--app-slate-50), #253347);
+    --app-hover: light-dark(var(--app-slate-100), #2c3d54);
+
+    /* Encre, de la plus soutenue à la plus effacée. Les trois niveaux se resserrent en thème
+       sombre : au-delà, une encre plus terne cesse d'atteindre 4,5:1 sur une carte. */
+    --app-ink: light-dark(var(--app-slate-800), var(--app-slate-200));
+    --app-ink-soft: light-dark(var(--app-slate-600), var(--app-slate-250));
+    --app-ink-muted: light-dark(var(--app-slate-550), var(--app-slate-350));
+    --app-ink-inverse: light-dark(var(--app-slate-0), var(--app-slate-900));
+
+    /* Filets décoratifs : ils séparent, ils ne délimitent aucun contrôle. */
+    --app-line: light-dark(var(--app-slate-200), #2d3f55);
+    --app-line-strong: light-dark(var(--app-slate-300), #3d526b);
+
+    /* Le filet qui dessine le bord d'un champ ou d'un bouton. C'est lui qui rend le contrôle
+       repérable, d'où le seuil de 3:1 — atteint sur les six fonds, clairs comme sombres, ce
+       qui lui permet de n'avoir qu'une seule valeur. */
+    --app-line-control: var(--app-slate-450);
+
+    /* Accent : la couleur qui porte l'action principale et l'état actif. */
+    --app-accent: light-dark(var(--app-indigo-600), var(--app-indigo-400));
+    --app-accent-hover: light-dark(var(--app-indigo-700), var(--app-indigo-300));
+    --app-accent-soft: light-dark(var(--app-indigo-50), var(--app-indigo-900));
+    --app-accent-ink: light-dark(var(--app-indigo-800), var(--app-indigo-100));
+
+    /* États. `-soft` est un fond, `-ink` le texte qui s'y pose. */
+    --app-success: light-dark(var(--app-green-700), var(--app-green-500));
+    --app-success-soft: light-dark(var(--app-green-100), var(--app-green-900));
+    --app-success-ink: light-dark(#064e3b, var(--app-green-100));
+
+    --app-warning: light-dark(var(--app-amber-700), var(--app-amber-500));
+    --app-warning-soft: light-dark(var(--app-amber-100), var(--app-amber-900));
+    --app-warning-ink: light-dark(var(--app-amber-900), var(--app-amber-100));
+
+    --app-danger: light-dark(var(--app-red-700), var(--app-red-400));
+    --app-danger-soft: light-dark(var(--app-red-100), var(--app-red-900));
+    --app-danger-ink: light-dark(#7f1d1d, var(--app-red-100));
+
+    --app-info: light-dark(var(--app-blue-700), var(--app-blue-500));
+    --app-info-soft: light-dark(var(--app-blue-100), var(--app-blue-900));
+    --app-info-ink: light-dark(#1e3a8a, var(--app-blue-100));
+
+    /* ═══ Hors couleur ═════════════════════════════════════════════════════════════════ */
+
+    --app-font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --app-font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    /* Taille de base et soulignement des liens : deux réglages qu'une palette destinée à la
+       basse vision déplace, et qu'un composant ne doit donc pas écrire en dur. */
+    --app-font-size: 15px;
+    --app-link-decoration: none;
+
+    /* Deux rayons, plus la pilule. Le rayon des petits éléments se déduit de celui des
+       conteneurs : les deux restent proportionnés quand on ne change que le premier. */
+    --app-radius: 14px;
+    --app-radius-ui: calc(var(--app-radius) * 0.6);
+    --app-radius-pill: 9999px;
+
+    /* Une seule gouttière, dont tout espacement est un multiple. */
+    --app-gap: 8px;
+
+    --app-shadow-sm: 0 1px 2px light-dark(rgba(15, 23, 42, .06), rgba(0, 0, 0, .4));
+    --app-shadow: 0 1px 2px light-dark(rgba(15, 23, 42, .05), rgba(0, 0, 0, .3)),
+                  0 4px 12px light-dark(rgba(15, 23, 42, .07), rgba(0, 0, 0, .35));
+    --app-shadow-pop: 0 10px 15px -3px light-dark(rgba(15, 23, 42, .1), rgba(0, 0, 0, .45)),
+                      0 4px 6px -4px light-dark(rgba(15, 23, 42, .1), rgba(0, 0, 0, .4));
+    --app-shadow-focus: 0 0 0 3px var(--app-accent-soft);
+
+    --app-speed: .18s;
+    --app-ease: cubic-bezier(.4, 0, .2, 1);
+}
+
+/* Un choix explicite fige le schéma et l'emporte sur la préférence du système. */
+[data-theme="light"] {
+    color-scheme: light;
+}
+
+[data-theme="dark"] {
+    color-scheme: dark;
+}
+
+/*
+ * CONTRASTE RENFORCÉ — destinée à la basse vision.
+ *
+ * Elle abandonne les demi-teintes : fond noir, encre blanche, filets blancs pleins, accents
+ * saturés. Chaque paire texte/fond dépasse 7:1, le seuil le plus exigeant, là où les deux
+ * autres palettes visent 4,5:1. Les nuances qui portaient une information — un fond de carte
+ * plus clair, une ombre, un filet discret — deviennent des bordures franches : ce qui ne se
+ * distingue plus par la teinte se distingue par le trait.
+ *
+ * Elle ne redéfinit que des alias. Aucun composant n'est repris ici, et aucun n'a besoin de
+ * la connaître.
+ */
+[data-theme="contrast"] {
+    color-scheme: dark;
+
+    --app-bg: #000000;
+    --app-surface: #000000;
+    --app-raised: #1a1a1a;
+    --app-hover: #333333;
+
+    --app-ink: #ffffff;
+    --app-ink-soft: #ffffff;
+    --app-ink-muted: #e6e6e6;
+    --app-ink-inverse: #000000;
+
+    /* Un filet ne se devine plus : il se voit, et il est le même partout. */
+    --app-line: #ffffff;
+    --app-line-strong: #ffffff;
+    --app-line-control: #ffffff;
+
+    --app-accent: #ffff00;
+    --app-accent-hover: #ffffff;
+    --app-accent-soft: #000000;
+    --app-accent-ink: #ffff00;
+
+    --app-success: #00ff00;
+    --app-success-soft: #000000;
+    --app-success-ink: #00ff00;
+
+    --app-warning: #ffb000;
+    --app-warning-soft: #000000;
+    --app-warning-ink: #ffb000;
+
+    --app-danger: #ff8b8b;
+    --app-danger-soft: #000000;
+    --app-danger-ink: #ff8b8b;
+
+    --app-info: #00ffff;
+    --app-info-soft: #000000;
+    --app-info-ink: #00ffff;
+
+    /* Une ombre ne porte rien sur du noir pur, et le halo de focus reprend le blanc, seule
+       couleur qui tranche sur toutes les autres de cette palette. */
+    --app-shadow-sm: none;
+    --app-shadow: none;
+    --app-shadow-pop: none;
+    --app-shadow-focus: 0 0 0 3px #ffffff;
+
+    /* Le texte grandit, et un lien se repère sans dépendre de sa couleur. */
+    --app-font-size: 17px;
+    --app-link-decoration: underline;
+}
+
+/*
+ * Une palette supplémentaire se déclare de la même façon, en ne reprenant que les alias
+ * qu'elle déplace :
+ *
+ *     [data-theme="ocean"] {
+ *         color-scheme: light;
+ *         --app-accent: #0e7490;
+ *         --app-accent-hover: #155e75;
+ *         --app-accent-soft: #ecfeff;
+ *         --app-accent-ink: #164e63;
+ *     }
+ *
+ * Elle devient alors une valeur acceptée de `App\Web\Theme\Theme`, qui la rend sur `<html>`.
+ */
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --app-speed: 0s;
+    }
+}

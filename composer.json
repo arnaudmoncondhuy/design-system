@@ -1,0 +1,54 @@
+{
+    "name": "arnaudmoncondhuy/design-system",
+    "description": "Des jetons en deux étages, un catalogue de composants, et des palettes qui se déclarent sans qu'aucun composant ne les connaisse — dont une à contraste renforcé.",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "keywords": [
+        "symfony",
+        "bundle",
+        "design-system",
+        "asset-mapper",
+        "accessibility",
+        "theme"
+    ],
+    "authors": [
+        {
+            "name": "Arnaud Moncondhuy",
+            "email": "arnaudmoncondhuy@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=8.4",
+        "symfony/config": "^7.3 || ^8.1",
+        "symfony/dependency-injection": "^7.3 || ^8.1",
+        "symfony/http-foundation": "^7.3 || ^8.1",
+        "symfony/http-kernel": "^7.3 || ^8.1",
+        "twig/twig": "^3.10"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.95",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan": "^2.2",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "symfony/framework-bundle": "^7.3 || ^8.1",
+        "symfony/routing": "^7.3 || ^8.1",
+        "symfony/twig-bundle": "^7.3 || ^8.1"
+    },
+    "suggest": {
+        "symfony/asset-mapper": "Pour servir les feuilles du paquet sans étape de compilation.",
+        "symfony/stimulus-bundle": "Pour le choix de palette et l'ouverture des fenêtres modales."
+    },
+    "autoload": {
+        "psr-4": {
+            "ArnaudMoncondhuy\\DesignSystem\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        },
+        "sort-packages": true
+    }
+}
