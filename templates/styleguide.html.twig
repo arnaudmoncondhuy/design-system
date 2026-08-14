@@ -1,4 +1,11 @@
-{% extends '@DesignSystem/layout.html.twig' %}
+{#
+    Étend le gabarit de l'application, et non directement le squelette du paquet : c'est
+    l'application qui pose ses scripts, et la vitrine en a besoin — sans eux, le menu de palette
+    et la fenêtre modale sont inertes.
+
+    La chaîne est donc : cette page → base.html.twig de l'application → @DesignSystem/layout.
+#}
+{% extends 'base.html.twig' %}
 
 {% block title %}{{ 'styleguide.title'|trans({}, 'design_system') }}{% endblock %}
 
