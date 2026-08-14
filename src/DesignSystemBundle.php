@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ArnaudMoncondhuy\DesignSystem;
 
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
@@ -55,6 +56,41 @@ final class DesignSystemBundle extends AbstractBundle
     }
 
     /**
+     * Ajoute les comportements du paquet à ceux que StimulusBundle balaye.
+     *
+     * Ce qui s'y trouve est enregistré sous le nom de son fichier : `theme_controller.js`
+     * devient `theme`. L'application n'a donc ni entrée d'`importmap` à écrire, ni contrôleur
+     * à enregistrer à la main.
+     *
+     * Le défaut de StimulusBundle — `assets/controllers` — cesse de s'appliquer dès qu'une
+     * configuration nomme la clé. On le reprend donc quand l'application ne l'a pas nommée, et
+     * on s'abstient quand elle l'a fait, pour ne pas lui imposer un chemin qu'elle a retiré.
+     */
+    public function prependExtension(ContainerConfigurator $configurator, ContainerBuilder $container): void
+    {
+        /** @var array<string, class-string> $bundles */
+        $bundles = $container->getParameter('kernel.bundles');
+
+        if (!isset($bundles['StimulusBundle'])) {
+            return;
+        }
+
+        $named = false;
+
+        foreach ($container->getExtensionConfig('stimulus') as $stimulus) {
+            if (\is_array($stimulus) && isset($stimulus['controller_paths'])) {
+                $named = true;
+                break;
+            }
+        }
+
+        $paths = $named ? [] : ['%kernel.project_dir%/assets/controllers'];
+        $paths[] = $this->getPath().'/public/controllers';
+
+        $container->prependExtensionConfig('stimulus', ['controller_paths' => $paths]);
+    }
+
+    /**
      * @param array<array-key, mixed> $config la configuration du bundle, telle que
      *                                        {@see self::configure()} la décrit
      */
@@ -63,6 +99,10 @@ final class DesignSystemBundle extends AbstractBundle
         $container->setParameter(self::COOKIE_PARAMETER, $config['cookie_name'] ?? 'theme');
 
         $configurator->import('../config/services.php');
+
+        if (class_exists(Command::class)) {
+            $configurator->import('../config/console.php');
+        }
 
         $configurator->services()->alias(
             Theme\ThemeStorage::class,

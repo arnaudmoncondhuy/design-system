@@ -143,6 +143,9 @@
                       0 4px 6px -4px light-dark(rgba(15, 23, 42, .1), rgba(0, 0, 0, .4));
     --app-shadow-focus: 0 0 0 3px var(--app-accent-soft);
 
+    /* Le voile posé derrière une fenêtre modale. */
+    --app-backdrop: light-dark(rgb(15 23 42 / .45), rgb(0 0 0 / .6));
+
     --app-speed: .18s;
     --app-ease: cubic-bezier(.4, 0, .2, 1);
 }
@@ -213,6 +216,10 @@
     --app-shadow: none;
     --app-shadow-pop: none;
     --app-shadow-focus: 0 0 0 3px #ffffff;
+
+    /* Le voile devient opaque : sur cette palette, ce qui est derrière ne doit pas transparaître
+       et venir troubler la lecture. */
+    --app-backdrop: rgb(0 0 0 / .92);
 
     /* Le texte grandit, et un lien se repère sans dépendre de sa couleur. */
     --app-font-size: 17px;
