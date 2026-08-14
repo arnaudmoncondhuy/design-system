@@ -55,28 +55,37 @@ Il reçoit alors la charpente, le lien d'évitement, le menu de choix de palette
 feuilles — servies depuis `bundles/designsystem/`, l'espace qu'AssetMapper donne au dossier
 `public/` d'un bundle.
 
-Les deux comportements se déclarent dans `importmap.php` :
+**Il n'y a rien d'autre à écrire.** Le paquet ajoute lui-même son dossier de comportements à
+ceux que StimulusBundle balaye : ses contrôleurs s'enregistrent sous le nom de leur fichier, et
+l'application n'a ni entrée d'`importmap` à poser, ni contrôleur à enregistrer.
 
-```php
-'design-system/theme' => ['path' => 'bundles/designsystem/controllers/theme_controller.js'],
-'design-system/dialog' => ['path' => 'bundles/designsystem/controllers/dialog_controller.js'],
+## Le docteur
+
+```
+php bin/console design-system:doctor
 ```
 
-puis dans `assets/stimulus_bootstrap.js` :
+Il cherche ce qui ne lève jamais : une palette proposée dans le menu qui ne repeint rien, un
+jeton mal orthographié dont la propriété tombe en silence, une couleur écrite en dur qui
+échappe aux palettes, un cookie relu sous un nom que personne n'écrit. Il rend un code de
+sortie, donc il a sa place dans une routine qualité.
 
-```js
-import ThemeController from 'design-system/theme';
-import DialogController from 'design-system/dialog';
-
-app.register('theme', ThemeController);
-app.register('dialog', DialogController);
-```
+`--fix` écrit ce qui s'ajoute sans rien écraser — la route de la vitrine, notamment. Il ne
+réécrit jamais un fichier existant : prouver qu'un gabarit n'a pas été personnalisé
+demanderait de connaître tous les squelettes qu'un Symfony a pu produire, et se tromper
+effacerait le travail de quelqu'un. Ce qu'il ne peut pas faire, il le dicte.
 
 ## La vitrine
 
 Le catalogue complet, chaque composant dans chacun de ses états, sur une page. Elle n'est pas
-joignable tant que l'application ne l'a pas montée — à réserver au développement, dans
-`config/routes/dev/design_system.yaml` :
+joignable tant que l'application ne l'a pas montée — à réserver au développement. Le plus
+simple est de laisser le docteur l'écrire :
+
+```
+php bin/console design-system:doctor --fix
+```
+
+ce qui dépose `config/routes/dev/design_system.yaml` :
 
 ```yaml
 design_system:
@@ -84,6 +93,9 @@ design_system:
     type: php
     prefix: /styleguide
 ```
+
+La page étend le `base.html.twig` de l'application : elle a besoin de ses scripts, et le
+squelette du paquet ne pose aucun script de lui-même.
 
 ## Régler
 
