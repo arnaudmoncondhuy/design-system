@@ -63,15 +63,17 @@ final class DoctorCommand extends Command
         $console->writeln(\sprintf('Projet  : %s', $this->projectDirectory));
         $console->writeln(\sprintf('Cookie  : %s', $this->cookieName));
 
+        $installation = $this->installation($fix);
+
         $troubles = [
             'Palettes' => $this->palettes(),
             'Jetons' => $this->tokens(),
             'Couleurs en dur' => $this->hardcodedColors(),
             'Cookie' => $this->cookie(),
-            'Installation' => $this->installation($fix, $written),
+            'Installation' => $installation['troubles'],
         ];
 
-        foreach ($written as $file) {
+        foreach ($installation['written'] as $file) {
             $console->success(\sprintf('Écrit : %s', $file));
         }
 
@@ -153,7 +155,9 @@ final class DoctorCommand extends Command
         $troubles = [];
 
         foreach (self::CONSUMERS as $sheet) {
-            preg_match_all('/var\((--app-[\w-]+)/', $this->read($sheet), $cited);
+            // Sans valeur de repli seulement : `var(--x, …)` déclare une variable que l'instance
+            // pose elle-même, et son absence de la feuille de jetons est alors voulue.
+            preg_match_all('/var\(\s*(--app-[\w-]+)\s*\)/', $this->read($sheet), $cited);
 
             foreach (array_unique(array_diff($cited[1], $known)) as $unknown) {
                 $troubles[] = \sprintf('%s cite %s, que tokens.css ne définit pas.', $sheet, $unknown);
@@ -216,11 +220,9 @@ final class DoctorCommand extends Command
     /**
      * Ce que l'application doit poser de sa main, et que le paquet ne peut pas poser à sa place.
      *
-     * @param list<string>|null $written les fichiers écrits par `--fix`, renseignés en sortie
-     *
-     * @return list<string>
+     * @return array{troubles: list<string>, written: list<string>}
      */
-    private function installation(bool $fix, ?array &$written): array
+    private function installation(bool $fix): array
     {
         $written = [];
         $troubles = [];
@@ -259,7 +261,7 @@ final class DoctorCommand extends Command
             }
         }
 
-        return $troubles;
+        return ['troubles' => $troubles, 'written' => $written];
     }
 
     /** Cherche le paquet dans les fichiers de routage de l'application, quel que soit leur nom. */
@@ -291,6 +293,10 @@ final class DoctorCommand extends Command
         return \dirname(__DIR__, 2);
     }
 
+    /**
+     * Rend la feuille débarrassée de ses commentaires : ce qu'ils contiennent est du texte, et
+     * un exemple qu'on y montre n'est pas une déclaration.
+     */
     private function read(string $file): string
     {
         $path = $this->bundleDirectory().'/public/'.$file;
@@ -300,7 +306,12 @@ final class DoctorCommand extends Command
             throw new \RuntimeException(\sprintf('Le paquet est incomplet : %s est introuvable.', $path));
         }
 
-        return $content;
+        // Les sauts de ligne sont conservés : les numéros de ligne rapportés restent justes.
+        return (string) preg_replace_callback(
+            '~/\*.*?\*/~s',
+            static fn (array $m): string => str_repeat("\n", substr_count($m[0], "\n")),
+            $content,
+        );
     }
 
     private function write(string $path, string $content): void
