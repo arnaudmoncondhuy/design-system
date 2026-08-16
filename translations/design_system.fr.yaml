@@ -19,34 +19,66 @@ action:
     cancel: Annuler
     confirm: Confirmer
     close: Fermer
+    edit: Modifier
+    delete: Supprimer
 
 # Ce qui suit ne sert qu'à la page /styleguide, absente de la production.
 styleguide:
     title: Catalogue
     intro: Chaque composant du design system, dans chacun de ses états. Le menu en haut à droite change de palette — dont « Contraste renforcé », destinée à la basse vision.
 
+    sidebar:
+        label: Sections du catalogue
+
     section:
         tokens: Jetons
+        typography: Typographie
         buttons: Boutons
         badges: Étiquettes
         cards: Cartes
+        dashboard: Chiffres
         forms: Formulaires
+        checks: Cases et choix
         tables: Tableaux
         alerts: Messages
+        detail: Fiche et liste vide
+        steps: Fil d'étapes
         navigation: Navigation
+        layout: Charpente
+        disclosure: Menu et accordéon
         modal: Fenêtre modale
 
     tokens:
         hint: les seuls noms qu'un composant a le droit d'employer
     buttons:
-        hint: une classe, des attributs pour l'intention, la taille et l'état
+        hint: le ton porte le sens, la forme porte l'insistance
+    badges:
+        hint: teintée pour un état, pleine pour ce qui doit s'attraper de loin
+    checks:
+        hint: l'étiquette entoure la commande, et devient une zone de clic
+    tables:
+        hint: le tri, la ligne retenue et les actions passent par des attributs standards
+    layout:
+        hint: remplir le bloc « sidebar » suffit à passer en deux colonnes
+        example: Exemple de menu latéral
+        body: Le contenu prend la colonne qui reste. Sous 60 caractères de large, le menu repasse au-dessus.
+    disclosure:
+        hint: deux emplois du même élément, que le navigateur ouvre et ferme lui-même
+
+    typography:
+        hint: aucun composant n'écrit une taille ni une graisse
+        sample: Portez ce vieux whisky au juge blond
+
+    weight:
+        medium: Texte appuyé
+        semibold: Demi-gras
+        bold: Gras
+        heavy: Titre
 
     variant:
-        primary: Action principale
-        subtle: Action secondaire
-        ghost: Discrète
-        success: Valider
-        danger: Supprimer
+        solid: Plein
+        subtle: Bordé
+        ghost: Discret
 
     size:
         small: Petit
@@ -60,6 +92,7 @@ styleguide:
         block: Pleine largeur
 
     tone:
+        none: Sans ton
         neutral: Neutre
         accent: Accent
         success: Terminé
@@ -73,11 +106,26 @@ styleguide:
         body: Le corps d'une carte accueille du texte, une liste, un graphique — ce que l'écran demande.
         interactive: Carte cliquable
         interactive_meta: La carte entière est le lien
+        toned: Carte au ton d'échec
+        toned_meta: Le ton ne touche que le filet
+
+    stat:
+        open: Dossiers ouverts
+        closed: Dossiers clos
+        late: En retard
+        hint: sur les trente derniers jours
+
+    progress:
+        label: Avancement du traitement
+        late: Dossiers traités dans les délais
 
     form:
         text: Champ texte
         placeholder: Saisir une valeur
         hint: Une précision qui aide à remplir le champ.
+        search: Champ accolé
+        search_placeholder: Un mot, une référence
+        search_action: Rechercher
         select: Liste déroulante
         option_one: Première option
         option_two: Seconde option
@@ -85,12 +133,40 @@ styleguide:
         error: Cette adresse est incomplète.
         disabled: Champ verrouillé
 
+    check:
+        notify: Me prévenir à chaque nouveau dossier
+        long: Reprendre le contenu de la fiche précédente, y compris les pièces jointes, les commentaires et l'historique des modifications
+        locked: Option réservée à l'administration
+        frequency: Fréquence des messages
+        daily: Chaque jour
+        weekly: Chaque semaine
+        offline: Travailler hors ligne
+        risky: Autoriser la suppression définitive
+
+    segmented:
+        label: Dossiers affichés
+        all: Tous
+        mine: Les miens
+        archived: Archivés
+
+    steps:
+        hint: l'étape courante se marque par aria-current, les précédentes par data-done
+        one: Renseigner
+        two: Vérifier
+        three: Confirmer
+
     table:
         name: Intitulé
         status: État
         date: Date
+        actions: Actions
         row_one: Première ligne
         row_two: Seconde ligne
+
+    pagination:
+        label: Pages de résultats
+        previous: Précédent
+        next: Suivant
 
     alert:
         neutral: Un message sans intention particulière.
@@ -99,10 +175,44 @@ styleguide:
         warning: Quelque chose demande votre attention.
         danger: L'opération a échoué.
 
+    detail:
+        reference: Référence
+        owner: Responsable
+        status: État
+        created: Créé le
+
+    empty:
+        title: Aucun dossier
+        body: Rien ne correspond à cette recherche.
+        action: Créer un dossier
+
+    nav:
+        label: Navigation principale
+        overview: Tableau de bord
+        files: Dossiers
+        settings: Réglages
+
+    breadcrumb:
+        label: Fil d'Ariane
+        home: Accueil
+        section: Dossiers
+        current: Dossier 128
+
     tab:
         one: Vue d'ensemble
         two: Détail
         three: Historique
+
+    menu:
+        open: Mon compte
+        profile: Mon profil
+        settings: Préférences
+        logout: Se déconnecter
+
+    accordion:
+        one: Comment une palette se déclare
+        two: Ce qu'un composant a le droit d'employer
+        body: "Le corps d'un accordéon n'est lu que lorsqu'il s'ouvre : ce qu'on y range est utile sans être nécessaire à la lecture de l'écran."
 
     modal:
         open: Ouvrir la fenêtre

@@ -29,26 +29,43 @@
     --app-line-strong: #ffffff;
     --app-line-control: #ffffff;
 
+    /* Les six tons. Le survol est blanc partout : sur cette palette il n'existe pas de teinte
+       intermédiaire entre une couleur saturée et le blanc qui garde ses 7:1. */
+    --app-neutral: #ffffff;
+    --app-neutral-hover: #ffffff;
+    --app-neutral-soft: #000000;
+    --app-neutral-ink: #ffffff;
+    --app-on-neutral: #000000;
+
     --app-accent: #ffff00;
     --app-accent-hover: #ffffff;
     --app-accent-soft: #000000;
     --app-accent-ink: #ffff00;
+    --app-on-accent: #000000;
 
     --app-success: #00ff00;
+    --app-success-hover: #ffffff;
     --app-success-soft: #000000;
     --app-success-ink: #00ff00;
+    --app-on-success: #000000;
 
     --app-warning: #ffb000;
+    --app-warning-hover: #ffffff;
     --app-warning-soft: #000000;
     --app-warning-ink: #ffb000;
+    --app-on-warning: #000000;
 
     --app-danger: #ff8b8b;
+    --app-danger-hover: #ffffff;
     --app-danger-soft: #000000;
     --app-danger-ink: #ff8b8b;
+    --app-on-danger: #000000;
 
     --app-info: #00ffff;
+    --app-info-hover: #ffffff;
     --app-info-soft: #000000;
     --app-info-ink: #00ffff;
+    --app-on-info: #000000;
 
     /* Une ombre ne porte rien sur du noir pur, et le halo de focus reprend le blanc, seule
        couleur qui tranche sur toutes les autres de cette palette. */
@@ -61,7 +78,12 @@
        et venir troubler la lecture. */
     --app-backdrop: rgb(0 0 0 / .92);
 
-    /* Le texte grandit, et un lien se repère sans dépendre de sa couleur. */
-    --app-font-size: 17px;
+    /* L'interface grandit d'un bloc — le texte comme les commandes, puisque tout se mesure sur
+       la racine — et un lien se repère sans dépendre de sa couleur. La valeur est relative :
+       elle relève ce que le lecteur a déjà réglé dans son navigateur, sans l'écraser. */
+    --app-font-size: 1.125rem;
     --app-link-decoration: underline;
+
+    /* Le halo de focus s'épaissit : c'est la seule chose qui dise où l'on est au clavier. */
+    --app-focus-width: 3px;
 }

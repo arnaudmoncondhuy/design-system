@@ -1,12 +1,22 @@
 /*
  * Le catalogue : ce qui se répète d'un écran à l'autre.
  *
- * Une classe déclare le composant, un attribut décline ce qu'il devient. `data-variant` et
- * `data-tone` portent l'intention, `data-size` la taille, et les attributs standards
- * — `disabled`, `aria-busy`, `aria-current` — portent l'état.
+ * La grammaire tient en trois axes, et un composant ne connaît rien d'autre :
  *
- * Aucune règle ne cite une couleur en dur ni un jeton de l'étage 1 : tout passe par les alias
- * de `tokens.css`.
+ *   `data-tone`     le sens — neutral, accent, success, warning, danger, info
+ *   `data-variant`  la forme — plein par défaut, `subtle` bordé, `ghost` sans fond
+ *   `data-size`     la taille
+ *
+ * L'état, lui, ne s'invente pas : il passe par les attributs que le navigateur et les lecteurs
+ * d'écran connaissent déjà — `disabled`, `aria-busy`, `aria-current`, `aria-sort`,
+ * `aria-selected`, `aria-disabled`.
+ *
+ * Un composant coloré n'a qu'une règle pour les six tons : `tokens.css` traduit `data-tone` en
+ * variables locales — `--app-tone`, `-hover`, `-soft`, `-ink`, `-on` — et c'est tout ce que la
+ * règle cite. Un ton de plus se déclarerait là-bas, sans reprendre une seule ligne d'ici.
+ *
+ * Aucune règle ne cite une couleur en dur, ni un jeton de l'étage 1, ni une taille ou un
+ * espacement absolus.
  */
 
 /* ═══ Boutons ══════════════════════════════════════════════════════════════════════════ */
@@ -15,19 +25,19 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--app-gap);
-    padding: calc(var(--app-gap) * 1.25) calc(var(--app-gap) * 2);
+    gap: var(--app-space-sm);
+    padding: var(--app-space-md) var(--app-space-lg);
     border: 1px solid transparent;
     border-radius: var(--app-radius-ui);
     font: inherit;
-    font-size: .9375rem;
-    font-weight: 550;
-    line-height: 1.2;
+    font-size: var(--app-text);
+    font-weight: var(--app-weight-medium);
+    line-height: var(--app-leading-none);
     text-decoration: none;
     white-space: nowrap;
     cursor: pointer;
     background: var(--app-accent);
-    color: var(--app-ink-inverse);
+    color: var(--app-on-accent);
     transition: background var(--app-speed) var(--app-ease),
                 border-color var(--app-speed) var(--app-ease),
                 color var(--app-speed) var(--app-ease);
@@ -36,6 +46,16 @@
 .app-btn:hover {
     background: var(--app-accent-hover);
     text-decoration: none;
+}
+
+/* Le ton prend la place de l'accent. Deux règles, et les six tons existent. */
+.app-btn[data-tone] {
+    background: var(--app-tone);
+    color: var(--app-tone-on);
+}
+
+.app-btn[data-tone]:hover {
+    background: var(--app-tone-hover);
 }
 
 /* Bordé sur fond de surface : l'action secondaire d'un écran. */
@@ -49,6 +69,16 @@
     background: var(--app-hover);
 }
 
+.app-btn[data-variant="subtle"][data-tone] {
+    background: var(--app-surface);
+    border-color: var(--app-tone);
+    color: var(--app-tone);
+}
+
+.app-btn[data-variant="subtle"][data-tone]:hover {
+    background: var(--app-tone-soft);
+}
+
 /* Sans fond ni filet : annuler, fermer, revenir. */
 .app-btn[data-variant="ghost"] {
     background: transparent;
@@ -60,40 +90,28 @@
     color: var(--app-ink);
 }
 
-/* L'encre inverse suit le schéma : blanche sur le rouge foncé du thème clair, sombre sur le
-   rouge clair du thème sombre. Une encre blanche fixe tomberait sous le contraste AA dans le
-   second cas. */
-.app-btn[data-variant="danger"] {
-    background: var(--app-danger);
-    color: var(--app-ink-inverse);
+.app-btn[data-variant="ghost"][data-tone] {
+    background: transparent;
+    color: var(--app-tone);
 }
 
-.app-btn[data-variant="danger"]:hover {
-    filter: brightness(1.1);
-}
-
-.app-btn[data-variant="success"] {
-    background: var(--app-success);
-    color: var(--app-ink-inverse);
-}
-
-.app-btn[data-variant="success"]:hover {
-    filter: brightness(1.1);
+.app-btn[data-variant="ghost"][data-tone]:hover {
+    background: var(--app-tone-soft);
 }
 
 .app-btn[data-size="sm"] {
-    padding: calc(var(--app-gap) * .75) calc(var(--app-gap) * 1.5);
-    font-size: .8125rem;
+    padding: var(--app-space-xs) var(--app-space-md);
+    font-size: var(--app-text-sm);
 }
 
 .app-btn[data-size="lg"] {
-    padding: calc(var(--app-gap) * 1.75) calc(var(--app-gap) * 3);
-    font-size: 1rem;
+    padding: var(--app-space-lg) var(--app-space-xl);
+    font-size: var(--app-text-lg);
 }
 
 /* Carré, sans texte : l'étiquette accessible passe alors par `aria-label`. */
 .app-btn[data-icon] {
-    padding: calc(var(--app-gap) * 1.25);
+    padding: var(--app-space-md);
     aspect-ratio: 1;
 }
 
@@ -144,28 +162,32 @@
 .app-card {
     display: flex;
     flex-direction: column;
-    gap: calc(var(--app-gap) * 1.5);
-    padding: calc(var(--app-gap) * 2.5);
+    gap: var(--app-space-md);
+    padding: var(--app-space-xl);
     background: var(--app-surface);
     border: 1px solid var(--app-line);
     border-radius: var(--app-radius);
     box-shadow: var(--app-shadow-sm);
 }
 
+.app-card[data-tone] {
+    border-color: var(--app-tone);
+}
+
 .app-card-title {
-    font-size: 1rem;
-    font-weight: 650;
+    font-size: var(--app-text-lg);
+    font-weight: var(--app-weight-bold);
 }
 
 .app-card-meta {
-    font-size: .8125rem;
+    font-size: var(--app-text-sm);
     color: var(--app-ink-muted);
 }
 
 .app-card-footer {
     display: flex;
-    gap: var(--app-gap);
-    padding-top: calc(var(--app-gap) * 1.5);
+    gap: var(--app-space-sm);
+    padding-top: var(--app-space-md);
     border-top: 1px solid var(--app-line);
 }
 
@@ -181,48 +203,40 @@
     box-shadow: var(--app-shadow);
 }
 
-/* ═══ Badges ═══════════════════════════════════════════════════════════════════════════ */
+/* ═══ Étiquettes ═══════════════════════════════════════════════════════════════════════ */
 
 .app-badge {
     display: inline-flex;
     align-items: center;
-    gap: calc(var(--app-gap) * .5);
-    padding: calc(var(--app-gap) * .25) calc(var(--app-gap) * 1.25);
+    gap: var(--app-space-xs);
+    padding: var(--app-space-2xs) var(--app-space-md);
     /* Le filet est discret tant que le thème le veut discret ; sur une palette à contraste
        renforcé, où tous les fonds sont noirs, c'est lui qui redonne sa forme à l'étiquette. */
     border: 1px solid var(--app-line);
     border-radius: var(--app-radius-pill);
-    font-size: .75rem;
-    font-weight: 600;
-    line-height: 1.6;
+    font-size: var(--app-text-xs);
+    font-weight: var(--app-weight-semibold);
+    line-height: var(--app-leading);
     white-space: nowrap;
     background: var(--app-raised);
     color: var(--app-ink-soft);
 }
 
-.app-badge[data-tone="accent"] {
-    background: var(--app-accent-soft);
-    color: var(--app-accent-ink);
+.app-badge[data-tone] {
+    background: var(--app-tone-soft);
+    color: var(--app-tone-ink);
 }
 
-.app-badge[data-tone="success"] {
-    background: var(--app-success-soft);
-    color: var(--app-success-ink);
+/* Pleine : ce qui doit s'attraper à travers un tableau entier. */
+.app-badge[data-variant="solid"] {
+    border-color: transparent;
+    background: var(--app-neutral);
+    color: var(--app-on-neutral);
 }
 
-.app-badge[data-tone="warning"] {
-    background: var(--app-warning-soft);
-    color: var(--app-warning-ink);
-}
-
-.app-badge[data-tone="danger"] {
-    background: var(--app-danger-soft);
-    color: var(--app-danger-ink);
-}
-
-.app-badge[data-tone="info"] {
-    background: var(--app-info-soft);
-    color: var(--app-info-ink);
+.app-badge[data-variant="solid"][data-tone] {
+    background: var(--app-tone);
+    color: var(--app-tone-on);
 }
 
 /* ═══ Formulaires ══════════════════════════════════════════════════════════════════════ */
@@ -230,18 +244,36 @@
 .app-field {
     display: flex;
     flex-direction: column;
-    gap: calc(var(--app-gap) * .75);
+    gap: var(--app-space-xs);
 }
 
 .app-field-label {
-    font-size: .875rem;
-    font-weight: 600;
+    font-size: var(--app-text-sm);
+    font-weight: var(--app-weight-semibold);
     color: var(--app-ink-soft);
 }
 
-.app-field :is(input, select, textarea) {
+/* Un groupe de commandes est une question posée : `<fieldset>` la délimite et `<legend>` l'énonce,
+   ce qu'un lecteur d'écran rappelle alors à chaque réponse. Les deux arrivent avec une mise en
+   forme du navigateur, qu'il faut défaire. La légende reste hors de la disposition en colonne,
+   d'où son écart posé à la main. */
+fieldset.app-field {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.app-field legend {
+    padding: 0;
+    margin-bottom: var(--app-space-xs);
+}
+
+/* Les cases à cocher et les boutons radio sont écartés : ce sont des carrés et des ronds, et
+   la mise en forme d'une ligne de saisie les déformerait. Ils ont leur composant plus bas. */
+.app-field :is(select, textarea, input:not([type="checkbox"], [type="radio"])) {
     width: 100%;
-    padding: calc(var(--app-gap) * 1.25) calc(var(--app-gap) * 1.5);
+    padding: var(--app-space-md);
     border: 1px solid var(--app-line-control);
     border-radius: var(--app-radius-ui);
     font: inherit;
@@ -251,7 +283,7 @@
                 box-shadow var(--app-speed) var(--app-ease);
 }
 
-.app-field :is(input, select, textarea):focus {
+.app-field :is(select, textarea, input:not([type="checkbox"], [type="radio"])):focus {
     outline: none;
     border-color: var(--app-accent);
     box-shadow: var(--app-shadow-focus);
@@ -262,37 +294,205 @@
     resize: vertical;
 }
 
-.app-field :is(input, select, textarea):disabled {
+.app-field :is(select, textarea, input:not([type="checkbox"], [type="radio"])):disabled {
     background: var(--app-raised);
     color: var(--app-ink-muted);
     cursor: not-allowed;
 }
 
 .app-field-hint {
-    font-size: .8125rem;
+    font-size: var(--app-text-sm);
     color: var(--app-ink-muted);
 }
 
 .app-field-error {
-    font-size: .8125rem;
-    font-weight: 550;
+    font-size: var(--app-text-sm);
+    font-weight: var(--app-weight-medium);
     color: var(--app-danger);
 }
 
 /* Champ refusé : le filet rouge double le message, pour qui ne distingue pas la couleur. */
-.app-field[data-invalid] :is(input, select, textarea) {
+.app-field[data-invalid] :is(select, textarea, input:not([type="checkbox"], [type="radio"])) {
     border-color: var(--app-danger);
 }
 
-.app-field[data-invalid] :is(input, select, textarea):focus {
+.app-field[data-invalid] :is(select, textarea, input:not([type="checkbox"], [type="radio"])):focus {
     box-shadow: 0 0 0 3px var(--app-danger-soft);
+}
+
+/* ═══ Champ accolé ═════════════════════════════════════════════════════════════════════ */
+
+/* Un champ et son bouton n'en forment qu'un : une recherche, une unité, un choix suivi d'une
+   action. Les angles qui se touchent s'effacent, et le filet qui se dédouble se recouvre. */
+.app-input-group {
+    display: flex;
+    align-items: stretch;
+}
+
+.app-input-group > :is(input, select) {
+    flex: 1;
+    min-width: 0;
+}
+
+.app-input-group > :is(input, select, .app-btn):not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.app-input-group > :is(input, select, .app-btn):not(:first-child) {
+    margin-left: -1px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* Le champ passe devant quand il prend le focus : son filet ne doit pas passer sous le bouton. */
+.app-input-group > :is(input, select):focus {
+    position: relative;
+}
+
+/* ═══ Cases à cocher, boutons radio, interrupteur ══════════════════════════════════════ */
+
+/* Un `<label>` qui contient sa commande : le texte devient une zone de clic, et l'étiquette
+   est rattachée sans qu'un identifiant soit à inventer. */
+.app-check {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--app-space-md);
+    cursor: pointer;
+}
+
+.app-check input {
+    flex: none;
+    /* Le calcul recentre la commande sur la première ligne du texte : posée sur la ligne de
+       base, elle flotterait au-dessus dès que l'étiquette passe sur deux lignes. */
+    margin: calc((var(--app-leading) * 1em - 1.15em) / 2) 0 0;
+    width: 1.15em;
+    height: 1.15em;
+    font: inherit;
+    /* La case, sa coche et son bord sont peints par le navigateur, qui les accorde au
+       `color-scheme` en vigueur : l'accent lui suffit pour choisir une encre qui y tranche, et
+       le filet qu'il dessine tient les 3:1 d'une commande jusque sur un fond noir. Un filet
+       ajouté ici resterait carré autour d'un bouton radio, la forme d'un contrôle natif
+       n'obéissant pas à `border-radius`. */
+    accent-color: var(--app-accent);
+    cursor: inherit;
+}
+
+.app-check[data-tone] input {
+    accent-color: var(--app-tone);
+}
+
+.app-check:has(input:disabled) {
+    color: var(--app-ink-muted);
+    cursor: not-allowed;
+}
+
+.app-check input:disabled {
+    opacity: .5;
+}
+
+/* Le même contrôle, dessiné en interrupteur : deux états qui s'appliquent sur-le-champ, là où
+   une case à cocher attend l'envoi du formulaire.
+
+   Le curseur est peint dans le fond du contrôle, et non dans un pseudo-élément : les champs de
+   formulaire sont des éléments remplacés, dont le contenu généré ne s'affiche pas partout. */
+.app-check[data-variant="switch"] input {
+    margin-top: calc((var(--app-leading) * 1em - 1.35em) / 2);
+    width: 2.4em;
+    height: 1.35em;
+    appearance: none;
+    border: 1px solid var(--app-line-control);
+    border-radius: var(--app-radius-pill);
+    background-color: var(--app-raised);
+    background-image: radial-gradient(circle .45em at center, var(--app-line-control) 96%, transparent 100%);
+    background-repeat: no-repeat;
+    background-size: 1.35em 1.35em;
+    background-position: left center;
+    transition: background-color var(--app-speed) var(--app-ease),
+                background-position var(--app-speed) var(--app-ease),
+                border-color var(--app-speed) var(--app-ease);
+}
+
+.app-check[data-variant="switch"] input:checked {
+    border-color: var(--app-accent);
+    background-color: var(--app-accent);
+    background-image: radial-gradient(circle .45em at center, var(--app-on-accent) 96%, transparent 100%);
+    background-position: right center;
+}
+
+.app-check[data-variant="switch"][data-tone] input:checked {
+    border-color: var(--app-tone);
+    background-color: var(--app-tone);
+    background-image: radial-gradient(circle .45em at center, var(--app-tone-on) 96%, transparent 100%);
+}
+
+/* ═══ Contrôle segmenté ════════════════════════════════════════════════════════════════ */
+
+/* Quelques réponses exclusives, toutes visibles à la fois : un filtre, une vue, une période.
+   Ce sont des boutons radio — la commande reste celle que le navigateur et le clavier
+   connaissent, seule sa peinture change. */
+.app-segmented {
+    display: inline-flex;
+    /* Une largeur définie, donc jamais étirée par la colonne qui l'accueille : le contrôle
+       tient à ses réponses, et non à la place disponible. */
+    width: fit-content;
+    gap: var(--app-space-2xs);
+    padding: var(--app-space-2xs);
+    background: var(--app-raised);
+    border: 1px solid var(--app-line);
+    border-radius: var(--app-radius-ui);
+}
+
+.app-segmented label {
+    position: relative;
+    display: flex;
+}
+
+/* Transparent et non masqué : un contrôle sur lequel le focus peut encore se poser. */
+.app-segmented input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.app-segmented span {
+    padding: var(--app-space-xs) var(--app-space-md);
+    border-radius: calc(var(--app-radius-ui) * .7);
+    font-size: var(--app-text-sm);
+    font-weight: var(--app-weight-medium);
+    white-space: nowrap;
+    color: var(--app-ink-soft);
+}
+
+.app-segmented input:checked + span {
+    background: var(--app-surface);
+    color: var(--app-ink);
+    box-shadow: var(--app-shadow-sm);
+}
+
+.app-segmented input:focus-visible + span {
+    outline: var(--app-focus-width) solid var(--app-accent);
+    outline-offset: var(--app-focus-offset);
+}
+
+.app-segmented input:disabled + span {
+    opacity: .5;
+    cursor: not-allowed;
 }
 
 /* ═══ Tables ═══════════════════════════════════════════════════════════════════════════ */
 
 /* La table déborde en défilant dans son propre cadre : la page, elle, ne défile jamais
-   horizontalement. */
+   horizontalement.
+
+   Le cadre est positionné pour que ce soit vrai jusqu'au bout. Un élément en position absolue
+   — une mention réservée aux lecteurs d'écran dans une cellule, par exemple — se place sinon
+   par rapport à la page, échappe au découpage du cadre, et élargit la page de toute la largeur
+   dont la table dépasse. */
 .app-table-wrap {
+    position: relative;
     overflow-x: auto;
     background: var(--app-surface);
     border: 1px solid var(--app-line);
@@ -302,11 +502,11 @@
 .app-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: .9375rem;
+    font-size: var(--app-text);
 }
 
 .app-table :is(th, td) {
-    padding: calc(var(--app-gap) * 1.5) calc(var(--app-gap) * 2);
+    padding: var(--app-space-md) var(--app-space-lg);
     text-align: left;
     border-bottom: 1px solid var(--app-line);
 }
@@ -314,8 +514,8 @@
 /* L'entête porte du contenu, pas une mention accessoire : elle prend l'encre atténuée, et non
    l'estompée, qui ne tiendrait pas 4,5:1 sur un fond relevé. */
 .app-table th {
-    font-size: .75rem;
-    font-weight: 650;
+    font-size: var(--app-text-xs);
+    font-weight: var(--app-weight-bold);
     text-transform: uppercase;
     letter-spacing: .04em;
     color: var(--app-ink-soft);
@@ -330,41 +530,299 @@
     background: var(--app-hover);
 }
 
+/* La ligne retenue se marque par `aria-selected`, que le lecteur d'écran annonce déjà. La
+   règle suit celle du survol : une ligne retenue le reste sous le pointeur. */
+.app-table tbody tr[aria-selected="true"] {
+    background: var(--app-accent-soft);
+}
+
+/* La colonne des actions se serre contre le bord et ne se coupe jamais en deux lignes. */
+.app-table :is(th, td)[data-actions] {
+    width: 1%;
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* Le tri se porte sur l'entête : `aria-sort` dit dans quel sens la colonne est rangée, et la
+   flèche ne fait que le montrer. Elle reste muette pour un lecteur d'écran, qui lit déjà
+   l'attribut. */
+.app-table-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--app-space-xs);
+    color: inherit;
+    text-decoration: none;
+}
+
+.app-table-sort:hover {
+    color: var(--app-ink);
+    text-decoration: none;
+}
+
+.app-table-sort::after {
+    content: "↕" / "";
+    opacity: .45;
+}
+
+.app-table th[aria-sort="ascending"] .app-table-sort::after {
+    content: "↑" / "";
+    opacity: 1;
+}
+
+.app-table th[aria-sort="descending"] .app-table-sort::after {
+    content: "↓" / "";
+    opacity: 1;
+}
+
 /* ═══ Alertes ══════════════════════════════════════════════════════════════════════════ */
 
 .app-alert {
     display: flex;
-    gap: calc(var(--app-gap) * 1.5);
-    padding: calc(var(--app-gap) * 1.75) calc(var(--app-gap) * 2);
+    gap: var(--app-space-md);
+    padding: var(--app-space-md) var(--app-space-lg);
     border-radius: var(--app-radius-ui);
     border-left: 3px solid var(--app-ink-muted);
-    font-size: .9375rem;
+    font-size: var(--app-text);
     background: var(--app-raised);
     color: var(--app-ink);
 }
 
-.app-alert[data-tone="success"] {
-    background: var(--app-success-soft);
-    border-left-color: var(--app-success);
-    color: var(--app-success-ink);
+.app-alert[data-tone] {
+    background: var(--app-tone-soft);
+    border-left-color: var(--app-tone);
+    color: var(--app-tone-ink);
 }
 
-.app-alert[data-tone="warning"] {
-    background: var(--app-warning-soft);
-    border-left-color: var(--app-warning);
-    color: var(--app-warning-ink);
+/* ═══ État vide ════════════════════════════════════════════════════════════════════════ */
+
+/* Ce que montre une liste qui n'a rien à montrer : elle dit pourquoi, et donne la porte de
+   sortie. Un écran vide sans un mot se lit comme une panne. */
+.app-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--app-space-sm);
+    padding: var(--app-space-3xl) var(--app-space-xl);
+    border: 1px dashed var(--app-line-strong);
+    border-radius: var(--app-radius);
+    text-align: center;
+    color: var(--app-ink-muted);
 }
 
-.app-alert[data-tone="danger"] {
-    background: var(--app-danger-soft);
-    border-left-color: var(--app-danger);
-    color: var(--app-danger-ink);
+.app-empty-title {
+    font-size: var(--app-text-lg);
+    font-weight: var(--app-weight-bold);
+    color: var(--app-ink);
 }
 
-.app-alert[data-tone="info"] {
-    background: var(--app-info-soft);
-    border-left-color: var(--app-info);
-    color: var(--app-info-ink);
+/* ═══ Liste de définitions ═════════════════════════════════════════════════════════════ */
+
+/* Les paires intitulé/valeur d'une fiche. Sur un écran étroit, la valeur passe sous son
+   intitulé plutôt que de s'y serrer. */
+.app-dl {
+    display: grid;
+    gap: var(--app-space-md) var(--app-space-xl);
+    margin: 0;
+}
+
+.app-dl dt {
+    font-size: var(--app-text-sm);
+    font-weight: var(--app-weight-semibold);
+    color: var(--app-ink-soft);
+}
+
+.app-dl dd {
+    margin: 0;
+}
+
+@media (min-width: 40em) {
+    .app-dl {
+        grid-template-columns: minmax(6rem, 14rem) 1fr;
+    }
+}
+
+/* ═══ Statistique ══════════════════════════════════════════════════════════════════════ */
+
+/* Un chiffre et ce qu'il compte. Ce qui se pose en tête d'un tableau de bord. */
+.app-stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--app-space-xs);
+    padding: var(--app-space-xl);
+    background: var(--app-surface);
+    border: 1px solid var(--app-line);
+    border-radius: var(--app-radius);
+    box-shadow: var(--app-shadow-sm);
+}
+
+.app-stat-label {
+    font-size: var(--app-text-xs);
+    font-weight: var(--app-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--app-ink-soft);
+}
+
+.app-stat-value {
+    font-size: var(--app-text-2xl);
+    font-weight: var(--app-weight-heavy);
+    line-height: var(--app-leading-none);
+}
+
+.app-stat[data-tone] .app-stat-value {
+    color: var(--app-tone);
+}
+
+.app-stat-hint {
+    font-size: var(--app-text-sm);
+    color: var(--app-ink-muted);
+}
+
+/* ═══ Progression ══════════════════════════════════════════════════════════════════════ */
+
+/* L'avancement se pose sur l'instance : `style="--app-progress: 60%"`. Le rôle et les valeurs
+   se déclarent en ARIA sur l'élément, seule chose qu'un lecteur d'écran puisse annoncer. */
+.app-progress {
+    overflow: hidden;
+    height: var(--app-space-md);
+    border: 1px solid var(--app-line-control);
+    border-radius: var(--app-radius-pill);
+    background: var(--app-raised);
+}
+
+.app-progress::after {
+    content: "";
+    display: block;
+    height: 100%;
+    /* Le repli rend visible l'avancement que l'instance a oublié de poser. */
+    width: var(--app-progress, 0%);
+    background: var(--app-accent);
+    transition: width var(--app-speed-slow) var(--app-ease);
+}
+
+.app-progress[data-tone]::after {
+    background: var(--app-tone);
+}
+
+/* ═══ Fil d'étapes ═════════════════════════════════════════════════════════════════════ */
+
+/* Où l'on en est dans une suite d'écrans. L'étape courante se marque par `aria-current="step"`
+   et les précédentes par `data-done` : le numéro devient alors une coche, muette pour un
+   lecteur d'écran puisque l'attribut porte déjà le sens. */
+.app-steps {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--app-space-sm);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: app-step;
+}
+
+.app-steps-item {
+    display: flex;
+    align-items: center;
+    gap: var(--app-space-sm);
+    counter-increment: app-step;
+    font-size: var(--app-text-sm);
+    color: var(--app-ink-muted);
+}
+
+.app-steps-item::before {
+    content: counter(app-step);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 1.9em;
+    height: 1.9em;
+    border: 1px solid var(--app-line-control);
+    border-radius: var(--app-radius-pill);
+    font-weight: var(--app-weight-bold);
+}
+
+/* Le trait qui relie une étape à la suivante prend la place qui reste. */
+.app-steps-item:not(:last-child) {
+    flex: 1;
+}
+
+.app-steps-item:not(:last-child)::after {
+    content: "";
+    flex: 1;
+    min-width: var(--app-space-lg);
+    height: 1px;
+    background: var(--app-line-strong);
+}
+
+.app-steps-item[data-done] {
+    color: var(--app-ink-soft);
+}
+
+.app-steps-item[data-done]::before {
+    content: "✓" / "";
+    border-color: var(--app-accent);
+    background: var(--app-accent);
+    color: var(--app-on-accent);
+}
+
+.app-steps-item[data-done]::after {
+    background: var(--app-accent);
+}
+
+.app-steps-item[aria-current="step"] {
+    font-weight: var(--app-weight-medium);
+    color: var(--app-ink);
+}
+
+.app-steps-item[aria-current="step"]::before {
+    border-color: var(--app-accent);
+    color: var(--app-accent);
+}
+
+/* ═══ Accordéon ════════════════════════════════════════════════════════════════════════ */
+
+/* Un `<details>` : le navigateur porte l'ouverture, la fermeture et l'annonce de l'état. Le
+   même attribut `name` sur plusieurs d'entre eux n'en laisse qu'un ouvert à la fois. */
+.app-accordion {
+    background: var(--app-surface);
+    border: 1px solid var(--app-line);
+    border-radius: var(--app-radius);
+}
+
+.app-accordion > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--app-space-sm);
+    padding: var(--app-space-lg) var(--app-space-xl);
+    font-weight: var(--app-weight-semibold);
+    cursor: pointer;
+    list-style: none;
+}
+
+.app-accordion > summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Le chevron : deux filets d'un carré, tournés. Il suit l'encre du titre, sans jeton de plus. */
+.app-accordion > summary::after {
+    content: "";
+    flex: none;
+    width: .5em;
+    height: .5em;
+    border-right: 2px solid currentcolor;
+    border-bottom: 2px solid currentcolor;
+    rotate: 45deg;
+    transition: rotate var(--app-speed) var(--app-ease);
+}
+
+.app-accordion[open] > summary::after {
+    rotate: 225deg;
+}
+
+.app-accordion-body {
+    padding: 0 var(--app-space-xl) var(--app-space-xl);
 }
 
 /* ═══ Modale ═══════════════════════════════════════════════════════════════════════════ */
@@ -372,8 +830,8 @@
 /* Un `<dialog>` ouvert par `showModal()` : le navigateur porte la pile, le piège au clavier
    et la fermeture par Échap. */
 .app-modal {
-    width: min(32rem, calc(100vw - var(--app-gap) * 4));
-    padding: calc(var(--app-gap) * 3);
+    width: min(32rem, calc(100vw - var(--app-space-2xl)));
+    padding: var(--app-space-xl);
     border: 1px solid var(--app-line);
     border-radius: var(--app-radius);
     background: var(--app-surface);
@@ -389,15 +847,87 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--app-gap);
-    margin-bottom: calc(var(--app-gap) * 2);
+    gap: var(--app-space-sm);
+    margin-bottom: var(--app-space-lg);
 }
 
 .app-modal-footer {
     display: flex;
     justify-content: flex-end;
-    gap: var(--app-gap);
-    margin-top: calc(var(--app-gap) * 3);
+    gap: var(--app-space-sm);
+    margin-top: var(--app-space-xl);
+}
+
+/* ═══ Menu déroulant ═══════════════════════════════════════════════════════════════════ */
+
+/* Un `<details>` : il s'ouvre et se ferme sans script, et le comportement `menu` y ajoute ce
+   que le navigateur ne donne pas — la fermeture par Échap et par un clic au-dehors. */
+.app-menu {
+    position: relative;
+}
+
+.app-menu > summary {
+    list-style: none;
+}
+
+.app-menu > summary::-webkit-details-marker {
+    display: none;
+}
+
+.app-menu-panel {
+    position: absolute;
+    top: calc(100% + var(--app-space-xs));
+    right: 0;
+    z-index: var(--app-z-dropdown);
+    display: flex;
+    flex-direction: column;
+    min-width: 12rem;
+    padding: var(--app-space-xs);
+    background: var(--app-surface);
+    border: 1px solid var(--app-line);
+    border-radius: var(--app-radius-ui);
+    box-shadow: var(--app-shadow-pop);
+}
+
+/* Le panneau s'ouvre vers la droite quand le bouton est à gauche de l'écran. */
+.app-menu[data-align="start"] .app-menu-panel {
+    right: auto;
+    left: 0;
+}
+
+.app-menu-item {
+    display: flex;
+    align-items: center;
+    gap: var(--app-space-sm);
+    width: 100%;
+    padding: var(--app-space-sm) var(--app-space-md);
+    border: 0;
+    border-radius: var(--app-radius-ui);
+    font: inherit;
+    font-size: var(--app-text);
+    text-align: left;
+    text-decoration: none;
+    white-space: nowrap;
+    background: transparent;
+    color: var(--app-ink);
+    cursor: pointer;
+}
+
+.app-menu-item:hover {
+    background: var(--app-hover);
+    text-decoration: none;
+}
+
+.app-menu-item[data-tone] {
+    color: var(--app-tone);
+}
+
+.app-menu-item[data-tone]:hover {
+    background: var(--app-tone-soft);
+}
+
+.app-menu-separator {
+    margin: var(--app-space-xs) 0;
 }
 
 /* ═══ Titres de section ════════════════════════════════════════════════════════════════ */
@@ -405,9 +935,9 @@
 .app-section-title {
     display: flex;
     align-items: baseline;
-    gap: var(--app-gap);
-    margin-bottom: calc(var(--app-gap) * 2);
-    padding-bottom: var(--app-gap);
+    gap: var(--app-space-sm);
+    margin-bottom: var(--app-space-lg);
+    padding-bottom: var(--app-space-sm);
     border-bottom: 1px solid var(--app-line);
 }
 
@@ -417,7 +947,7 @@
    sous 15rem et la grille se replie d'elle-même. */
 .app-grid {
     display: grid;
-    gap: calc(var(--app-gap) * 2);
+    gap: var(--app-space-lg);
     grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
 }
 
@@ -438,11 +968,16 @@
     width: 2.25rem;
     height: 2.25rem;
     border-radius: var(--app-radius-pill);
-    font-size: .8125rem;
-    font-weight: 650;
+    font-size: var(--app-text-sm);
+    font-weight: var(--app-weight-bold);
     background: var(--app-accent-soft);
     color: var(--app-accent-ink);
     overflow: hidden;
+}
+
+.app-avatar[data-tone] {
+    background: var(--app-tone-soft);
+    color: var(--app-tone-ink);
 }
 
 .app-avatar img {
@@ -451,19 +986,86 @@
     object-fit: cover;
 }
 
+/* ═══ Navigation principale ════════════════════════════════════════════════════════════ */
+
+/* Les grandes zones de l'application. La page courante se marque par `aria-current`, comme
+   partout ailleurs. En colonne, c'est le menu latéral de la charpente. */
+.app-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--app-space-xs);
+}
+
+.app-nav[data-orientation="vertical"] {
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+.app-nav-item {
+    padding: var(--app-space-xs) var(--app-space-md);
+    border-radius: var(--app-radius-ui);
+    font-size: var(--app-text);
+    font-weight: var(--app-weight-medium);
+    color: var(--app-ink-soft);
+    text-decoration: none;
+}
+
+.app-nav-item:hover {
+    background: var(--app-hover);
+    color: var(--app-ink);
+    text-decoration: none;
+}
+
+.app-nav-item[aria-current="page"] {
+    background: var(--app-accent-soft);
+    color: var(--app-accent-ink);
+}
+
+/* ═══ Fil d'Ariane ═════════════════════════════════════════════════════════════════════ */
+
+/* Le chemin parcouru pour arriver ici. Le séparateur est dessiné et non lu : un lecteur
+   d'écran annonce déjà une liste, et n'a que faire d'une barre oblique entre deux liens. */
+.app-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--app-space-xs) var(--app-space-sm);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--app-text-sm);
+    color: var(--app-ink-muted);
+}
+
+.app-breadcrumb li {
+    display: flex;
+    align-items: center;
+    gap: var(--app-space-sm);
+}
+
+.app-breadcrumb li + li::before {
+    content: "/" / "";
+    color: var(--app-ink-muted);
+}
+
+.app-breadcrumb [aria-current="page"] {
+    font-weight: var(--app-weight-medium);
+    color: var(--app-ink);
+}
+
 /* ═══ Onglets ══════════════════════════════════════════════════════════════════════════ */
 
 .app-tabs {
     display: flex;
-    gap: calc(var(--app-gap) * .5);
+    gap: var(--app-space-xs);
     border-bottom: 1px solid var(--app-line);
 }
 
 .app-tabs-item {
-    padding: calc(var(--app-gap) * 1.25) calc(var(--app-gap) * 2);
+    padding: var(--app-space-md) var(--app-space-lg);
     border-bottom: 2px solid transparent;
-    font-size: .9375rem;
-    font-weight: 550;
+    font-size: var(--app-text);
+    font-weight: var(--app-weight-medium);
     color: var(--app-ink-muted);
     margin-bottom: -1px;
 }
@@ -477,4 +1079,55 @@
 .app-tabs-item[aria-current="page"] {
     border-bottom-color: var(--app-accent);
     color: var(--app-accent);
+}
+
+/* ═══ Pagination ═══════════════════════════════════════════════════════════════════════ */
+
+.app-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--app-space-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.app-pagination-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    padding: var(--app-space-xs) var(--app-space-sm);
+    border: 1px solid transparent;
+    border-radius: var(--app-radius-ui);
+    font-size: var(--app-text);
+    font-weight: var(--app-weight-medium);
+    color: var(--app-ink-soft);
+    text-decoration: none;
+}
+
+.app-pagination-item:hover {
+    background: var(--app-hover);
+    color: var(--app-ink);
+    text-decoration: none;
+}
+
+.app-pagination-item[aria-current="page"] {
+    background: var(--app-accent-soft);
+    border-color: var(--app-accent);
+    color: var(--app-accent-ink);
+}
+
+/* Le pas qui n'existe pas : la première page quand on y est déjà. Il reste affiché pour que la
+   barre ne change pas de forme d'une page à l'autre. */
+.app-pagination-item[aria-disabled="true"] {
+    opacity: .5;
+    pointer-events: none;
+}
+
+/* Les pages qu'on ne montre pas, entre deux tronçons. */
+.app-pagination-gap {
+    padding: 0 var(--app-space-xs);
+    color: var(--app-ink-muted);
 }

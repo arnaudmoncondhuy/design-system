@@ -4,7 +4,7 @@
  */
 
 .app-sg-section {
-    margin-bottom: calc(var(--app-gap) * 6);
+    margin-bottom: var(--app-space-3xl);
 }
 
 /* La zone de démonstration : les composants s'y posent en ligne, avec de l'air autour. */
@@ -12,8 +12,8 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: calc(var(--app-gap) * 1.5);
-    padding: calc(var(--app-gap) * 2.5);
+    gap: var(--app-space-md);
+    padding: var(--app-space-xl);
     border: 1px dashed var(--app-line-strong);
     border-radius: var(--app-radius);
 }
@@ -23,13 +23,56 @@
     align-items: stretch;
 }
 
+/* La grille des combinaisons : un ton par ligne, une forme par colonne. Elle n'existe que pour
+   qu'aucune combinaison ne passe inaperçue quand on change de palette. */
+.app-sg-matrix {
+    display: grid;
+    grid-template-columns: auto repeat(3, minmax(0, 1fr));
+    gap: var(--app-space-md);
+    align-items: center;
+    padding: var(--app-space-xl);
+    border: 1px dashed var(--app-line-strong);
+    border-radius: var(--app-radius);
+    overflow-x: auto;
+}
+
+.app-sg-matrix-head {
+    font-size: var(--app-text-xs);
+    font-weight: var(--app-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--app-ink-soft);
+}
+
+.app-sg-matrix-row {
+    font-family: var(--app-font-mono);
+    font-size: var(--app-text-xs);
+    color: var(--app-ink-muted);
+    white-space: nowrap;
+}
+
+/* Une ligne de l'échelle typographique : l'exemple prend la taille ou la graisse qu'il montre,
+   le nom du jeton garde la sienne. */
+.app-sg-type {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--app-space-lg);
+}
+
+.app-sg-type code {
+    flex: none;
+    font-size: var(--app-text-xs);
+    font-weight: var(--app-weight-medium);
+}
+
 /* Le nom du jeton, sous son échantillon. */
 .app-sg-swatch {
     display: flex;
     flex-direction: column;
-    gap: calc(var(--app-gap) * .5);
+    gap: var(--app-space-xs);
     font-family: var(--app-font-mono);
-    font-size: .6875rem;
+    font-size: var(--app-text-xs);
     color: var(--app-ink-muted);
 }
 
@@ -47,6 +90,25 @@
 
 .app-sg-palette {
     display: grid;
-    gap: calc(var(--app-gap) * 1.5);
+    gap: var(--app-space-md);
     grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+}
+
+/* Une charpente en réduction : ce que le menu latéral donne, sans hériter de la page. */
+.app-sg-shell {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr);
+    border: 1px solid var(--app-line);
+    border-radius: var(--app-radius);
+    overflow: hidden;
+}
+
+.app-sg-shell > .app-sidebar {
+    border-bottom: 0;
+    border-right: 1px solid var(--app-line);
+}
+
+.app-sg-shell-main {
+    padding: var(--app-space-xl);
+    background: var(--app-bg);
 }

@@ -48,50 +48,67 @@ d'aujourd'hui, doit rester exact et utile. S'il ne l'est pas, il ne doit pas exi
 
 ## Ce que ce paquet promet, et ce qu'il ne promet pas
 
-Il tient **quatre règles**, et chacune arrête la compilation du conteneur :
+Il tient **cinq règles**, et chacune est tenue par un fichier, pas par ce paragraphe :
 
-1. tout cas d'usage déclare au moins un droit ;
-2. nul autre qu'un cas d'usage n'en déclare ;
-3. deux droits distincts ne partagent jamais une identité ;
-4. toute porte d'entrée reçoit un verbe métier — la quatrième juge ce qu'une porte reçoit,
-   pas ce qu'elle en fait, et le README la décrit à ce niveau-là.
+1. aucun composant n'écrit de couleur, de taille ni d'espacement absolus — tout passe par un
+   alias, et `design-system:doctor` refuse le contraire ;
+2. chaque paire texte/fond atteint son seuil sur chaque palette — mesuré par `qa/contrast.py`,
+   jamais estimé, et pour chacune des combinaisons que la grammaire rend possibles ;
+3. une palette est un fichier, et rien d'autre : la déclaration et la peinture sont le même
+   fichier, donc une palette proposée qui ne repeint rien ne peut pas exister ;
+4. un état porté par un attribut standard n'est pas redit ailleurs — la teinte double
+   `aria-current`, `aria-sort`, `aria-selected` ou `disabled`, elle ne les remplace pas ;
+5. un composant coloré n'a qu'une règle pour tous les tons — il cite `--app-tone`, jamais
+   `--app-danger`.
 
-Il **ne décide rien**. Savoir si l'utilisateur courant détient `invoice.finalize` reste
-l'affaire d'un voter écrit par l'application. Ce paquet garantit seulement qu'aucune surface
-ne peut exposer un verbe métier sans que le droit correspondant soit nommé, unique, et
-réclamé dans le corps de la méthode.
+## La grammaire
 
-Une fonctionnalité qui empiéterait sur la décision — un stockage des droits, un modèle de
-rôles, un écran d'administration — n'entre pas ici. Elle appartient au projet.
+Trois attributs, et chacun répond à une seule question : `data-tone` au sens, `data-variant` à
+l'insistance, `data-size` à la taille. **Un axe ne doit jamais empiéter sur un autre** : une
+valeur qui décrirait à la fois une couleur et une forme — un `data-variant="danger"` — ferme la
+porte à toutes les combinaisons qu'elle prétend remplacer.
+
+Un composant qui reçoit une couleur la reçoit donc ainsi, et pas autrement :
+
+```css
+.app-badge[data-tone] { background: var(--app-tone-soft); color: var(--app-tone-ink); }
+```
+
+Les variables locales sont lues **seulement** par un composant qui porte lui-même `data-tone` :
+elles se transmettent aux descendants, et une règle qui les citerait sans cette condition
+teindrait une étiquette neutre posée dans un message d'échec.
+
+Une valeur d'attribut nouvelle se traduit d'abord en jetons, dans `tokens.css`, avant qu'aucune
+règle ne la mentionne. Si elle ne peut pas s'y traduire, c'est qu'elle n'appartient pas à cet
+axe.
+
+Il **ne décide de rien de ce qui s'affiche**. Quelles zones l'application a, ce qu'une fiche
+montre, quand un message apparaît : c'est l'affaire des écrans. Ce paquet garantit seulement
+qu'un écran peut se composer sans écrire une couleur, une taille ni un ordre d'empilement.
+
+Une fonctionnalité qui empiéterait sur le contenu — une bibliothèque d'icônes, un composant qui
+suppose un modèle de données, la mise en page d'un écran particulier — n'entre pas ici. Elle
+appartient au projet.
 
 ## Architecture
 
-Le découpage des namespaces est ce qui rend le contrat vérifiable, et `qa/deptrac.yaml` en
-est la description exécutable.
+Le découpage tient à ce que chaque fichier reçoit du navigateur, et non à des couches.
 
-- **racine `src/`** — le contrat. PHP nu, aucune dépendance, pas même le framework. C'est ce
-  qu'une application importe dans son domaine.
-- **`DependencyInjection/`** — les cinq passes et le nom du tag. Connaît
-  `symfony/dependency-injection`, et rien d'autre — pas même `Bridge/` : la passe qui juge
-  l'adaptateur « tiers » part de l'alias du contrat et traite ce qu'il désigne.
-- **`Bridge/`** — les adaptateurs, nommés par le fournisseur qu'ils branchent. Une application
-  ferme ce dossier à ses surfaces : l'adaptateur y donne accès au contrôle d'accès du
-  framework, et un cas d'usage ne va jamais chercher qui est connecté.
-- **`Scope/`** — ce qu'une surface a le droit d'injecter. À part de `Bridge/` pour cette seule
-  raison : une application doit pouvoir l'ouvrir sans avoir à découper une couche.
-- **`Testing/`** — l'outil de vérification livré aux applications. Il rend une liste de
-  violations et n'assertionne pas : il ne dépend d'aucun cadre de test, et voyage donc en
-  `autoload`, jamais en `autoload-dev`.
+- **`public/tokens.css`** — le seul fichier qui définit. Il déclare les deux étages, et lui seul
+  a le droit d'écrire une couleur ou une valeur absolue.
+- **`public/base.css`, `public/components.css`, `public/styleguide.css`** — les consommateurs.
+  Ils citent des alias et n'en inventent aucun. `base.css` porte ce qui vaut avant tout
+  composant — la remise à zéro, la typographie, la charpente, le halo de focus ; `components.css`
+  porte ce qui se répète d'un écran à l'autre ; `styleguide.css` ne sert qu'à la vitrine.
+- **`public/themes/`** — une palette par fichier. Elle ne déplace que des alias, et aucun
+  composant n'a besoin de la connaître.
+- **`public/controllers/`** — les comportements. Chacun n'ajoute que ce que le navigateur ne
+  donne pas ; un composant qu'un élément HTML porte déjà ne reçoit pas de script.
+- **`src/Theme/`** — le contrat du thème, en PHP nu : le catalogue, la lecture des feuilles, et
+  l'endroit où le choix se range. Une application substitue `ThemeStorage` sans rien découper.
+- **`src/Bridge/`, `src/Controller/`, `src/Twig/`** — ce qui touche au framework : le docteur,
+  la vitrine, les fonctions du gabarit.
 
-**Rien de ce qui est sous `DependencyInjection/`, `Bridge/` ou `Testing/` n'est visible
-depuis la racine.** La dépendance ne va que dans un sens : c'est ce qui permet à une
-application de faire entrer le contrat dans son domaine sans y faire entrer Symfony.
-
-- **Pas de suffixe `Interface`, `Port` ni `Gateway`.** Le contrat nomme le rôle,
-  l'implémentation nomme le fournisseur — `Authorizer` et `SecurityAuthorizer`.
-- **Pas de `skip_violations`, pas de baseline PHPStan.** Une dette qu'on y fige cesse d'être
-  visible.
-
-Une règle d'architecture qu'aucun fichier ne vérifie n'a pas sa place ici : elle serait
-enfreinte sans que personne le voie. Ce qui précède est tenu par `qa/deptrac.yaml` et
-l'étape 8 de `check.sh` — pas par ce paragraphe.
+**Un jeton n'existe que s'il est employé, et une règle mesurée que si elle se voit à l'écran.**
+Un alias que personne ne cite et une paire de contraste qu'aucun composant ne peint donnent
+l'illusion d'une garantie sans en être une : ils ne s'ajoutent pas.

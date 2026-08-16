@@ -9,7 +9,7 @@ import { Controller } from '@hotwired/stimulus';
  * Une valeur vide retire l'attribut et efface le cookie : la préférence du système reprend
  * alors la main. Le cookie est relu côté serveur au chargement suivant, ce qui évite que la
  * page s'affiche dans la mauvaise palette avant que ce contrôleur ne démarre. Son nom doit
- * rester celui que connaît App\Web\Theme\CookieThemeStorage.
+ * rester celui que le serveur relit, ce que `design-system:doctor` vérifie.
  */
 export default class extends Controller {
     static values = {

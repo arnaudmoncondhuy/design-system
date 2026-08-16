@@ -100,6 +100,9 @@ def resoudre(nom, palette, cote, vu=None):
         return arrets
     sys.exit(f'valeur non résolue pour {nom} : {v}')
 
+TONS = ['neutral', 'accent', 'success', 'warning', 'danger', 'info']
+
+# Ce qui ne dépend d'aucun ton.
 PAIRS = [
  ('texte courant / page',   'ink',         'bg',           4.5),
  ('texte courant / carte',  'ink',         'surface',      4.5),
@@ -108,17 +111,6 @@ PAIRS = [
  ('texte estompé / page',   'ink-muted',   'bg',           4.5),
  ('texte estompé / carte',  'ink-muted',   'surface',      4.5),
  ('entête de table',        'ink-soft',    'raised',       4.5),
- ('lien / page',            'accent',      'bg',           4.5),
- ('lien / carte',           'accent',      'surface',      4.5),
- ('bouton principal',       'ink-inverse', 'accent',       4.5),
- ('bouton supprimer',       'ink-inverse', 'danger',       4.5),
- ('bouton valider',         'ink-inverse', 'success',      4.5),
- ('étiquette accent',       'accent-ink',  'accent-soft',  4.5),
- ('étiquette succès',       'success-ink', 'success-soft', 4.5),
- ('étiquette attention',    'warning-ink', 'warning-soft', 4.5),
- ('étiquette échec',        'danger-ink',  'danger-soft',  4.5),
- ('étiquette information',  'info-ink',    'info-soft',    4.5),
- ("message d'erreur",       'danger',      'surface',      4.5),
  ('bord de champ / carte',  'line-control','surface',      3.0),
  ('bord de champ / page',   'line-control','bg',           3.0),
  ('bord de champ / relevé', 'line-control','raised',       3.0),
@@ -127,6 +119,20 @@ PAIRS = [
  # son seuil, parce qu'elle a renoncé aux fonds teintés — d'où la réserve.
  ('filet d\'étiquette',     'line',        'raised',       3.0, 'renforce'),
 ]
+
+# Ce que la grammaire permet de composer, pour chacun des six tons. Chaque ligne est une
+# combinaison qu'un écran peut afficher : plein, plein survolé, bordé ou discret sur une carte
+# puis sur la page, discret survolé, étiquette. Aucune n'est mesurée par estimation — ce sont
+# les jetons de la palette lue qui répondent.
+for ton in TONS:
+    PAIRS += [
+        (f'{ton} : plein',            f'on-{ton}',    ton,             4.5),
+        (f'{ton} : plein survolé',    f'on-{ton}',    f'{ton}-hover',  4.5),
+        (f'{ton} : trait / carte',    ton,            'surface',       4.5),
+        (f'{ton} : trait / page',     ton,            'bg',            4.5),
+        (f'{ton} : trait / teinté',   ton,            f'{ton}-soft',   4.5),
+        (f'{ton} : étiquette',        f'{ton}-ink',   f'{ton}-soft',   4.5),
+    ]
 
 # Sans attribut sur <html>, `color-scheme: light dark` laisse le système trancher : les deux
 # issues se mesurent. Chaque palette déclarée se mesure ensuite pour elle-même, du côté de

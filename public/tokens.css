@@ -9,6 +9,9 @@
  *
  * Une palette se change donc en réécrivant l'étage 2, sans toucher à un seul composant.
  *
+ * Ce qui n'est pas couleur suit la même règle : taille de texte, graisse, interligne, rayon,
+ * espacement, largeur de contenu, ordre d'empilement et durée sont des alias eux aussi.
+ *
  * `light-dark()` choisit entre les deux valeurs selon le `color-scheme` en vigueur. Le
  * sélecteur `:root` déclare `light dark` : sans attribut sur `<html>`, la préférence du système
  * tranche. `[data-theme]` fige l'un des deux et l'emporte alors sur le système.
@@ -29,6 +32,7 @@
     --app-indigo-700: #4338ca;
     --app-indigo-800: #3730a3;
     --app-indigo-900: #312e81;
+    --app-indigo-950: #1e1b4b;
 
     /* Les pas en 50 sont des intercalaires : la rampe d'origine n'offrait, entre deux de ses
        échelons, aucune valeur qui atteigne le contraste exigé sur tous les fonds. */
@@ -49,26 +53,37 @@
     --app-slate-900: #0f172a;
     --app-slate-950: #080d17;
 
+    --app-green-50: #ecfdf5;
     --app-green-100: #d1fae5;
+    --app-green-400: #34d399;
     --app-green-500: #10b981;
     --app-green-700: #047857;
+    --app-green-800: #065f46;
     --app-green-900: #022c22;
 
+    --app-amber-50: #fffbeb;
     --app-amber-100: #fef3c7;
+    --app-amber-400: #fbbf24;
     --app-amber-500: #f59e0b;
     --app-amber-700: #b45309;
+    --app-amber-750: #92400e;
+    --app-amber-800: #78350f;
     --app-amber-900: #451a03;
 
     --app-red-100: #fee2e2;
+    --app-red-300: #fca5a5;
     --app-red-400: #f87171;
     --app-red-500: #ef4444;
     --app-red-700: #b91c1c;
+    --app-red-800: #991b1b;
     --app-red-900: #450a0a;
 
     --app-blue-100: #dbeafe;
+    --app-blue-400: #60a5fa;
     --app-blue-500: #3b82f6;
     --app-blue-700: #1d4ed8;
-    --app-blue-900: #172554;
+    --app-blue-800: #1e40af;
+    --app-blue-950: #0c142e;
 
     /* ═══ Étage 2 — alias ══════════════════════════════════════════════════════════════ */
 
@@ -94,37 +109,94 @@
        qui lui permet de n'avoir qu'une seule valeur. */
     --app-line-control: var(--app-slate-450);
 
-    /* Accent : la couleur qui porte l'action principale et l'état actif. */
+    /*
+     * ─── Les six tons ─────────────────────────────────────────────────────────────────
+     *
+     * Un ton est une couleur qui porte un sens, et il se décline toujours en cinq jetons :
+     *
+     *   `--app-<ton>`        l'aplat, et le trait qui en tient lieu
+     *   `--app-<ton>-hover`  le même sous le pointeur
+     *   `--app-<ton>-soft`   le fond teinté, sur lequel un texte se pose
+     *   `--app-<ton>-ink`    le texte qui se pose sur ce fond teinté
+     *   `--app-on-<ton>`     le texte qui se pose sur l'aplat
+     *
+     * Les cinq se tiennent : `qa/contrast.py` mesure chaque paire qu'ils forment, sur chaque
+     * palette. Une palette qui déplace un ton déplace ses cinq jetons, ou aucun.
+     */
+
+    /* Neutre : le ton de ce qui n'en a pas. */
+    --app-neutral: light-dark(var(--app-slate-600), var(--app-slate-400));
+    --app-neutral-hover: light-dark(var(--app-slate-700), var(--app-slate-300));
+    --app-neutral-soft: var(--app-raised);
+    --app-neutral-ink: var(--app-ink-soft);
+    --app-on-neutral: var(--app-ink-inverse);
+
+    /* Accent : l'action principale et l'état actif. */
     --app-accent: light-dark(var(--app-indigo-600), var(--app-indigo-400));
     --app-accent-hover: light-dark(var(--app-indigo-700), var(--app-indigo-300));
-    --app-accent-soft: light-dark(var(--app-indigo-50), var(--app-indigo-900));
+    --app-accent-soft: light-dark(var(--app-indigo-50), var(--app-indigo-950));
     --app-accent-ink: light-dark(var(--app-indigo-800), var(--app-indigo-100));
+    --app-on-accent: var(--app-ink-inverse);
 
-    /* États. `-soft` est un fond, `-ink` le texte qui s'y pose. */
     --app-success: light-dark(var(--app-green-700), var(--app-green-500));
-    --app-success-soft: light-dark(var(--app-green-100), var(--app-green-900));
+    --app-success-hover: light-dark(var(--app-green-800), var(--app-green-400));
+    --app-success-soft: light-dark(var(--app-green-50), var(--app-green-900));
     --app-success-ink: light-dark(#064e3b, var(--app-green-100));
+    --app-on-success: var(--app-ink-inverse);
 
-    --app-warning: light-dark(var(--app-amber-700), var(--app-amber-500));
-    --app-warning-soft: light-dark(var(--app-amber-100), var(--app-amber-900));
+    --app-warning: light-dark(var(--app-amber-750), var(--app-amber-500));
+    --app-warning-hover: light-dark(var(--app-amber-800), var(--app-amber-400));
+    --app-warning-soft: light-dark(var(--app-amber-50), var(--app-amber-900));
     --app-warning-ink: light-dark(var(--app-amber-900), var(--app-amber-100));
+    --app-on-warning: var(--app-ink-inverse);
 
     --app-danger: light-dark(var(--app-red-700), var(--app-red-400));
+    --app-danger-hover: light-dark(var(--app-red-800), var(--app-red-300));
     --app-danger-soft: light-dark(var(--app-red-100), var(--app-red-900));
     --app-danger-ink: light-dark(#7f1d1d, var(--app-red-100));
+    --app-on-danger: var(--app-ink-inverse);
 
-    --app-info: light-dark(var(--app-blue-700), var(--app-blue-500));
-    --app-info-soft: light-dark(var(--app-blue-100), var(--app-blue-900));
+    --app-info: light-dark(var(--app-blue-700), var(--app-blue-400));
+    --app-info-hover: light-dark(var(--app-blue-800), var(--app-blue-500));
+    --app-info-soft: light-dark(var(--app-blue-100), var(--app-blue-950));
     --app-info-ink: light-dark(#1e3a8a, var(--app-blue-100));
+    --app-on-info: var(--app-ink-inverse);
 
     /* ═══ Hors couleur ═════════════════════════════════════════════════════════════════ */
 
     --app-font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --app-font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
-    /* Taille de base et soulignement des liens : deux réglages qu'une palette destinée à la
-       basse vision déplace, et qu'un composant ne doit donc pas écrire en dur. */
-    --app-font-size: 15px;
+    /* La taille de la racine. Toute autre taille s'exprime en `rem`, donc la suit : la relever
+       agrandit l'interface entière, et pas seulement le texte courant. Elle s'écrit elle-même
+       en `rem`, ce qui la fait partir de la taille que le lecteur a réglée dans son navigateur
+       — un réglage qu'une palette déplace, et qu'aucune ne remplace. */
+    --app-font-size: 1rem;
+
+    /* L'échelle des textes, du plus menu au titre de page. `--app-text` est le texte courant,
+       et les autres se lisent depuis lui. */
+    --app-text-xs: .75rem;
+    --app-text-sm: .8125rem;
+    --app-text: .9375rem;
+    --app-text-lg: 1.05rem;
+    --app-text-xl: 1.25rem;
+    --app-text-2xl: 1.6rem;
+
+    /* Les graisses. Les valeurs intermédiaires supposent une police à graisse variable ; une
+       police qui n'en a pas prend le poids déclaré le plus proche. */
+    --app-weight-medium: 550;
+    --app-weight-semibold: 600;
+    --app-weight-bold: 650;
+    --app-weight-heavy: 700;
+
+    /* Les interlignes : le texte suivi respire, un titre se resserre, et ce qui tient sur une
+       seule ligne — l'intérieur d'un bouton — n'a besoin d'aucune respiration. */
+    --app-leading: 1.55;
+    --app-leading-tight: 1.25;
+    --app-leading-none: 1.2;
+
+    /* Le soulignement des liens : un réglage qu'une palette destinée à la basse vision déplace,
+       et qu'un composant ne doit donc pas écrire en dur. */
     --app-link-decoration: none;
 
     /* Deux rayons, plus la pilule. Le rayon des petits éléments se déduit de celui des
@@ -133,8 +205,30 @@
     --app-radius-ui: calc(var(--app-radius) * 0.6);
     --app-radius-pill: 9999px;
 
-    /* Une seule gouttière, dont tout espacement est un multiple. */
+    /* La gouttière, dont tout espacement est un multiple : la réduire resserre l'interface
+       entière, sans qu'aucune règle soit reprise. C'est le réglage de densité. */
     --app-gap: 8px;
+
+    /* L'échelle des espacements. Un composant y prend ses écarts et ses marges intérieures ;
+       aucun n'écrit un multiple de son cru, faute de quoi le rythme cesse d'en être un. */
+    --app-space-2xs: calc(var(--app-gap) * .25);
+    --app-space-xs: calc(var(--app-gap) * .5);
+    --app-space-sm: var(--app-gap);
+    --app-space-md: calc(var(--app-gap) * 1.5);
+    --app-space-lg: calc(var(--app-gap) * 2);
+    --app-space-xl: calc(var(--app-gap) * 3);
+    --app-space-2xl: calc(var(--app-gap) * 4);
+    --app-space-3xl: calc(var(--app-gap) * 6);
+
+    /* La largeur au-delà de laquelle une ligne devient trop longue à suivre de l'œil. */
+    --app-content-width: 1120px;
+
+    /* La largeur du menu latéral, quand la charpente en porte un. */
+    --app-sidebar-width: 15rem;
+
+    /* Le halo de focus au clavier : le même partout, et la seule chose qui dise où l'on est. */
+    --app-focus-width: 2px;
+    --app-focus-offset: 2px;
 
     --app-shadow-sm: 0 1px 2px light-dark(rgba(15, 23, 42, .06), rgba(0, 0, 0, .4));
     --app-shadow: 0 1px 2px light-dark(rgba(15, 23, 42, .05), rgba(0, 0, 0, .3)),
@@ -147,8 +241,80 @@
     --app-backdrop: light-dark(rgb(15 23 42 / .45), rgb(0 0 0 / .6));
 
     --app-speed: .18s;
+    --app-speed-slow: .32s;
     --app-ease: cubic-bezier(.4, 0, .2, 1);
+
+    /* L'ordre d'empilement, déclaré une fois pour toutes : deux composants qui se recouvrent
+       se départagent ici, et non par un nombre écrit au hasard dans une règle. Une fenêtre
+       modale et un menu n'y figurent pas — le navigateur les place dans sa couche supérieure,
+       au-dessus de tout ce qui précède. Le lien d'évitement passe devant : c'est la seule
+       chose qui doive rester atteignable quoi qu'il arrive. */
+    --app-z-sticky: 100;
+    --app-z-dropdown: 200;
+    --app-z-skip: 300;
 }
+
+
+/*
+ * ─── Le pont entre l'attribut et les alias ─────────────────────────────────────────────
+ *
+ * `data-tone` nomme le sens ; ces blocs traduisent ce nom en cinq variables locales, et les
+ * composants ne connaissent qu'elles. C'est ce qui fait qu'un composant n'a qu'une règle pour
+ * les six tons au lieu de six, et qu'un ton de plus se déclarerait ici, sans reprendre aucun
+ * composant.
+ *
+ * Les variables se transmettent aux descendants, mais un composant ne les lit que s'il porte
+ * lui-même `data-tone` : une étiquette neutre posée dans un message d'échec reste neutre.
+ */
+
+[data-tone="neutral"] {
+    --app-tone: var(--app-neutral);
+    --app-tone-hover: var(--app-neutral-hover);
+    --app-tone-soft: var(--app-neutral-soft);
+    --app-tone-ink: var(--app-neutral-ink);
+    --app-tone-on: var(--app-on-neutral);
+}
+
+[data-tone="accent"] {
+    --app-tone: var(--app-accent);
+    --app-tone-hover: var(--app-accent-hover);
+    --app-tone-soft: var(--app-accent-soft);
+    --app-tone-ink: var(--app-accent-ink);
+    --app-tone-on: var(--app-on-accent);
+}
+
+[data-tone="success"] {
+    --app-tone: var(--app-success);
+    --app-tone-hover: var(--app-success-hover);
+    --app-tone-soft: var(--app-success-soft);
+    --app-tone-ink: var(--app-success-ink);
+    --app-tone-on: var(--app-on-success);
+}
+
+[data-tone="warning"] {
+    --app-tone: var(--app-warning);
+    --app-tone-hover: var(--app-warning-hover);
+    --app-tone-soft: var(--app-warning-soft);
+    --app-tone-ink: var(--app-warning-ink);
+    --app-tone-on: var(--app-on-warning);
+}
+
+[data-tone="danger"] {
+    --app-tone: var(--app-danger);
+    --app-tone-hover: var(--app-danger-hover);
+    --app-tone-soft: var(--app-danger-soft);
+    --app-tone-ink: var(--app-danger-ink);
+    --app-tone-on: var(--app-on-danger);
+}
+
+[data-tone="info"] {
+    --app-tone: var(--app-info);
+    --app-tone-hover: var(--app-info-hover);
+    --app-tone-soft: var(--app-info-soft);
+    --app-tone-ink: var(--app-info-ink);
+    --app-tone-on: var(--app-on-info);
+}
+
 
 /* Un choix explicite fige le schéma et l'emporte sur la préférence du système. */
 [data-theme="light"] {
@@ -184,5 +350,6 @@
 @media (prefers-reduced-motion: reduce) {
     :root {
         --app-speed: 0s;
+        --app-speed-slow: 0s;
     }
 }

@@ -1,8 +1,8 @@
 # arnaudmoncondhuy/design-system
 
-Des jetons en **deux étages**, un catalogue de composants, et des palettes qui se déclarent
-sans qu'aucun composant ne les connaisse — dont une à contraste renforcé, destinée à la basse
-vision.
+Des jetons en **deux étages**, un catalogue de composants gouverné par **trois attributs**, et
+des palettes qui se déclarent sans qu'aucun composant ne les connaisse — dont une à contraste
+renforcé, destinée à la basse vision.
 
 ```css
 /* Étage 1 — les échelles. Aucun composant ne les cite. */
@@ -15,19 +15,30 @@ vision.
 Une palette se change donc en réécrivant l'étage 2. Ajouter « contraste renforcé » a coûté
 quarante lignes et n'a touché aucun composant.
 
+Ce qui n'est pas couleur suit la même règle : taille de texte, graisse, interligne, rayon,
+espacement, largeur de contenu, ordre d'empilement et durée sont des alias eux aussi.
+
 ## Ce que le paquet garantit
 
 - **Aucun composant ne connaît de couleur.** Une règle qui écrit un `#rrggbb` est une faute que
   la relecture attrape ; tout passe par un alias.
+- **Aucun composant n'écrit de taille absolue.** Toutes se mesurent sur la racine, dont
+  `--app-font-size` fixe la taille — relever ce seul jeton agrandit l'interface entière, et pas
+  seulement le texte courant. Comme il s'écrit lui-même en `rem`, il part de ce que le lecteur a
+  réglé dans son navigateur au lieu de l'écraser.
 - **Chaque paire texte/fond atteint son seuil**, mesuré et non estimé. `qa/contrast.py` lit les
   feuilles qu'on lui donne, y découvre les palettes, résout les alias et les `light-dark()`, et
-  compare les 22 paires sur chacune. Une palette vise 4,5:1, ou le seuil qu'elle se donne par
-  `--app-theme-ratio`. Un fond en dégradé porte du texte sur toute sa longueur : chacun de ses
-  arrêts est mesuré, et c'est le pire qui décide. Pour y joindre les palettes d'une application :
+  compare les 47 paires sur chacune — dont les six combinaisons que chaque ton rend possibles.
+  Une palette vise 4,5:1, ou le seuil qu'elle se donne par `--app-theme-ratio`. Un fond en
+  dégradé porte du texte sur toute sa longueur : chacun de ses arrêts est mesuré, et c'est le
+  pire qui décide. Pour y joindre les palettes d'une application :
 
   ```
   python3 qa/contrast.py public/tokens.css public/themes/*.css …/assets/styles/themes/*.css
   ```
+- **Un composant coloré n'a qu'une règle pour les six tons.** `data-tone` est traduit en
+  variables locales par `tokens.css`, et c'est tout ce qu'un composant cite. Un ton de plus se
+  déclarerait là-bas, sans reprendre une ligne du catalogue.
 - **Le thème est rendu par le serveur**, donc sans clignotement au chargement et sans script
   bloquant dans le `<head>`.
 - **Sans attribut, la préférence du système s'applique** : `color-scheme: light dark` suffit,
@@ -61,6 +72,10 @@ Il reçoit alors la charpente, le lien d'évitement, le menu de choix de palette
 feuilles — servies depuis `bundles/designsystem/`, l'espace qu'AssetMapper donne au dossier
 `public/` d'un bundle.
 
+Les blocs qu'elle remplit : `title`, `javascripts`, `brand`, `nav`, `header_actions`,
+`sidebar`, `body`, `footer`. `stylesheets` appelle `parent()` pour garder les feuilles du
+paquet.
+
 **Il n'y a rien d'autre à écrire.** Le paquet ajoute lui-même son dossier de comportements à
 ceux que StimulusBundle balaye : ses contrôleurs s'enregistrent sous le nom de leur fichier, et
 l'application n'a ni entrée d'`importmap` à poser, ni contrôleur à enregistrer.
@@ -73,8 +88,9 @@ php bin/console design-system:doctor
 
 Il cherche ce qui ne lève jamais : un bloc de palette qui ne déplace rien, une palette dont
 personne ne donne le libellé et qui s'affiche sous sa clé, un jeton mal orthographié dont la
-propriété tombe en silence, une couleur écrite en dur qui échappe aux palettes, un cookie relu
-sous un nom que personne n'écrit. Il rend un code de sortie, donc il a sa place dans une
+propriété tombe en silence, une couleur écrite en dur qui échappe aux palettes, une clé de
+traduction déclarée deux fois dont la première est effacée sans bruit, un cookie relu sous un
+nom que personne n'écrit. Il rend un code de sortie, donc il a sa place dans une
 routine qualité. Il commence par dire quelles feuilles il a lues et quelles palettes il y a
 trouvées.
 
@@ -137,19 +153,69 @@ services:
 
 ## Le catalogue
 
-Une classe déclare le composant, un attribut décline ce qu'il devient : `data-variant` et
-`data-tone` portent l'intention, `data-size` la taille, et les attributs standards — `disabled`,
-`aria-busy`, `aria-current` — portent l'état.
+Une classe déclare le composant, et **trois attributs** le déclinent. Chacun répond à une seule
+question, et deux d'entre eux se combinent librement :
+
+| Attribut | Question | Valeurs |
+| --- | --- | --- |
+| `data-tone` | quel sens ? | `neutral` `accent` `success` `warning` `danger` `info` |
+| `data-variant` | quelle insistance ? | plein par défaut, `subtle` bordé, `ghost` sans fond |
+| `data-size` | quelle taille ? | `sm`, `lg` |
 
 ```html
-<button class="app-btn" data-variant="danger" data-size="sm">Supprimer</button>
+<button class="app-btn" data-tone="danger">Supprimer</button>
+<button class="app-btn" data-tone="danger" data-variant="ghost" data-size="sm">Supprimer</button>
 <span class="app-badge" data-tone="success">Terminé</span>
-<p class="app-alert" data-tone="warning" role="status">…</p>
+<span class="app-badge" data-tone="success" data-variant="solid">Terminé</span>
 ```
 
-Boutons, cartes, étiquettes, formulaires, tableaux, messages, fenêtre modale, onglets, avatar,
-grilles. Le préfixe `app-` se renomme d'un remplacement, dans `public/` et dans
+Un bouton a donc les six tons dans les trois formes, sans qu'une seule de ces dix-huit
+combinaisons soit écrite : `tokens.css` traduit `data-tone` en cinq variables locales, et le
+composant ne cite qu'elles.
+
+```css
+.app-btn[data-tone]        { background: var(--app-tone); color: var(--app-tone-on); }
+.app-btn[data-tone]:hover  { background: var(--app-tone-hover); }
+```
+
+L'état, lui, ne s'invente pas : il passe par les attributs que le navigateur et les lecteurs
+d'écran connaissent déjà — `disabled`, `aria-busy`, `aria-current`, `aria-sort`,
+`aria-selected`, `aria-disabled`. **Un état porté par un attribut ARIA n'est pas redit
+ailleurs** : la teinte ne fait que doubler ce qu'un lecteur d'écran lit déjà.
+
+Boutons, cartes, étiquettes, formulaires, champs accolés, cases à cocher, boutons radio,
+interrupteurs, contrôle segmenté, tableaux triables, messages, chiffres, barre de progression,
+listes de définitions, état vide, fil d'étapes, fenêtre modale, menu déroulant, accordéon,
+navigation principale et latérale, fil d'Ariane, onglets, pagination, avatar, grilles. Le
+préfixe `app-` se renomme d'un remplacement, dans `public/` et dans
 `templates/layout.html.twig`.
+
+Trois composants demandent au navigateur ce qu'il sait déjà faire, plutôt que de le réécrire :
+la fenêtre modale est un `<dialog>` ouvert par `showModal()`, l'accordéon et le menu déroulant
+sont des `<details>`. Le comportement `menu` n'ajoute au second que ce que l'élément ne donne
+pas — la fermeture par Échap et par un clic au-dehors.
+
+### La densité
+
+Tout espacement est un multiple de `--app-gap`, par une échelle de huit paliers
+(`--app-space-2xs` … `--app-space-3xl`). Resserrer l'interface entière tient donc en une ligne,
+et aucune règle du catalogue n'est reprise :
+
+```css
+:root { --app-gap: 6px; }
+```
+
+### La charpente
+
+Le squelette donne un en-tête, un contenu et un pied. Remplir le bloc `sidebar` **suffit** à le
+faire passer en deux colonnes — la colonne apparaît à partir de 60 caractères de large, et se
+range au-dessus du contenu en deçà. Il n'y a aucun attribut à poser en plus.
+
+```twig
+{% block sidebar %}
+    <nav class="app-nav" data-orientation="vertical" aria-label="Menu">…</nav>
+{% endblock %}
+```
 
 ## Ajouter une palette
 
@@ -171,6 +237,11 @@ ni configuration, ni traduction, ni même un `<link>` à poser.
 Le fichier est **lu, servi et proposé du seul fait d'être là** : le menu l'offre au rechargement
 suivant, le gabarit pose son `<link>`, le cookie l'accepte, `design-system:doctor` la compte, et
 `qa/contrast.py` la mesure. Le retirer la retire partout.
+
+**Un ton se déplace en entier, ou pas du tout.** Ses cinq jetons — `--app-<ton>`, `-hover`,
+`-soft`, `-ink` et `--app-on-<ton>` — forment les six combinaisons que le catalogue peut
+afficher, et `qa/contrast.py` les mesure toutes : n'en redéclarer qu'une partie laisse les
+autres sur les valeurs d'origine, et c'est le mélange des deux qui tombe sous le seuil.
 
 Deux propriétés ne peignent rien et ne servent qu'à déclarer la palette :
 

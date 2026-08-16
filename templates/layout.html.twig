@@ -6,9 +6,15 @@
     de tokens.css qui laisse la préférence du système trancher — sans script, donc sans que la
     page s'affiche d'abord dans la mauvaise palette.
 
-    Les blocs qu'une application remplit : `title`, `javascripts`, `brand`, `header_actions`,
-    `body`, `footer`. `stylesheets` appelle `parent()` pour garder les feuilles du paquet.
+    Les blocs qu'une application remplit : `title`, `javascripts`, `brand`, `nav`,
+    `header_actions`, `sidebar`, `body`, `footer`. `stylesheets` appelle `parent()` pour garder
+    les feuilles du paquet.
+
+    Remplir `sidebar` suffit à faire passer la charpente en deux colonnes : le bloc est rendu
+    d'abord, et c'est son contenu — vide ou non — qui décide de la disposition. Il n'y a donc
+    aucun attribut à poser en plus.
 #}
+{% set sidebar %}{% block sidebar %}{% endblock %}{% endset %}
 <!DOCTYPE html>
 <html lang="{% block lang %}fr{% endblock %}"{% if current_theme() %} data-theme="{{ current_theme() }}"{% endif %}>
     <head>
@@ -39,10 +45,11 @@
     <body>
         <a class="app-skip-link" href="#app-content">{{ 'skip.content'|trans({}, 'design_system') }}</a>
 
-        <div class="app-shell">
+        <div class="app-shell"{% if sidebar|trim %} data-layout="sidebar"{% endif %}>
             {% block header %}
                 <header class="app-header">
                     {% block brand %}<span class="app-header-brand">{% block brand_label %}{% endblock %}</span>{% endblock %}
+                    {% block nav %}{% endblock %}
                     <span class="app-header-spacer"></span>
                     {% block header_actions %}{% endblock %}
                     {% block theme_picker %}
@@ -64,6 +71,10 @@
                     {% endblock %}
                 </header>
             {% endblock %}
+
+            {% if sidebar|trim %}
+                <aside class="app-sidebar">{{ sidebar }}</aside>
+            {% endif %}
 
             {# `tabindex="-1"` rend la cible atteignable par le lien d'évitement : sans lui, le
                focus ne suit pas l'ancre et seul le défilement se produit. #}
