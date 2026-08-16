@@ -46,6 +46,11 @@
             <a class="app-nav-item" href="#{{ anchor }}">{{ label|trans({}, 'design_system') }}</a>
         {% endfor %}
     </nav>
+    {# Ce qui reste au bas du menu quand les liens défilent au-dessus. #}
+    <div class="app-sidebar-footer app-row">
+        <span class="app-avatar">AM</span>
+        <span class="app-muted">{{ 'styleguide.sidebar.footer'|trans({}, 'design_system') }}</span>
+    </div>
 {% endblock %}
 
 {% block body %}

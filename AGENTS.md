@@ -112,3 +112,18 @@ Le découpage tient à ce que chaque fichier reçoit du navigateur, et non à de
 **Un jeton n'existe que s'il est employé, et une règle mesurée que si elle se voit à l'écran.**
 Un alias que personne ne cite et une paire de contraste qu'aucun composant ne peint donnent
 l'illusion d'une garantie sans en être une : ils ne s'ajoutent pas.
+
+## Deux pièges, payés une fois chacun
+
+**Une fonctionnalité récente du navigateur ne porte jamais la mise en forme.** Ce qui est
+récent est inégalement répandu, et une règle accrochée à un sélecteur d'état jeune —
+`:popover-open` et ses semblables — tombe *en entier* là où il manque : il ne reste alors que
+ce que le navigateur dessine par défaut, c'est-à-dire n'importe quoi. Quand un attribut à nous
+dit déjà la même chose, c'est lui qui porte la forme. Ce qu'on demande au navigateur, ce sont
+des comportements qu'il sait tenir depuis longtemps — `<dialog>` et `showModal()`, `<details>`
+— et jamais sans savoir ce qu'il advient de la page quand ils manquent.
+
+**`base.css` est lue avant `components.css`.** Une règle de la charpente qui doit l'emporter
+sur un composant — cacher un bouton qui porte `app-btn`, par exemple — perd à égalité de
+spécificité, et l'ordre des feuilles est contre elle. Elle passe donc par son parent, et se
+donne une classe de plus.

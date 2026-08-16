@@ -226,6 +226,11 @@
     /* La largeur du menu latéral, quand la charpente en porte un. */
     --app-sidebar-width: 15rem;
 
+    /* La hauteur des barres du haut. Une seule valeur pour les deux : la marque, à gauche, et
+       le contexte de la page, à droite, se posent alors sur la même ligne, et leurs filets se
+       rejoignent. Une application qui met plus haut qu'elle dans son en-tête la relève ici. */
+    --app-topbar-height: 3.5rem;
+
     /* Le halo de focus au clavier : le même partout, et la seule chose qui dise où l'on est. */
     --app-focus-width: 2px;
     --app-focus-offset: 2px;

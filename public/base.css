@@ -125,8 +125,15 @@ hr {
 }
 
 /*
- * La charpente à menu latéral. Sur un écran étroit le menu se range sous l'en-tête, et la
- * colonne n'apparaît qu'à partir du moment où elle laisse au contenu de quoi respirer.
+ * La charpente à menu latéral.
+ *
+ * Le menu prend le coin haut gauche et toute la hauteur ; l'en-tête commence à sa droite et ne
+ * porte plus que le contexte de la page. C'est la disposition des interfaces dont le menu est
+ * la navigation principale, et elle a l'avantage de n'avoir aucun décalage à calculer : les
+ * deux barres partent du haut de la fenêtre.
+ *
+ * Sur un écran étroit il n'y a plus de colonne : le menu se replie derrière son bouton, en tête
+ * de page, et l'en-tête passe dessous.
  *
  * `minmax(0, 1fr)` et non `1fr` : sans le zéro, la colonne du contenu prendrait pour largeur
  * minimale celle de son contenu, et une table large pousserait le menu hors de l'écran.
@@ -135,8 +142,8 @@ hr {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
-        "header"
         "sidebar"
+        "header"
         "main"
         "footer";
 }
@@ -161,22 +168,171 @@ hr {
     .app-shell[data-layout="sidebar"] {
         grid-template-columns: var(--app-sidebar-width) minmax(0, 1fr);
         grid-template-areas:
-            "header header"
+            "sidebar header"
             "sidebar main"
             "sidebar footer";
     }
+
+    /* Les deux barres tiennent en place, chacune dans sa colonne. */
+    .app-shell[data-layout="sidebar"] > .app-header {
+        position: sticky;
+        top: 0;
+        z-index: var(--app-z-sticky);
+    }
 }
 
+/*
+ * Le menu latéral.
+ *
+ * Il se replie derrière un bouton là où il n'y a pas de côté, et reste déplié partout ailleurs.
+ * Le repli est posé par le comportement `sidebar` et non par cette feuille : sans script, le
+ * menu reste visible et utilisable, ce qui est le pire cas acceptable.
+ */
 .app-sidebar {
-    padding: var(--app-space-lg);
+    display: flex;
+    flex-direction: column;
     background: var(--app-surface);
     border-bottom: 1px solid var(--app-line);
 }
 
+/* La marque et le bouton de repli, sur une ligne : c'est ce qui reste du menu une fois replié.
+   Sa hauteur est celle de l'en-tête, pour que marque et contexte de page se posent sur la même
+   ligne. Le filet, lui, n'est là que sur un écran étroit, où le menu passe au-dessus du
+   contenu. */
+.app-sidebar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--app-space-sm);
+    min-height: var(--app-topbar-height);
+    padding: var(--app-space-sm) var(--app-space-lg);
+    border-bottom: 1px solid var(--app-line);
+}
+
+/* L'affichage n'est pas déclaré ici : un dialogue fermé est caché par le navigateur, et une
+   règle d'auteur — fût-elle moins spécifique — l'emporterait sur la sienne. Ce sont les deux
+   règles qui suivent, chacune dans son état, qui l'affichent. */
+.app-sidebar-panel {
+    flex-direction: column;
+    gap: var(--app-space-md);
+    min-height: 0;
+    padding: var(--app-space-lg);
+}
+
+/*
+ * Le panneau est un `<dialog>`. Hors tiroir il n'est pas ouvert, et c'est la règle ci-dessous
+ * qui l'affiche : il reste donc une colonne ordinaire, que rien n'annonce comme une fenêtre.
+ * En tiroir, `showModal()` lui donne la couche supérieure, le voile, le piège au clavier et la
+ * fermeture par Échap — tout ce qu'un tiroir demande, et que le navigateur sait déjà faire.
+ *
+ * Sans script, aucun `data-drawer` n'est posé : le panneau s'affiche, dans le flux, à toute
+ * largeur. C'est le pire cas acceptable.
+ */
+.app-sidebar:not([data-drawer]) > .app-sidebar-panel {
+    display: flex;
+    position: static;
+    inset: auto;
+    width: auto;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+}
+
+/*
+ * Le tiroir sort du côté de son bouton — le pouce y est déjà — et passe par-dessus le contenu
+ * plutôt que de le pousser : un menu de quinze entrées repousserait la page de plusieurs
+ * écrans, et on perdrait ce qu'on était en train de lire.
+ */
+.app-sidebar[data-drawer] > .app-sidebar-panel[open] {
+    display: flex;
+    position: fixed;
+    inset: 0 0 0 auto;
+    width: min(20rem, 85vw);
+    max-width: none;
+    height: auto;
+    max-height: none;
+    margin: 0;
+    border: 0;
+    border-left: 1px solid var(--app-line);
+    background: var(--app-surface);
+    color: inherit;
+    box-shadow: var(--app-shadow-pop);
+    overflow-y: auto;
+}
+
+/* Le bouton de fermeture n'existe que dans le tiroir : ailleurs le panneau ne se ferme pas.
+   Le sélecteur passe par le parent, comme celui du bouton d'ouverture : le bouton porte aussi
+   `app-btn`, qui déclare son affichage dans la feuille suivante et l'emporterait à égalité. */
+.app-sidebar-panel > .app-sidebar-close {
+    display: none;
+}
+
+.app-sidebar[data-drawer] > .app-sidebar-panel > .app-sidebar-close {
+    display: inline-flex;
+    align-self: flex-end;
+}
+
+.app-sidebar-panel::backdrop {
+    background: var(--app-backdrop);
+}
+
+/* En tiroir, il ne reste du menu qu'une ligne : elle se colle en haut plutôt que de partir avec
+   la page, sans quoi il faudrait remonter pour rouvrir. */
+.app-shell > .app-sidebar[data-drawer] {
+    position: sticky;
+    top: 0;
+    z-index: var(--app-z-sticky);
+}
+
+/* Ce qui doit rester au bas du menu plutôt que suivre les liens : un compte, une version, une
+   porte de sortie. La marge automatique l'y pousse dès que le menu a de la hauteur à prendre. */
+.app-sidebar-footer {
+    margin-top: auto;
+    padding-top: var(--app-space-md);
+    border-top: 1px solid var(--app-line);
+}
+
 @media (min-width: 60em) {
-    .app-sidebar {
+    /* Le bouton ne sert que là où le menu se replie. Le sélecteur passe par le parent : le
+       bouton porte aussi `app-btn`, qui déclare son affichage dans la feuille suivante. */
+    .app-sidebar > .app-sidebar-head > .app-sidebar-toggle {
+        display: none;
+    }
+
+    /* Toute la hauteur de l'écran, depuis le haut : les liens restent sous les yeux quand la
+       page descend. `align-self` empêche la colonne de s'étirer sur toute la grille, sans quoi
+       il n'y aurait rien à coller. Seule la charpente est concernée — un menu latéral montré
+       en exemple ailleurs reste une boîte ordinaire. */
+    /* Le filet du menu court du haut en bas sans rien qui le coupe : la colonne est ce qu'on
+       lit d'abord, et la barre du haut n'est que celle de la colonne de droite. Rien ne passe
+       donc sous la marque, qui appartient au menu et non à cette barre. */
+    .app-shell > .app-sidebar {
+        position: sticky;
+        top: 0;
+        align-self: start;
+        height: 100dvh;
         border-bottom: 0;
         border-right: 1px solid var(--app-line);
+    }
+
+    .app-shell > .app-sidebar > .app-sidebar-head {
+        border-bottom: 0;
+    }
+
+    .app-shell > .app-sidebar > .app-sidebar-panel {
+        flex: 1;
+        min-height: 0;
+    }
+
+    /* Ce sont les liens qui défilent, et non le menu entier : ce qu'on a collé en bas y reste,
+       même quand la liste est plus haute que l'écran. */
+    .app-shell > .app-sidebar > .app-sidebar-panel > .app-nav {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
     }
 }
 
@@ -184,7 +340,8 @@ hr {
     display: flex;
     align-items: center;
     gap: var(--app-space-lg);
-    padding: var(--app-space-md) var(--app-space-xl);
+    min-height: var(--app-topbar-height);
+    padding: var(--app-space-sm) var(--app-space-xl);
     background: var(--app-surface);
     border-bottom: 1px solid var(--app-line);
 }
@@ -196,13 +353,13 @@ hr {
     z-index: var(--app-z-sticky);
 }
 
-.app-header-brand {
+.app-brand {
     font-weight: var(--app-weight-heavy);
     font-size: var(--app-text-lg);
     color: var(--app-ink);
 }
 
-.app-header-brand:hover {
+.app-brand:hover {
     text-decoration: none;
 }
 

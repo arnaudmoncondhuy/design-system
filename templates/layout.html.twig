@@ -13,8 +13,13 @@
     Remplir `sidebar` suffit à faire passer la charpente en deux colonnes : le bloc est rendu
     d'abord, et c'est son contenu — vide ou non — qui décide de la disposition. Il n'y a donc
     aucun attribut à poser en plus.
+
+    La marque va là où se trouve le coin haut gauche : en tête du menu latéral s'il y en a un,
+    dans l'en-tête sinon. Le bloc `brand` est défini une seule fois, et rendu à l'endroit qui
+    convient.
 #}
 {% set sidebar %}{% block sidebar %}{% endblock %}{% endset %}
+{% set has_sidebar = sidebar|trim is not empty %}
 <!DOCTYPE html>
 <html lang="{% block lang %}fr{% endblock %}"{% if current_theme() %} data-theme="{{ current_theme() }}"{% endif %}>
     <head>
@@ -45,15 +50,51 @@
     <body>
         <a class="app-skip-link" href="#app-content">{{ 'skip.content'|trans({}, 'design_system') }}</a>
 
-        <div class="app-shell"{% if sidebar|trim %} data-layout="sidebar"{% endif %}>
+        <div class="app-shell"{% if has_sidebar %} data-layout="sidebar"{% endif %}>
+            {% if has_sidebar %}
+                {# Le bouton n'apparaît que sur un écran étroit, où le comportement `sidebar`
+                   replie le panneau. `aria-controls` et `aria-expanded` disent au lecteur
+                   d'écran ce que le bouton commande, et dans quel état il se trouve. #}
+                <aside class="app-sidebar" data-controller="sidebar">
+                    <div class="app-sidebar-head">
+                        {{ block('brand') }}
+                        <button type="button" class="app-btn app-sidebar-toggle" data-variant="subtle" data-icon
+                                data-sidebar-target="toggle" data-action="sidebar#toggle"
+                                aria-expanded="true" aria-controls="app-sidebar-panel">
+                            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor"
+                                      stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span class="app-sr-only">{{ 'sidebar.menu'|trans({}, 'design_system') }}</span>
+                        </button>
+                    </div>
+                    <dialog class="app-sidebar-panel" id="app-sidebar-panel" data-sidebar-target="panel">
+                        {# En tiroir seulement : le voile recouvre le bouton qui a ouvert, il faut
+                           donc de quoi refermer à l'intérieur. C'est aussi ce que `showModal()`
+                           met sous le focus en ouvrant. #}
+                        <button type="button" class="app-btn app-sidebar-close" data-variant="ghost" data-icon
+                                data-action="sidebar#toggle">
+                            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor"
+                                      stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span class="app-sr-only">{{ 'action.close'|trans({}, 'design_system') }}</span>
+                        </button>
+                        {{ sidebar }}
+                    </dialog>
+                </aside>
+            {% endif %}
+
             {% block header %}
                 <header class="app-header">
-                    {% block brand %}<span class="app-header-brand">{% block brand_label %}{% endblock %}</span>{% endblock %}
+                    {% if not has_sidebar %}
+                        {% block brand %}<span class="app-brand">{% block brand_label %}{% endblock %}</span>{% endblock %}
+                    {% endif %}
                     {% block nav %}{% endblock %}
                     <span class="app-header-spacer"></span>
                     {% block header_actions %}{% endblock %}
                     {% block theme_picker %}
-                        <div class="app-field app-theme-picker" data-controller="theme">
+                        <div class="app-field app-theme-picker" data-size="sm" data-controller="theme">
                             <label class="app-sr-only" for="app-theme">{{ 'theme.label'|trans({}, 'design_system') }}</label>
                             <select id="app-theme" data-action="theme#change">
                                 {# L'absence de choix ouvre la liste : elle ne vient d'aucune feuille. #}
@@ -71,10 +112,6 @@
                     {% endblock %}
                 </header>
             {% endblock %}
-
-            {% if sidebar|trim %}
-                <aside class="app-sidebar">{{ sidebar }}</aside>
-            {% endif %}
 
             {# `tabindex="-1"` rend la cible atteignable par le lien d'évitement : sans lui, le
                focus ne suit pas l'ancre et seul le défilement se produit. #}

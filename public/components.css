@@ -300,6 +300,12 @@ fieldset.app-field {
     cursor: not-allowed;
 }
 
+/* Un champ compact : ce qui se pose dans une barre, où la hauteur est comptée. */
+.app-field[data-size="sm"] :is(select, textarea, input:not([type="checkbox"], [type="radio"])) {
+    padding: var(--app-space-sm) var(--app-space-md);
+    font-size: var(--app-text-sm);
+}
+
 .app-field-hint {
     font-size: var(--app-text-sm);
     color: var(--app-ink-muted);
@@ -1010,15 +1016,6 @@ fieldset.app-field {
     flex-wrap: nowrap;
 }
 
-/* Sur un écran étroit, il n'y a plus de côté : le menu latéral se range en bandeau sous
-   l'en-tête. Une colonne y coûterait un écran entier de liens avant le premier mot du
-   contenu. La largeur est celle où la charpente rend sa seconde colonne. */
-@media (max-width: 59.99em) {
-    .app-sidebar .app-nav[data-orientation="vertical"] {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-}
 
 .app-nav-item {
     padding: var(--app-space-xs) var(--app-space-md);

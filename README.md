@@ -205,16 +205,52 @@ et aucune règle du catalogue n'est reprise :
 :root { --app-gap: 6px; }
 ```
 
-### La charpente
+### La charpente et son menu latéral
 
 Le squelette donne un en-tête, un contenu et un pied. Remplir le bloc `sidebar` **suffit** à le
-faire passer en deux colonnes — la colonne apparaît à partir de 60 caractères de large, et se
-range au-dessus du contenu en deçà. Il n'y a aucun attribut à poser en plus.
+faire passer en deux colonnes : il n'y a aucun attribut à poser en plus.
 
 ```twig
 {% block sidebar %}
     <nav class="app-nav" data-orientation="vertical" aria-label="Menu">…</nav>
+
+    {# Ce qui reste au bas du menu, quoi qu'il arrive au-dessus. #}
+    <div class="app-sidebar-footer">…</div>
 {% endblock %}
+```
+
+**Le menu prend le coin haut gauche**, et toute la hauteur ; l'en-tête commence à sa droite et
+ne porte plus que le contexte de la page. C'est la disposition des interfaces dont le menu est
+la navigation principale — et la marque suit le coin : elle se rend en tête du menu quand il y
+en a un, dans l'en-tête sinon. Le bloc `brand` est le même dans les deux cas.
+
+Le reste se comporte comme on l'attend, sans qu'une ligne soit à écrire pour cela :
+
+- **les deux barres tiennent en place** quand la page descend, chacune dans sa colonne. Ni
+  décalage à calculer ni hauteur à mesurer : toutes deux partent du haut de la fenêtre ;
+- **ce sont les liens qui défilent**, pas le menu entier : `app-sidebar-footer` reste en bas
+  même quand la liste est plus haute que l'écran ;
+- **il devient un tiroir** à partir du moment où l'écran n'a plus de côté. Il ne reste alors
+  que la marque et son bouton, collés en haut de page ; le tiroir sort du côté du bouton et
+  passe par-dessus le contenu au lieu de le pousser — un menu de quinze entrées repousserait
+  sinon la page de plusieurs écrans. Il se ferme par Échap, par un clic au-dehors, et par la
+  croix qui prend la place du bouton.
+
+Le tiroir est un `<dialog>` ouvert par `showModal()` : la couche supérieure, le voile et le
+piège au clavier viennent du navigateur. Hors tiroir, ce dialogue n'est pas ouvert et c'est la
+feuille qui l'affiche — une colonne ordinaire, que rien n'annonce comme une fenêtre. Le passage
+de l'un à l'autre est le fait du comportement `sidebar`, avec une conséquence voulue : **sans
+script, le panneau reste affiché dans le flux**, visible et utilisable.
+
+Pour la disposition inverse — une barre du haut sur toute la largeur, le menu en dessous — il
+suffit de réécrire la grille de la charpente :
+
+```css
+@media (min-width: 60em) {
+    .app-shell[data-layout="sidebar"] {
+        grid-template-areas: "header header" "sidebar main" "sidebar footer";
+    }
+}
 ```
 
 ## Ajouter une palette
