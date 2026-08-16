@@ -79,6 +79,7 @@ final class DoctorCommand extends Command
             'Palettes' => $this->palettes(),
             'Jetons' => $this->tokens(),
             'Couleurs en dur' => $this->hardcodedColors(),
+            'Traductions' => $this->duplicatedKeys(),
             'Cookie' => $this->cookie(),
             'Installation' => $installation['troubles'],
         ];
@@ -163,23 +164,81 @@ final class DoctorCommand extends Command
      */
     private function translated(string $value): bool
     {
-        $directories = [$this->bundleDirectory().'/translations', $this->projectDirectory.'/translations'];
+        foreach ($this->translationFiles() as $file) {
+            $content = (string) file_get_contents($file);
 
-        foreach ($directories as $directory) {
-            foreach (glob($directory.'/design_system.*.y*ml') ?: [] as $file) {
-                $content = (string) file_get_contents($file);
+            if (1 !== preg_match('/^theme:\R((?:[ \t]+\S.*\R?)+)/m', $content, $block)) {
+                continue;
+            }
 
-                if (1 !== preg_match('/^theme:\R((?:[ \t]+\S.*\R?)+)/m', $content, $block)) {
-                    continue;
-                }
-
-                if (1 === preg_match('/^\s+'.preg_quote($value, '/').'\s*:/m', $block[1])) {
-                    return true;
-                }
+            if (1 === preg_match('/^\s+'.preg_quote($value, '/').'\s*:/m', $block[1])) {
+                return true;
             }
         }
 
         return false;
+    }
+
+    /** @return list<string> */
+    private function translationFiles(): array
+    {
+        $files = [];
+
+        foreach ([$this->bundleDirectory().'/translations', $this->projectDirectory.'/translations'] as $directory) {
+            $files = [...$files, ...glob($directory.'/design_system.*.y*ml') ?: []];
+        }
+
+        return $files;
+    }
+
+    /**
+     * Une clé déclarée deux fois sous le même parent ne lève rien : le catalogue ne garde que la
+     * dernière, et le libellé de la première disparaît de l'écran sans que personne l'ait retiré.
+     *
+     * La lecture est textuelle et non structurelle, faute de quoi il n'y aurait plus rien à
+     * voir : un analyseur YAML rend le catalogue déjà écrasé.
+     *
+     * @return list<string>
+     */
+    private function duplicatedKeys(): array
+    {
+        $troubles = [];
+
+        foreach ($this->translationFiles() as $file) {
+            $seen = [];
+            $parents = [];
+
+            foreach (explode("\n", (string) file_get_contents($file)) as $number => $line) {
+                if (1 !== preg_match('/^([ ]*)([\w-]+)\s*:/', $line, $matches)) {
+                    continue;
+                }
+
+                $depth = \strlen($matches[1]);
+
+                foreach (array_keys($parents) as $known) {
+                    if ($known >= $depth) {
+                        unset($parents[$known]);
+                    }
+                }
+
+                $key = implode('.', [...$parents, $matches[2]]);
+                $parents[$depth] = $matches[2];
+
+                if (isset($seen[$key])) {
+                    $troubles[] = \sprintf(
+                        '%s:%d déclare « %s » une seconde fois — la ligne %d est effacée en silence.',
+                        basename($file),
+                        $number + 1,
+                        $key,
+                        $seen[$key],
+                    );
+                }
+
+                $seen[$key] = $number + 1;
+            }
+        }
+
+        return $troubles;
     }
 
     /**
