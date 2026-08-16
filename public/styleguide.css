@@ -27,7 +27,9 @@
    qu'aucune combinaison ne passe inaperçue quand on change de palette. */
 .app-sg-matrix {
     display: grid;
-    grid-template-columns: auto repeat(3, minmax(0, 1fr));
+    /* Les colonnes ne descendent pas sous leur contenu : c'est le cadre qui défile quand la
+       place manque, et non les boutons qui se recouvrent. */
+    grid-template-columns: auto repeat(3, minmax(min-content, 1fr));
     gap: var(--app-space-md);
     align-items: center;
     padding: var(--app-space-xl);
@@ -94,18 +96,25 @@
     grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
 }
 
-/* Une charpente en réduction : ce que le menu latéral donne, sans hériter de la page. */
+/* Une charpente en réduction : ce que le menu latéral donne, sans hériter de la page. Elle se
+   replie comme la vraie, et à la même largeur. */
 .app-sg-shell {
     display: grid;
-    grid-template-columns: 12rem minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     border: 1px solid var(--app-line);
     border-radius: var(--app-radius);
     overflow: hidden;
 }
 
-.app-sg-shell > .app-sidebar {
-    border-bottom: 0;
-    border-right: 1px solid var(--app-line);
+@media (min-width: 60em) {
+    .app-sg-shell {
+        grid-template-columns: 12rem minmax(0, 1fr);
+    }
+
+    .app-sg-shell > .app-sidebar {
+        border-bottom: 0;
+        border-right: 1px solid var(--app-line);
+    }
 }
 
 .app-sg-shell-main {

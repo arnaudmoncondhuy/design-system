@@ -545,11 +545,20 @@ fieldset.app-field {
 
 /* Le tri se porte sur l'entête : `aria-sort` dit dans quel sens la colonne est rangée, et la
    flèche ne fait que le montrer. Elle reste muette pour un lecteur d'écran, qui lit déjà
-   l'attribut. */
+   l'attribut.
+
+   Le lien prend toute la cellule, dont il reçoit la marge intérieure : c'est l'entête entière
+   qui devient la cible, et non la seule hauteur d'une ligne de texte — trop mince pour un
+   doigt. */
+.app-table th:has(.app-table-sort) {
+    padding: 0;
+}
+
 .app-table-sort {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: var(--app-space-xs);
+    padding: var(--app-space-md) var(--app-space-lg);
     color: inherit;
     text-decoration: none;
 }
@@ -1001,6 +1010,16 @@ fieldset.app-field {
     flex-wrap: nowrap;
 }
 
+/* Sur un écran étroit, il n'y a plus de côté : le menu latéral se range en bandeau sous
+   l'en-tête. Une colonne y coûterait un écran entier de liens avant le premier mot du
+   contenu. La largeur est celle où la charpente rend sa seconde colonne. */
+@media (max-width: 59.99em) {
+    .app-sidebar .app-nav[data-orientation="vertical"] {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}
+
 .app-nav-item {
     padding: var(--app-space-xs) var(--app-space-md);
     border-radius: var(--app-radius-ui);
@@ -1043,6 +1062,12 @@ fieldset.app-field {
     gap: var(--app-space-sm);
 }
 
+/* La hauteur d'une ligne de texte ne fait pas une cible pour un doigt : le lien en gagne de
+   quoi être visé sans que le fil s'épaississe à l'œil. */
+.app-breadcrumb a {
+    padding-block: var(--app-space-xs);
+}
+
 .app-breadcrumb li + li::before {
     content: "/" / "";
     color: var(--app-ink-muted);
@@ -1055,10 +1080,15 @@ fieldset.app-field {
 
 /* ═══ Onglets ══════════════════════════════════════════════════════════════════════════ */
 
+/* Les onglets défilent dans leur propre bande quand ils ne tiennent plus : ils gardent alors
+   leur hauteur, là où un repli les ferait grandir de deux lignes et casserait l'alignement du
+   trait. Le filet est une ombre intérieure et non une bordure — une bordure demanderait aux
+   onglets de la recouvrir d'une marge négative, que le défilement découperait. */
 .app-tabs {
     display: flex;
     gap: var(--app-space-xs);
-    border-bottom: 1px solid var(--app-line);
+    overflow-x: auto;
+    box-shadow: inset 0 -1px var(--app-line);
 }
 
 .app-tabs-item {
@@ -1066,8 +1096,8 @@ fieldset.app-field {
     border-bottom: 2px solid transparent;
     font-size: var(--app-text);
     font-weight: var(--app-weight-medium);
+    white-space: nowrap;
     color: var(--app-ink-muted);
-    margin-bottom: -1px;
 }
 
 .app-tabs-item:hover {
