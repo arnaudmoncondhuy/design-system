@@ -10,9 +10,9 @@ use Twig\Environment;
 /**
  * La vitrine : chaque composant du catalogue, dans chacun de ses états, sur une seule page.
  *
- * Elle n'est joignable que si l'application importe `config/routes.php` du paquet, et il lui
- * revient de ne le faire qu'en développement — une page qui montre tout le catalogue n'a rien
- * à faire sur un site en production.
+ * Elle n'est joignable que si l'application la monte, et c'est à elle d'en régler l'accès :
+ * réservée au développement, ou ouverte aux seules personnes qui construisent les écrans. Une
+ * page qui montre tout le catalogue n'a rien à faire devant le premier venu.
  */
 final readonly class StyleguideController
 {

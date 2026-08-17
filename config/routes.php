@@ -8,9 +8,10 @@ use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 /**
  * La route de la vitrine.
  *
- * Elle ne s'ajoute pas d'elle-même : l'application l'importe, et décide sous quel chemin et
- * dans quel environnement. La déclaration recommandée, dans `config/routes/dev/`, la réserve
- * au développement :
+ * Elle ne s'ajoute pas d'elle-même : l'application l'importe, et décide sous quel chemin, dans
+ * quel environnement et pour qui. La déclaration ci-dessous, dans `config/routes/dev/`, la
+ * réserve au développement ; une application qui veut l'ouvrir au-delà lui préfère son propre
+ * contrôleur, placé derrière un droit :
  *
  *     design_system:
  *         resource: '@DesignSystemBundle/config/routes.php'

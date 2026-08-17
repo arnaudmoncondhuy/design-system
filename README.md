@@ -110,8 +110,8 @@ effacerait le travail de quelqu'un. Ce qu'il ne peut pas faire, il le dicte.
 ## La vitrine
 
 Le catalogue complet, chaque composant dans chacun de ses états, sur une page. Elle n'est pas
-joignable tant que l'application ne l'a pas montée — à réserver au développement. Le plus
-simple est de laisser le docteur l'écrire :
+joignable tant que l'application ne l'a pas montée — à réserver au développement, ou à placer
+derrière un droit. Le plus simple est de laisser le docteur l'écrire :
 
 ```
 php bin/console design-system:doctor --fix
