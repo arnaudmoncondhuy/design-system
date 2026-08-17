@@ -44,8 +44,8 @@ body {
    toute la largeur offerte quelle que soit sa taille propre. */
 img {
     max-width: 100%;
+    width: fit-content;
     height: auto;
-    align-self: start;
 }
 
 h1,
