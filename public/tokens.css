@@ -223,6 +223,9 @@
     /* La largeur au-delà de laquelle une ligne devient trop longue à suivre de l'œil. */
     --app-content-width: 1120px;
 
+    /* La largeur d'une page qui ne porte qu'une chose : un formulaire, un message, une étape. */
+    --app-content-narrow: 26rem;
+
     /* La largeur du menu latéral, quand la charpente en porte un. */
     --app-sidebar-width: 15rem;
 

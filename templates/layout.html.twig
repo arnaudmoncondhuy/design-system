@@ -14,12 +14,17 @@
     d'abord, et c'est son contenu — vide ou non — qui décide de la disposition. Il n'y a donc
     aucun attribut à poser en plus.
 
+    Une page qui ne porte qu'une chose — une connexion, une erreur — remplit `layout` avec
+    `centered` ; un menu latéral, s'il y en a un, l'emporte sur ce choix.
+
     La marque va là où se trouve le coin haut gauche : en tête du menu latéral s'il y en a un,
     dans l'en-tête sinon. Le bloc `brand` est défini une seule fois, et rendu à l'endroit qui
     convient.
 #}
 {% set sidebar %}{% block sidebar %}{% endblock %}{% endset %}
 {% set has_sidebar = sidebar|trim is not empty %}
+{% set layout %}{% block layout %}{% endblock %}{% endset %}
+{% set layout = has_sidebar ? 'sidebar' : layout|trim %}
 <!DOCTYPE html>
 <html lang="{% block lang %}fr{% endblock %}"{% if current_theme() %} data-theme="{{ current_theme() }}"{% endif %}>
     <head>
@@ -50,7 +55,7 @@
     <body>
         <a class="app-skip-link" href="#app-content">{{ 'skip.content'|trans({}, 'design_system') }}</a>
 
-        <div class="app-shell"{% if has_sidebar %} data-layout="sidebar"{% endif %}>
+        <div class="app-shell"{% if layout %} data-layout="{{ layout }}"{% endif %}>
             {% if has_sidebar %}
                 {# Le bouton n'apparaît que sur un écran étroit, où le comportement `sidebar`
                    replie le panneau. `aria-controls` et `aria-expanded` disent au lecteur

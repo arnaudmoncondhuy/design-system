@@ -73,8 +73,8 @@ feuilles — servies depuis `bundles/designsystem/`, l'espace qu'AssetMapper don
 `public/` d'un bundle.
 
 Les blocs qu'elle remplit : `title`, `javascripts`, `brand`, `nav`, `header_actions`,
-`sidebar`, `body`, `footer`. `stylesheets` appelle `parent()` pour garder les feuilles du
-paquet.
+`sidebar`, `layout`, `body`, `footer`. `stylesheets` appelle `parent()` pour garder les feuilles
+du paquet.
 
 Les messages éphémères sont rendus par le squelette, et **leur type devient un ton** : `error`
 est teinté en `danger`, `notice` en `info`, et ce qui n'est pas dans cette liste passe tel quel
@@ -258,6 +258,20 @@ suffit de réécrire la grille de la charpente :
     }
 }
 ```
+
+### La page seule
+
+Une connexion, une page d'erreur, une étape isolée : la page ne porte qu'une chose, et une
+colonne pleine largeur pour un formulaire de deux champs se lit mal. Remplir le bloc `layout`
+avec `centered` pose le contenu au milieu de l'écran, dans une colonne étroite :
+
+```twig
+{% block layout %}centered{% endblock %}
+```
+
+L'en-tête reste au-dessus — le choix de palette doit rester joignable avant même d'entrer. Un
+menu latéral, s'il y en a un, l'emporte sur ce choix. La largeur de la colonne est le jeton
+`--app-content-narrow`.
 
 ## Ajouter une palette
 

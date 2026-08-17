@@ -189,6 +189,20 @@ hr {
 }
 
 /*
+ * La charpente d'une page seule : une connexion, une page d'erreur, une étape isolée.
+ *
+ * Le contenu s'y pose au milieu de l'écran, dans une colonne étroite — il n'y a rien d'autre à
+ * regarder, et une colonne pleine largeur pour un formulaire de deux champs se lit mal. L'en-tête
+ * reste au-dessus : le choix de palette doit rester joignable avant même d'entrer.
+ */
+.app-shell[data-layout="centered"] > .app-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: var(--app-content-narrow);
+}
+
+/*
  * Le menu latéral.
  *
  * Il se replie derrière un bouton là où il n'y a pas de côté, et reste déplié partout ailleurs.
