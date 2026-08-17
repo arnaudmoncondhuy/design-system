@@ -44,6 +44,7 @@ styleguide:
         forms: Formulaires
         checks: Cases et choix
         tables: Tableaux
+        lists: Listes
         alerts: Messages
         detail: Fiche et liste vide
         steps: Fil d'étapes
@@ -62,6 +63,12 @@ styleguide:
         hint: l'étiquette entoure la commande, et devient une zone de clic
     tables:
         hint: le tri, la ligne retenue et les actions passent par des attributs standards
+    list:
+        hint: ce qu'une table devient quand elle n'a qu'une colonne à montrer
+        one: Clé bleue
+        two: Mon téléphone
+        three: Cet ordinateur
+        meta: Enregistrée le 12/03/2026 — jamais utilisée
     layout:
         hint: remplir le bloc « sidebar » suffit à passer en deux colonnes
         example: Exemple de menu latéral

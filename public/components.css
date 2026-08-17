@@ -597,6 +597,54 @@ fieldset.app-field {
     opacity: 1;
 }
 
+/* ═══ Listes ═══════════════════════════════════════════════════════════════════════════ */
+
+/*
+ * Une liste d'objets : chacun sur sa ligne, et au bout ce qu'il y a à en faire. C'est ce qu'une
+ * table devient quand elle n'a qu'une colonne à montrer — un en-tête à répéter n'y apprendrait
+ * rien, et sur un écran étroit l'action passe sous ce qu'elle vise au lieu de le comprimer.
+ *
+ * `list-style` est retiré : la puce dit « énumération » une seconde fois, après le filet qui
+ * sépare déjà les lignes. Le `<ul>`, lui, reste — c'est lui qui annonce le nombre d'objets à un
+ * lecteur d'écran.
+ */
+.app-list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.app-list-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--app-space-md);
+    padding: var(--app-space-md) 0;
+    border-bottom: 1px solid var(--app-line);
+}
+
+/* Le premier et le dernier ne creusent pas l'écart que la carte a déjà posé. */
+.app-list-item:first-child {
+    padding-top: 0;
+}
+
+.app-list-item:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.app-list-title {
+    font-weight: var(--app-weight-medium);
+}
+
+.app-list-meta {
+    font-size: var(--app-text-sm);
+    color: var(--app-ink-muted);
+}
+
 /* ═══ Alertes ══════════════════════════════════════════════════════════════════════════ */
 
 .app-alert {

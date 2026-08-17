@@ -21,6 +21,7 @@
     forms: 'styleguide.section.forms',
     checks: 'styleguide.section.checks',
     tables: 'styleguide.section.tables',
+    lists: 'styleguide.section.lists',
     alerts: 'styleguide.section.alerts',
     detail: 'styleguide.section.detail',
     steps: 'styleguide.section.steps',
@@ -418,6 +419,28 @@
                         <li><a class="app-pagination-item" href="#">{{ 'styleguide.pagination.next'|trans({}, 'design_system') }}</a></li>
                     </ol>
                 </nav>
+            </div>
+        </section>
+
+        <section class="app-sg-section" id="lists">
+            <div class="app-section-title">
+                <h2>{{ 'styleguide.section.lists'|trans({}, 'design_system') }}</h2>
+                <span class="app-muted">{{ 'styleguide.list.hint'|trans({}, 'design_system') }}</span>
+            </div>
+            <div class="app-card">
+                <ul class="app-list">
+                    {% for entry in ['one', 'two', 'three'] %}
+                        <li class="app-list-item">
+                            <div>
+                                <p class="app-list-title">{{ ('styleguide.list.' ~ entry)|trans({}, 'design_system') }}</p>
+                                <p class="app-list-meta">{{ 'styleguide.list.meta'|trans({}, 'design_system') }}</p>
+                            </div>
+                            <button type="button" class="app-btn" data-variant="subtle" data-tone="danger" data-size="sm">
+                                {{ 'action.delete'|trans({}, 'design_system') }}
+                            </button>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
         </section>
 

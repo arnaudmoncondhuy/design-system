@@ -196,7 +196,8 @@ combien de caractères il porte : `<input size="6">` prend alors la largeur de c
 et un code à six chiffres cesse de ressembler à un champ qui en attendrait trente.
 
 Boutons, cartes, étiquettes, formulaires, champs accolés, cases à cocher, boutons radio,
-interrupteurs, contrôle segmenté, tableaux triables, messages, chiffres, barre de progression,
+interrupteurs, contrôle segmenté, tableaux triables, listes d'objets avec leur action,
+messages, chiffres, barre de progression,
 listes de définitions, état vide, fil d'étapes, fenêtre modale, menu déroulant, accordéon,
 navigation principale et latérale, fil d'Ariane, onglets, pagination, avatar, grilles. Le
 préfixe `app-` se renomme d'un remplacement, dans `public/` et dans
