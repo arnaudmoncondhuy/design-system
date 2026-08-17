@@ -28,6 +28,7 @@
     navigation: 'styleguide.section.navigation',
     layout: 'styleguide.section.layout',
     disclosure: 'styleguide.section.disclosure',
+    topbar: 'styleguide.section.topbar',
     modal: 'styleguide.section.modal',
 } %}
 
@@ -572,6 +573,96 @@
                     <details class="app-accordion" name="sg-accordion">
                         <summary>{{ 'styleguide.accordion.two'|trans({}, 'design_system') }}</summary>
                         <div class="app-accordion-body">{{ 'styleguide.accordion.body'|trans({}, 'design_system') }}</div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <section class="app-sg-section" id="topbar">
+            <div class="app-section-title">
+                <h2>{{ 'styleguide.section.topbar'|trans({}, 'design_system') }}</h2>
+                <span class="app-muted">{{ 'styleguide.topbar.hint'|trans({}, 'design_system') }}</span>
+            </div>
+            <div class="app-sg-demo">
+                <div class="app-row">
+                    {# Une liste qui peut être longue : la tête ne défile pas, le corps si. La
+                       pastille dit qu'il y a du nouveau, sans dire combien. #}
+                    <details class="app-menu" data-controller="menu">
+                        <summary class="app-btn" data-variant="subtle" data-icon
+                                 aria-label="{{ 'styleguide.topbar.notifications'|trans({}, 'design_system') }}">
+                            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0"
+                                      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span class="app-dot" data-tone="danger"></span>
+                        </summary>
+                        <div class="app-menu-panel">
+                            <div class="app-menu-head">
+                                <strong>{{ 'styleguide.topbar.notifications'|trans({}, 'design_system') }}</strong>
+                                <button type="button" class="app-btn" data-variant="ghost" data-size="sm">
+                                    {{ 'styleguide.topbar.mark_all'|trans({}, 'design_system') }}
+                                </button>
+                            </div>
+                            <div class="app-menu-body">
+                                <ul class="app-list">
+                                    {% for entry in ['one', 'two', 'three'] %}
+                                        <li class="app-list-item">
+                                            <div>
+                                                <p class="app-list-title">{{ ('styleguide.list.' ~ entry)|trans({}, 'design_system') }}</p>
+                                                <p class="app-list-meta">{{ 'styleguide.topbar.note'|trans({}, 'design_system') }}</p>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </details>
+
+                    {# Une grille plutôt qu'une liste : le panneau prend la largeur qu'il faut. #}
+                    <details class="app-menu" data-controller="menu">
+                        <summary class="app-btn" data-variant="subtle" data-icon
+                                 aria-label="{{ 'styleguide.topbar.apps'|trans({}, 'design_system') }}">
+                            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"
+                                      fill="none" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </summary>
+                        <div class="app-menu-panel" data-size="lg">
+                            <div class="app-grid" data-cols="4">
+                                {% for entry in ['overview', 'files', 'settings'] %}
+                                    <a class="app-menu-item" href="#topbar">{{ ('styleguide.nav.' ~ entry)|trans({}, 'design_system') }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </details>
+
+                    {# Le compte : une tête qui dit qui est connecté, puis ce qu'on peut faire. #}
+                    <details class="app-menu" data-controller="menu">
+                        <summary class="app-avatar" aria-label="{{ 'styleguide.topbar.account'|trans({}, 'design_system') }}">AM</summary>
+                        <div class="app-menu-panel">
+                            <div class="app-menu-head">
+                                <span class="app-avatar">AM</span>
+                                <div>
+                                    <p class="app-list-title">{{ 'styleguide.topbar.account'|trans({}, 'design_system') }}</p>
+                                    <p class="app-list-meta">{{ 'styleguide.topbar.email'|trans({}, 'design_system') }}</p>
+                                </div>
+                            </div>
+                            <a class="app-menu-item" href="#topbar">{{ 'styleguide.menu.profile'|trans({}, 'design_system') }}</a>
+                            <a class="app-menu-item" href="#topbar">{{ 'styleguide.menu.settings'|trans({}, 'design_system') }}</a>
+                            <hr class="app-menu-separator">
+                            <button type="button" class="app-menu-item" data-tone="danger">{{ 'styleguide.menu.logout'|trans({}, 'design_system') }}</button>
+                        </div>
+                    </details>
+
+                    {# Le même menu, mais posé en bas d'un écran : il ouvre vers le haut. #}
+                    <details class="app-menu" data-controller="menu" data-drop="up" data-align="start">
+                        <summary class="app-btn" data-variant="subtle" data-size="sm">
+                            {{ 'styleguide.topbar.upward'|trans({}, 'design_system') }}
+                        </summary>
+                        <div class="app-menu-panel">
+                            <a class="app-menu-item" href="#topbar">{{ 'styleguide.menu.profile'|trans({}, 'design_system') }}</a>
+                            <button type="button" class="app-menu-item" data-tone="danger">{{ 'styleguide.menu.logout'|trans({}, 'design_system') }}</button>
+                        </div>
                     </details>
                 </div>
             </div>

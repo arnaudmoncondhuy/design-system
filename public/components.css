@@ -937,7 +937,9 @@ fieldset.app-field {
     position: relative;
 }
 
+/* Positionné pour qu'une pastille puisse s'accrocher à son coin. */
 .app-menu > summary {
+    position: relative;
     list-style: none;
 }
 
@@ -945,6 +947,8 @@ fieldset.app-field {
     display: none;
 }
 
+/* La largeur ne dépasse jamais celle de l'écran : un panneau large sur un téléphone déborderait
+   du côté où il s'accroche, hors d'atteinte. */
 .app-menu-panel {
     position: absolute;
     top: calc(100% + var(--app-space-xs));
@@ -953,11 +957,28 @@ fieldset.app-field {
     display: flex;
     flex-direction: column;
     min-width: 12rem;
+    max-width: calc(100vw - var(--app-space-lg) * 2);
     padding: var(--app-space-xs);
     background: var(--app-surface);
     border: 1px solid var(--app-line);
     border-radius: var(--app-radius-ui);
     box-shadow: var(--app-shadow-pop);
+}
+
+/* Un panneau qui montre une grille plutôt qu'une liste : il lui faut la largeur de plusieurs
+   colonnes, que douze rem ne donnent pas. */
+.app-menu-panel[data-size="lg"] {
+    min-width: 22rem;
+}
+
+/*
+ * Un menu qui vit en bas de l'écran — le compte, au pied d'un menu latéral — ouvre son panneau
+ * vers le haut. Vers le bas, il tomberait sous le bord de la fenêtre, ou hors du tiroir qui le
+ * porte, et personne ne le verrait.
+ */
+.app-menu[data-drop="up"] .app-menu-panel {
+    top: auto;
+    bottom: calc(100% + var(--app-space-xs));
 }
 
 /* Le panneau s'ouvre vers la droite quand le bouton est à gauche de l'écran. */
@@ -999,6 +1020,51 @@ fieldset.app-field {
 
 .app-menu-separator {
     margin: var(--app-space-xs) 0;
+}
+
+/*
+ * La tête d'un panneau : qui est connecté, ou de quoi la liste parle et ce qu'on peut en faire
+ * en bloc. Elle ne défile pas avec le corps — c'est ce qui la distingue d'une entrée.
+ */
+.app-menu-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--app-space-md);
+    padding: var(--app-space-md);
+    border-bottom: 1px solid var(--app-line);
+}
+
+/*
+ * Le corps d'un panneau, quand ce qu'il porte peut être long : trente notifications pousseraient
+ * sinon le panneau bien au-delà de l'écran. La hauteur se règle par `--app-menu-height` sur
+ * l'instance, et se mesure en `rem` : elle suit la taille de texte du lecteur.
+ */
+.app-menu-body {
+    display: flex;
+    flex-direction: column;
+    max-height: var(--app-menu-height, 18rem);
+    overflow-y: auto;
+}
+
+/*
+ * La pastille d'un déclencheur : elle dit qu'il y a du nouveau, pas combien. Le compte, quand il
+ * compte, s'écrit dans une étiquette. Le halo la détache du fond sur lequel elle se pose, quelle
+ * que soit la palette.
+ */
+.app-dot {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: .55rem;
+    height: .55rem;
+    border-radius: var(--app-radius-pill);
+    background: var(--app-accent);
+    box-shadow: 0 0 0 2px var(--app-surface);
+}
+
+.app-dot[data-tone] {
+    background: var(--app-tone);
 }
 
 /* ═══ Titres de section ════════════════════════════════════════════════════════════════ */

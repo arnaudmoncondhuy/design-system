@@ -51,6 +51,7 @@ styleguide:
         navigation: Navigation
         layout: Charpente
         disclosure: Menu et accordéon
+        topbar: Barre du haut
         modal: Fenêtre modale
 
     tokens:
@@ -75,6 +76,15 @@ styleguide:
         body: Le contenu prend la colonne qui reste. Sous 60 caractères de large, le menu repasse au-dessus.
     disclosure:
         hint: deux emplois du même élément, que le navigateur ouvre et ferme lui-même
+    topbar:
+        hint: trois panneaux, un seul mécanisme — seul leur contenu change
+        notifications: Notifications
+        mark_all: Tout marquer comme lu
+        note: Il y a deux heures
+        apps: Applications
+        account: Mon compte
+        email: arnaud@exemple.fr
+        upward: Menu qui ouvre vers le haut
 
     typography:
         hint: aucun composant n'écrit une taille ni une graisse

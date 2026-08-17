@@ -266,6 +266,48 @@ suffit de réécrire la grille de la charpente :
 }
 ```
 
+### Les menus de la barre du haut
+
+Un menu de compte, une liste de notifications, un lanceur d'applications : **trois contenus, un
+seul mécanisme**. Le déclencheur est un bouton ou un avatar, l'ouverture vient du `<details>`, et
+le comportement `menu` ajoute la fermeture par Échap et par un clic au-dehors.
+
+```twig
+<details class="app-menu" data-controller="menu">
+    <summary class="app-avatar">AM</summary>
+    <div class="app-menu-panel">
+        <div class="app-menu-head">…</div>   {# qui est connecté, ou de quoi la liste parle #}
+        <div class="app-menu-body">…</div>   {# ce qui peut être long, et défile #}
+        <a class="app-menu-item" href="…">…</a>
+        <hr class="app-menu-separator">
+        <button type="button" class="app-menu-item" data-tone="danger">Se déconnecter</button>
+    </div>
+</details>
+```
+
+Ce que le panneau sait faire, et qu'il ne faut pas réécrire :
+
+- **la tête ne défile pas**, le corps si — sa hauteur se règle par `--app-menu-height` ;
+- **`data-size="lg"`** lui donne la largeur d'une grille plutôt que celle d'une liste, et sa
+  largeur ne dépasse jamais celle de l'écran ;
+- **`data-drop="up"`** l'ouvre vers le haut. C'est ce qu'il faut à un menu de compte posé au bas
+  d'un menu latéral : vers le bas, il tomberait sous le bord de la fenêtre ;
+- **`data-align="start"`** l'ouvre vers la droite, quand le déclencheur est à gauche ;
+- **`app-dot`** sur le déclencheur dit qu'il y a du nouveau, sans dire combien. Le compte, quand
+  il compte, s'écrit dans un `app-badge`.
+
+Le choix de palette se rend par défaut dans la barre. Pour le poser dans son propre menu de
+compte, une application vide son emplacement et appelle le contrôle où elle veut :
+
+```twig
+{% block theme_picker %}{% endblock %}
+{# … puis, dans le panneau : #}
+{{ block('theme_control') }}
+```
+
+Ce qui reste à l'application : quels liens, quelles notifications, quel bonjour, quelles icônes.
+Le paquet donne le cadre, pas le contenu.
+
 ### La page seule
 
 Une connexion, une page d'erreur, une étape isolée : la page ne porte qu'une chose, et une
