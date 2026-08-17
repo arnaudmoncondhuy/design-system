@@ -98,22 +98,29 @@
                     {% block nav %}{% endblock %}
                     <span class="app-header-spacer"></span>
                     {% block header_actions %}{% endblock %}
+                    {#
+                        L'emplacement du choix de palette et le choix lui-même sont deux blocs :
+                        une application qui le veut ailleurs — au bas de son menu de compte —
+                        vide `theme_picker` et appelle `block('theme_control')` où elle veut.
+                    #}
                     {% block theme_picker %}
-                        <div class="app-field app-theme-picker" data-size="sm" data-controller="theme">
-                            <label class="app-sr-only" for="app-theme">{{ 'theme.label'|trans({}, 'design_system') }}</label>
-                            <select id="app-theme" data-action="theme#change">
-                                {# L'absence de choix ouvre la liste : elle ne vient d'aucune feuille. #}
-                                <option value=""{{ current_theme() ? '' : ' selected' }}>
-                                    {{ 'theme.system'|trans({}, 'design_system') }}
-                                </option>
-                                {% for palette in available_themes() %}
-                                    {# Le libellé vient de la feuille quand elle en déclare un ; sinon de la traduction. #}
-                                    <option value="{{ palette.value }}"{{ current_theme() == palette.value ? ' selected' : '' }}>
-                                        {{ palette.label ?? ('theme.' ~ palette.value)|trans({}, 'design_system') }}
+                        {% block theme_control %}
+                            <div class="app-field app-theme-picker" data-size="sm" data-controller="theme">
+                                <label class="app-sr-only" for="app-theme">{{ 'theme.label'|trans({}, 'design_system') }}</label>
+                                <select id="app-theme" data-action="theme#change">
+                                    {# L'absence de choix ouvre la liste : elle ne vient d'aucune feuille. #}
+                                    <option value=""{{ current_theme() ? '' : ' selected' }}>
+                                        {{ 'theme.system'|trans({}, 'design_system') }}
                                     </option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                                    {% for palette in available_themes() %}
+                                        {# Le libellé vient de la feuille quand elle en déclare un ; sinon de la traduction. #}
+                                        <option value="{{ palette.value }}"{{ current_theme() == palette.value ? ' selected' : '' }}>
+                                            {{ palette.label ?? ('theme.' ~ palette.value)|trans({}, 'design_system') }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        {% endblock %}
                     {% endblock %}
                 </header>
             {% endblock %}
