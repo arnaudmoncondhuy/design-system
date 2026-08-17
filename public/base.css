@@ -12,6 +12,14 @@
     box-sizing: border-box;
 }
 
+/* `hidden` cache, quoi que porte l'élément. Presque tous les composants déclarent leur `display`,
+   et une déclaration d'auteur l'emporte sur le `display: none` que le navigateur attache à
+   l'attribut : sans cette exception, un composant caché par le HTML resterait à l'écran. Elle est
+   forcée parce que la feuille des composants est lue après celle-ci, et gagnerait à égalité. */
+[hidden] {
+    display: none !important;
+}
+
 /* La taille se pose sur la racine, et non sur `body` : c'est elle que `rem` mesure, donc la
    seule qui entraîne l'interface entière quand une palette la relève. */
 html {

@@ -39,6 +39,8 @@ espacement, largeur de contenu, ordre d'empilement et durée sont des alias eux 
 - **Un composant coloré n'a qu'une règle pour les six tons.** `data-tone` est traduit en
   variables locales par `tokens.css`, et c'est tout ce qu'un composant cite. Un ton de plus se
   déclarerait là-bas, sans reprendre une ligne du catalogue.
+- **`hidden` cache, quoi que porte l'élément.** L'attribut du HTML l'emporte sur le `display` que
+  déclare un composant, sans quoi une alerte ou une carte cachée par le HTML resterait à l'écran.
 - **Le thème est rendu par le serveur**, donc sans clignotement au chargement et sans script
   bloquant dans le `<head>`.
 - **Sans attribut, la préférence du système s'applique** : `color-scheme: light dark` suffit,
