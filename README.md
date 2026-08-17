@@ -76,6 +76,12 @@ Les blocs qu'elle remplit : `title`, `javascripts`, `brand`, `nav`, `header_acti
 `sidebar`, `body`, `footer`. `stylesheets` appelle `parent()` pour garder les feuilles du
 paquet.
 
+Les messages éphémères sont rendus par le squelette, et **leur type devient un ton** : `error`
+est teinté en `danger`, `notice` en `info`, et ce qui n'est pas dans cette liste passe tel quel
+— un ton ajouté reste donc joignable depuis `addFlash()`. Le message traverse le catalogue de
+traduction, si bien qu'une clé y devient sa phrase et qu'une phrase déjà écrite en ressort
+intacte.
+
 **Il n'y a rien d'autre à écrire.** Le paquet ajoute lui-même son dossier de comportements à
 ceux que StimulusBundle balaye : ses contrôleurs s'enregistrent sous le nom de leur fichier, et
 l'application n'a ni entrée d'`importmap` à poser, ni contrôleur à enregistrer.

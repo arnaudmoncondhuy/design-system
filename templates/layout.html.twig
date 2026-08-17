@@ -116,12 +116,22 @@
             {# `tabindex="-1"` rend la cible atteignable par le lien d'évitement : sans lui, le
                focus ne suit pas l'ancre et seul le défilement se produit. #}
             <main class="app-main" id="app-content" tabindex="-1">
+                {#
+                    Le type d'un message éphémère n'est pas un ton : Symfony dit « error » et
+                    « notice », que `data-tone` ne connaît pas, et une valeur inconnue laisse
+                    l'alerte sans fond ni teinte sans qu'aucune erreur ne le dise. Ce qui n'est
+                    pas traduit ici passe tel quel : un ton ajouté reste joignable.
+
+                    Le message traverse le catalogue de traduction, qui rend intacte une phrase
+                    qui n'y figure pas.
+                #}
                 {% block flashes %}
                     {% if app.flashes is not empty %}
+                        {% set tones = {'error': 'danger', 'notice': 'info'} %}
                         <div class="app-flashes">
-                            {% for tone, messages in app.flashes %}
+                            {% for type, messages in app.flashes %}
                                 {% for message in messages %}
-                                    <p class="app-alert" data-tone="{{ tone }}" role="status">{{ message }}</p>
+                                    <p class="app-alert" data-tone="{{ tones[type] ?? type }}" role="status">{{ message|trans }}</p>
                                 {% endfor %}
                             {% endfor %}
                         </div>
