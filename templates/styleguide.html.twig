@@ -14,6 +14,10 @@
 {% set sections = {
     tokens: 'styleguide.section.tokens',
     typography: 'styleguide.section.typography',
+    spacing: 'styleguide.section.spacing',
+    shapes: 'styleguide.section.shapes',
+    motion: 'styleguide.section.motion',
+    measures: 'styleguide.section.measures',
     buttons: 'styleguide.section.buttons',
     badges: 'styleguide.section.badges',
     cards: 'styleguide.section.cards',
@@ -69,7 +73,7 @@
             </div>
             <div class="app-stack">
                 <div class="app-sg-palette">
-                    {% for token in ['app-bg', 'app-surface', 'app-raised', 'app-hover', 'app-ink', 'app-ink-soft', 'app-ink-muted', 'app-line', 'app-line-strong', 'app-line-control'] %}
+                    {% for token in ['app-bg', 'app-surface', 'app-raised', 'app-hover', 'app-ink', 'app-ink-soft', 'app-ink-muted', 'app-ink-inverse', 'app-line', 'app-line-strong', 'app-line-control', 'app-backdrop'] %}
                         <span class="app-sg-swatch" style="--app-sg-color: var(--{{ token }})">--{{ token }}</span>
                     {% endfor %}
                 </div>
@@ -105,6 +109,119 @@
                     'app-weight-heavy': 'styleguide.weight.heavy',
                 } %}
                     <p class="app-sg-type" style="font-weight: var(--{{ token }})">
+                        <span>{{ label|trans({}, 'design_system') }}</span>
+                        <code>--{{ token }}</code>
+                    </p>
+                {% endfor %}
+                {% for token, label in {
+                    'app-font': 'styleguide.font.sans',
+                    'app-font-mono': 'styleguide.font.mono',
+                } %}
+                    <p class="app-sg-type" style="font-family: var(--{{ token }})">
+                        <span>{{ label|trans({}, 'design_system') }}</span>
+                        <code>--{{ token }}</code>
+                    </p>
+                {% endfor %}
+                {# L'exemple porte l'interligne qu'il nomme : il lui faut donc deux lignes pour
+                   que l'écart se voie. #}
+                {% for token, label in {
+                    'app-leading': 'styleguide.leading.normal',
+                    'app-leading-tight': 'styleguide.leading.tight',
+                    'app-leading-none': 'styleguide.leading.none',
+                } %}
+                    <p class="app-sg-setting" style="line-height: var(--{{ token }})">
+                        <span>{{ label|trans({}, 'design_system') }}</span>
+                        <code>--{{ token }}</code>
+                    </p>
+                {% endfor %}
+                {% for token, label in {
+                    'app-font-size': 'styleguide.measures.font_size',
+                    'app-link-decoration': 'styleguide.measures.link_decoration',
+                } %}
+                    <p class="app-sg-setting">
+                        <span>{{ label|trans({}, 'design_system') }}</span>
+                        <code>--{{ token }}</code>
+                    </p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="app-sg-section" id="spacing">
+            <div class="app-section-title">
+                <h2>{{ 'styleguide.section.spacing'|trans({}, 'design_system') }}</h2>
+                <span class="app-muted">{{ 'styleguide.spacing.hint'|trans({}, 'design_system') }}</span>
+            </div>
+            <div class="app-sg-demo" data-stacked>
+                <p class="app-sg-setting">
+                    <span>{{ 'styleguide.spacing.gap'|trans({}, 'design_system') }}</span>
+                    <code>--app-gap</code>
+                </p>
+                {# Chaque barre est large de l'espacement qu'elle nomme : l'échelle se lit d'un
+                   coup d'œil, et une valeur qui sortirait du rythme se verrait. #}
+                {% for token in ['app-gap', 'app-space-2xs', 'app-space-xs', 'app-space-sm', 'app-space-md', 'app-space-lg', 'app-space-xl', 'app-space-2xl', 'app-space-3xl'] %}
+                    <span class="app-sg-ruler" style="--app-sg-size: var(--{{ token }})">--{{ token }}</span>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="app-sg-section" id="shapes">
+            <div class="app-section-title">
+                <h2>{{ 'styleguide.section.shapes'|trans({}, 'design_system') }}</h2>
+                <span class="app-muted">{{ 'styleguide.shapes.hint'|trans({}, 'design_system') }}</span>
+            </div>
+            <div class="app-stack">
+                <h3>{{ 'styleguide.shapes.radius'|trans({}, 'design_system') }}</h3>
+                <div class="app-sg-palette">
+                    {% for token in ['app-radius', 'app-radius-ui', 'app-radius-pill'] %}
+                        <span class="app-sg-shape" style="--app-sg-radius: var(--{{ token }})">--{{ token }}</span>
+                    {% endfor %}
+                </div>
+                <h3>{{ 'styleguide.shapes.shadow'|trans({}, 'design_system') }}</h3>
+                <div class="app-sg-palette">
+                    {% for token in ['app-shadow-sm', 'app-shadow', 'app-shadow-pop', 'app-shadow-focus'] %}
+                        <span class="app-sg-shape" style="--app-sg-shadow: var(--{{ token }})">--{{ token }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <section class="app-sg-section" id="motion">
+            <div class="app-section-title">
+                <h2>{{ 'styleguide.section.motion'|trans({}, 'design_system') }}</h2>
+                <span class="app-muted">{{ 'styleguide.motion.hint'|trans({}, 'design_system') }}</span>
+            </div>
+            <div class="app-sg-demo" data-stacked>
+                {# Atteignables au clavier : la démonstration ne peut pas dépendre du pointeur. #}
+                {% for token in ['app-speed', 'app-speed-slow'] %}
+                    <span class="app-sg-motion" tabindex="0" style="--app-sg-duration: var(--{{ token }})">--{{ token }}</span>
+                {% endfor %}
+                <p class="app-sg-setting">
+                    <span>{{ 'styleguide.motion.ease'|trans({}, 'design_system') }}</span>
+                    <code>--app-ease</code>
+                </p>
+            </div>
+        </section>
+
+        <section class="app-sg-section" id="measures">
+            <div class="app-section-title">
+                <h2>{{ 'styleguide.section.measures'|trans({}, 'design_system') }}</h2>
+                <span class="app-muted">{{ 'styleguide.measures.hint'|trans({}, 'design_system') }}</span>
+            </div>
+            {# Une largeur de page ou un ordre d'empilement n'a pas d'échantillon : ce qui les
+               rend trouvables est leur nom, et la phrase qui dit ce qu'ils gouvernent. #}
+            <div class="app-sg-demo" data-stacked>
+                {% for token, label in {
+                    'app-content-width': 'styleguide.measures.content_width',
+                    'app-content-narrow': 'styleguide.measures.content_narrow',
+                    'app-sidebar-width': 'styleguide.measures.sidebar_width',
+                    'app-topbar-height': 'styleguide.measures.topbar_height',
+                    'app-focus-width': 'styleguide.measures.focus_width',
+                    'app-focus-offset': 'styleguide.measures.focus_offset',
+                    'app-z-sticky': 'styleguide.measures.z_sticky',
+                    'app-z-dropdown': 'styleguide.measures.z_dropdown',
+                    'app-z-skip': 'styleguide.measures.z_skip',
+                } %}
+                    <p class="app-sg-setting">
                         <span>{{ label|trans({}, 'design_system') }}</span>
                         <code>--{{ token }}</code>
                     </p>

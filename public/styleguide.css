@@ -96,6 +96,86 @@
     grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
 }
 
+/* Une règle graduée : la barre prend pour largeur l'espacement qu'elle montre. */
+.app-sg-ruler {
+    display: flex;
+    align-items: center;
+    gap: var(--app-space-md);
+    font-family: var(--app-font-mono);
+    font-size: var(--app-text-xs);
+    color: var(--app-ink-muted);
+}
+
+.app-sg-ruler::before {
+    content: "";
+    flex: none;
+    height: .75rem;
+    border-radius: var(--app-radius-pill);
+    background: var(--app-accent);
+    /* La largeur est posée par l'instance ; le repli rend visible le cas où elle manque. */
+    width: var(--app-sg-size, 0);
+}
+
+/* Un carré qui porte le rayon ou l'ombre qu'il montre, et rien d'autre. */
+.app-sg-shape {
+    display: flex;
+    flex-direction: column;
+    gap: var(--app-space-sm);
+    font-family: var(--app-font-mono);
+    font-size: var(--app-text-xs);
+    color: var(--app-ink-muted);
+}
+
+.app-sg-shape::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 3.5rem;
+    border: 1px solid var(--app-line);
+    background: var(--app-surface);
+    border-radius: var(--app-sg-radius, var(--app-radius-ui));
+    box-shadow: var(--app-sg-shadow, none);
+}
+
+/* Une barre qui parcourt sa piste au survol : c'est la durée et la courbe qui se voient. */
+.app-sg-motion {
+    display: flex;
+    flex-direction: column;
+    gap: var(--app-space-sm);
+    font-family: var(--app-font-mono);
+    font-size: var(--app-text-xs);
+    color: var(--app-ink-muted);
+}
+
+.app-sg-motion::before {
+    content: "";
+    display: block;
+    width: 2rem;
+    height: .75rem;
+    border-radius: var(--app-radius-pill);
+    background: var(--app-accent);
+    transition: transform var(--app-sg-duration, var(--app-speed)) var(--app-sg-ease, var(--app-ease));
+}
+
+.app-sg-motion:hover::before,
+.app-sg-motion:focus-within::before {
+    transform: translateX(calc(var(--app-space-3xl) * 2));
+}
+
+/* Un réglage que rien ne dessine : son nom, et ce qu'il gouverne. */
+.app-sg-setting {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--app-space-lg);
+}
+
+.app-sg-setting code {
+    flex: none;
+    font-size: var(--app-text-xs);
+    font-weight: var(--app-weight-medium);
+}
+
 /* Une charpente en réduction : ce que le menu latéral donne, sans hériter de la page. Elle se
    replie comme la vraie, et à la même largeur. */
 .app-sg-shell {

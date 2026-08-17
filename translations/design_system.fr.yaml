@@ -37,6 +37,10 @@ styleguide:
     section:
         tokens: Jetons
         typography: Typographie
+        spacing: Espacements
+        shapes: Formes et reliefs
+        motion: Mouvement
+        measures: Mesures et repères
         buttons: Boutons
         badges: Étiquettes
         cards: Cartes
@@ -95,6 +99,42 @@ styleguide:
         semibold: Demi-gras
         bold: Gras
         heavy: Titre
+
+    font:
+        sans: Police du texte courant
+        mono: Police à chasse fixe
+
+    leading:
+        normal: "Interligne du texte suivi : deux lignes s'y lisent sans que l'œil accroche, et c'est celui que porte le corps d'une page."
+        tight: "Interligne resserré, pour un titre qui tient sur deux lignes sans se disperser."
+        none: "Interligne d'une ligne unique, comme l'intérieur d'un bouton."
+
+    spacing:
+        hint: un composant y prend ses écarts, aucun n'écrit un multiple de son cru
+        gap: la gouttière, dont tout espacement est un multiple
+
+    shapes:
+        hint: deux rayons et une pilule, quatre reliefs
+        radius: Rayons
+        shadow: Ombres
+
+    motion:
+        hint: survoler une barre pour voir sa durée et sa courbe
+        ease: la courbe que suit toute transition
+
+    measures:
+        hint: ce qui se règle une fois pour toutes, et qu'aucune règle ne réécrit
+        content_width: la largeur au-delà de laquelle une ligne devient trop longue à suivre de l'œil
+        content_narrow: la largeur d'une page qui ne porte qu'une chose — un formulaire, un message, une étape
+        sidebar_width: la largeur du menu latéral, quand la charpente en porte un
+        topbar_height: la hauteur des barres du haut, la marque et le contexte sur la même ligne
+        focus_width: l'épaisseur du halo qui dit où l'on est au clavier
+        focus_offset: l'écart entre ce halo et l'élément qu'il entoure
+        font_size: la taille de la racine, dont toute autre taille se déduit
+        link_decoration: le soulignement des liens, qu'une palette destinée à la basse vision déplace
+        z_sticky: ce qui reste collé pendant que la page défile
+        z_dropdown: ce qui s'ouvre par-dessus le reste
+        z_skip: le lien d'évitement, devant tout, quoi qu'il arrive
 
     variant:
         solid: Plein
