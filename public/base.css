@@ -31,6 +31,13 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* Une image ne déborde jamais de ce qui la porte : c'est la carte, la colonne ou l'écran qui
+   fixe sa largeur, et sa hauteur suit pour que ses proportions tiennent. */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
 h1,
 h2,
 h3,
