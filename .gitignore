@@ -6,3 +6,8 @@
 # Caches des outils qualité.
 /var/
 /.php-cs-fixer.cache
+/qa/__pycache__/
+
+# Binaire téléchargé par qa/install-gitleaks.sh — jamais versionné, version épinglée dans
+# le script qui l'installe.
+/qa/bin/
