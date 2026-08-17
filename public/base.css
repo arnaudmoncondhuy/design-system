@@ -31,11 +31,13 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* Une image ne déborde jamais de ce qui la porte : c'est la carte, la colonne ou l'écran qui
-   fixe sa largeur, et sa hauteur suit pour que ses proportions tiennent. */
+/* Une image ne déborde jamais de ce qui la porte, et ne s'étire pas non plus pour le remplir :
+   posée dans une carte ou une pile, qui rangent leurs enfants en colonne, elle prendrait sinon
+   toute la largeur offerte quelle que soit sa taille propre. */
 img {
     max-width: 100%;
     height: auto;
+    align-self: start;
 }
 
 h1,

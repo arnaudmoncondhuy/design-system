@@ -189,6 +189,10 @@ d'écran connaissent déjà — `disabled`, `aria-busy`, `aria-current`, `aria-s
 `aria-selected`, `aria-disabled`. **Un état porté par un attribut ARIA n'est pas redit
 ailleurs** : la teinte ne fait que doubler ce qu'un lecteur d'écran lit déjà.
 
+La largeur d'un champ suit la même règle. Un champ occupe sa ligne entière, sauf s'il annonce
+combien de caractères il porte : `<input size="6">` prend alors la largeur de ce qu'il attend,
+et un code à six chiffres cesse de ressembler à un champ qui en attendrait trente.
+
 Boutons, cartes, étiquettes, formulaires, champs accolés, cases à cocher, boutons radio,
 interrupteurs, contrôle segmenté, tableaux triables, messages, chiffres, barre de progression,
 listes de définitions, état vide, fil d'étapes, fenêtre modale, menu déroulant, accordéon,

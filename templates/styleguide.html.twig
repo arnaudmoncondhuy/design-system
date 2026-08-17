@@ -269,6 +269,12 @@
                         <button type="button" class="app-btn">{{ 'styleguide.form.search_action'|trans({}, 'design_system') }}</button>
                     </div>
                 </div>
+                {# `size` dit combien de caractères le champ porte, et c'est lui qui fixe alors la
+                   largeur : un code à six chiffres n'a pas à s'étendre sur toute la ligne. #}
+                <div class="app-field">
+                    <label class="app-field-label" for="sg-code">{{ 'styleguide.form.code'|trans({}, 'design_system') }}</label>
+                    <input id="sg-code" type="text" size="6" inputmode="numeric" value="481203">
+                </div>
                 <div class="app-field">
                     <label class="app-field-label" for="sg-select">{{ 'styleguide.form.select'|trans({}, 'design_system') }}</label>
                     <select id="sg-select">

@@ -283,6 +283,14 @@ fieldset.app-field {
                 box-shadow var(--app-speed) var(--app-ease);
 }
 
+/* Un champ qui annonce combien de caractères il porte n'a pas à prendre toute la ligne : un code
+   à six chiffres dans un champ large se lit comme s'il en attendait trente. C'est `size` qui le
+   dit, l'attribut que le navigateur emploie déjà pour cela, et lui qui fixe alors la largeur. */
+.app-field input[size] {
+    width: auto;
+    align-self: start;
+}
+
 .app-field :is(select, textarea, input:not([type="checkbox"], [type="radio"])):focus {
     outline: none;
     border-color: var(--app-accent);

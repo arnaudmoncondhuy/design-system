@@ -130,6 +130,7 @@ styleguide:
         search: Champ accolé
         search_placeholder: Un mot, une référence
         search_action: Rechercher
+        code: Champ court
         select: Liste déroulante
         option_one: Première option
         option_two: Seconde option
