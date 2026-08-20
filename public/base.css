@@ -152,12 +152,19 @@ hr {
  * Sur un écran étroit il n'y a plus de colonne : le menu se replie derrière son bouton, en tête
  * de page, et l'en-tête passe dessous.
  *
+ * Les rangées sont dites, et pas seulement les zones : la charpente fait au moins la hauteur de
+ * la fenêtre, et une grille dont aucune rangée n'est fixée partage ce surplus également entre
+ * toutes. Le menu replié et la barre du haut y gagnaient chacun un quart d'écran de vide, et une
+ * rangée de pied sans pied en prenait autant. C'est le contenu qui prend la place restante ;
+ * plus longue que la fenêtre, la page défile comme avant — `1fr` n'est pas un plafond.
+ *
  * `minmax(0, 1fr)` et non `1fr` : sans le zéro, la colonne du contenu prendrait pour largeur
  * minimale celle de son contenu, et une table large pousserait le menu hors de l'écran.
  */
 .app-shell[data-layout="sidebar"] {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
     grid-template-areas:
         "sidebar"
         "header"
@@ -182,8 +189,12 @@ hr {
 }
 
 @media (min-width: 60em) {
+    /* Une rangée de moins qu'en étroit — le menu a rejoint la colonne de gauche — et les tailles
+       se redisent en même temps que les zones : quatre valeurs pour trois rangées coifferaient le
+       contenu d'un `auto`, et il n'y aurait plus rien pour absorber la hauteur restante. */
     .app-shell[data-layout="sidebar"] {
         grid-template-columns: var(--app-sidebar-width) minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr) auto;
         grid-template-areas:
             "sidebar header"
             "sidebar main"
