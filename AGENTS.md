@@ -113,7 +113,7 @@ Le découpage tient à ce que chaque fichier reçoit du navigateur, et non à de
 Un alias que personne ne cite et une paire de contraste qu'aucun composant ne peint donnent
 l'illusion d'une garantie sans en être une : ils ne s'ajoutent pas.
 
-## Deux pièges, payés une fois chacun
+## Trois pièges, payés une fois chacun
 
 **Une fonctionnalité récente du navigateur ne porte jamais la mise en forme.** Ce qui est
 récent est inégalement répandu, et une règle accrochée à un sélecteur d'état jeune —
@@ -127,3 +127,9 @@ des comportements qu'il sait tenir depuis longtemps — `<dialog>` et `showModal
 sur un composant — cacher un bouton qui porte `app-btn`, par exemple — perd à égalité de
 spécificité, et l'ordre des feuilles est contre elle. Elle passe donc par son parent, et se
 donne une classe de plus.
+
+**Ce qui se lit une seule fois se relève une seule fois.** `app.flashes` retire les messages de
+la session en les rendant : demander s'il y en a, puis les parcourir, laisse un cadre vide à
+l'écran — et rien ne le signale, puisque les deux lectures réussissent. La valeur est relevée
+dans une variable, et c'est elle qu'on interroge. La même prudence vaut pour toute source qui
+se consomme en se lisant.

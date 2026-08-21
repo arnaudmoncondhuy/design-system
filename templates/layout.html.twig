@@ -129,6 +129,10 @@
                focus ne suit pas l'ancre et seul le défilement se produit. #}
             <main class="app-main" id="app-content" tabindex="-1">
                 {#
+                    Un message éphémère se retire de la session au moment où on le demande : il
+                    est donc relevé une fois, et c'est cette copie qu'on interroge. Demander
+                    d'abord s'il y en a, puis les lire, ne rendrait qu'un cadre vide.
+
                     Le type d'un message éphémère n'est pas un ton : Symfony dit « error » et
                     « notice », que `data-tone` ne connaît pas, et une valeur inconnue laisse
                     l'alerte sans fond ni teinte sans qu'aucune erreur ne le dise. Ce qui n'est
@@ -138,10 +142,12 @@
                     qui n'y figure pas.
                 #}
                 {% block flashes %}
-                    {% if app.flashes is not empty %}
+                    {% set flashes = app.flashes %}
+
+                    {% if flashes is not empty %}
                         {% set tones = {'error': 'danger', 'notice': 'info'} %}
                         <div class="app-flashes">
-                            {% for type, messages in app.flashes %}
+                            {% for type, messages in flashes %}
                                 {% for message in messages %}
                                     <p class="app-alert" data-tone="{{ tones[type] ?? type }}" role="status">{{ message|trans }}</p>
                                 {% endfor %}
