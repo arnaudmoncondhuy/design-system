@@ -1069,8 +1069,21 @@ fieldset.app-field {
 
 /* ═══ Titres de section ════════════════════════════════════════════════════════════════ */
 
+/*
+ * Ce qui coiffe une section : un dessin, un nom, et ce qui le qualifie — des pastilles, un
+ * décompte, une date.
+ *
+ * **La rangée passe à la ligne quand elle ne tient plus.** Une rangée sans consigne de repli ne
+ * se replie pas : elle pousse son dernier élément hors de l'écran, et c'est la page entière qui
+ * se met à défiler de côté. Le cas n'est pas théorique — le bandeau d'une fiche de document, sur
+ * un téléphone de trois cent quatre-vingt-dix pixels, y sortait sa date de vingt-trois pixels.
+ *
+ * Cette ligne ne change rien tant que rien ne dépasse : elle ne se voit que dans le cas qu'elle
+ * répare.
+ */
 .app-section-title {
     display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
     gap: var(--app-space-sm);
     margin-bottom: var(--app-space-lg);
