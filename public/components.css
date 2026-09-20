@@ -1223,9 +1223,11 @@ fieldset.app-field {
     box-shadow: inset 0 -1px var(--app-line);
 }
 
+/* Le trait est déjà réservé par les onglets au repos : porté par le seul onglet courant, il
+   grandirait la bande d'autant au moment de le marquer. */
 .app-tabs-item {
     padding: var(--app-space-md) var(--app-space-lg);
-    border-bottom: 2px solid transparent;
+    border-bottom: 3px solid transparent;
     font-size: var(--app-text);
     font-weight: var(--app-weight-medium);
     white-space: nowrap;
@@ -1237,9 +1239,12 @@ fieldset.app-field {
     text-decoration: none;
 }
 
-/* L'onglet courant se marque par `aria-current`, que le lecteur d'écran annonce déjà. */
+/* L'onglet courant se marque par `aria-current`, que le lecteur d'écran annonce déjà.
+   La graisse et le trait le disent seuls : sur une palette dont l'accent est l'encre même,
+   la couleur ne distingue plus l'onglet courant de ses voisins. */
 .app-tabs-item[aria-current="page"] {
     border-bottom-color: var(--app-accent);
+    font-weight: var(--app-weight-semibold);
     color: var(--app-accent);
 }
 
