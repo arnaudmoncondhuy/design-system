@@ -1234,18 +1234,22 @@ fieldset.app-field {
     color: var(--app-ink-muted);
 }
 
+/* Le survol s'arrête à l'encre adoucie : l'encre pleine appartient à l'onglet courant, et deux
+   onglets de même couleur ne se départageraient plus. */
 .app-tabs-item:hover {
-    color: var(--app-ink);
+    color: var(--app-ink-soft);
     text-decoration: none;
 }
 
 /* L'onglet courant se marque par `aria-current`, que le lecteur d'écran annonce déjà.
-   La graisse et le trait le disent seuls : sur une palette dont l'accent est l'encre même,
-   la couleur ne distingue plus l'onglet courant de ses voisins. */
+   Il se distingue par la clarté et la graisse, non par la teinte : entre un accent et une encre
+   éteinte, l'œil ne lit qu'un écart de luminosité — sur un mot de cette taille, deux teintes
+   d'égale clarté se ressemblent. La couleur reste au trait, qui la porte sans rien devoir dire
+   à lui seul. */
 .app-tabs-item[aria-current="page"] {
     border-bottom-color: var(--app-accent);
     font-weight: var(--app-weight-semibold);
-    color: var(--app-accent);
+    color: var(--app-ink);
 }
 
 /* ═══ Pagination ═══════════════════════════════════════════════════════════════════════ */
