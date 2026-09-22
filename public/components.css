@@ -325,10 +325,12 @@ fieldset.app-field {
     cursor: not-allowed;
 }
 
-/* Un champ compact : ce qui se pose dans une barre, où la hauteur est comptée. */
+/* Un champ compact : ce qui se pose dans une barre, où la hauteur est comptée. Le plancher de
+   seize pixels vaut ici comme ailleurs — un champ resserré reste un champ, et le navigateur ne
+   fait pas la différence avant d'agrandir la page. */
 .app-field[data-size="sm"] :is(select, textarea, input:not([type="checkbox"], [type="radio"])) {
     padding: var(--app-space-sm) var(--app-space-md);
-    font-size: var(--app-text-sm);
+    font-size: max(1rem, var(--app-text-sm));
 }
 
 .app-field-hint {
@@ -524,6 +526,7 @@ fieldset.app-field {
    dont la table dépasse. */
 .app-table-wrap {
     position: relative;
+    min-width: 0;
     overflow-x: auto;
     background: var(--app-surface);
     border: 1px solid var(--app-line);
@@ -1233,8 +1236,12 @@ fieldset.app-field {
    leur hauteur, là où un repli les ferait grandir de deux lignes et casserait l'alignement du
    trait. Le filet est une ombre intérieure et non une bordure — une bordure demanderait aux
    onglets de la recouvrir d'une marge négative, que le défilement découperait. */
+/* La largeur minimale nulle est ce qui rend le défilement effectif. Posée dans une rangée
+   souple, la bande refuserait autrement de descendre sous la largeur de ses onglets : elle ne
+   défilerait jamais et pousserait la page entière à déborder de côté. */
 .app-tabs {
     display: flex;
+    min-width: 0;
     gap: var(--app-space-xs);
     overflow-x: auto;
     box-shadow: inset 0 -1px var(--app-line);
@@ -1338,9 +1345,25 @@ fieldset.app-field {
         min-height: var(--app-touch);
     }
 
+    /* Un bouton qui n'a qu'un dessin est aussi large que haut : sa marge intérieure seule le
+       laissait à un cheveu de la mesure, et une cible carrée ne se manque pas d'un côté
+       seulement. */
+    .app-btn[data-icon] {
+        min-width: var(--app-touch);
+    }
+
     :is(.app-nav-item, .app-tabs-item) {
         display: flex;
         align-items: center;
+    }
+
+    /*
+     * La case elle-même garde sa taille — c'est un dessin que le navigateur rend, et le grandir
+     * le rendrait grossier. C'est son intitulé qui porte la cible : il coche déjà au clic, et il
+     * s'étend sur toute la ligne.
+     */
+    .app-check {
+        min-height: var(--app-touch);
     }
 
     /* Un numéro de page est étroit par nature : sans largeur minimale, la hauteur seule
