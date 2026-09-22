@@ -283,6 +283,23 @@ fieldset.app-field {
                 box-shadow var(--app-speed) var(--app-ease);
 }
 
+/*
+ * ── Un champ ne descend jamais sous seize pixels ──────────────────────────────────────────────
+ *
+ * Ce n'est pas un choix de lisibilité, c'est une contrainte du navigateur : Safari sur iOS
+ * agrandit la page dès qu'on touche un champ écrit plus petit, et n'en revient pas tout seul. La
+ * personne se retrouve à faire défiler de côté un formulaire qu'elle voyait entier une seconde
+ * plus tôt.
+ *
+ * La règle vaut à toutes les tailles de fenêtre, et ne souffre pas d'exception : un champ dense
+ * sur un tableau de bord de bureau devient le même piège dès qu'on ouvre la page sur un
+ * téléphone.
+ */
+.app-field :is(select, textarea, input:not([type="checkbox"], [type="radio"])) {
+    font-size: max(1rem, var(--app-text));
+    min-height: var(--app-touch);
+}
+
 /* Un champ qui annonce combien de caractères il porte n'a pas à prendre toute la ligne : un code
    à six chiffres dans un champ large se lit comme s'il en attendait trente. C'est `size` qui le
    dit, l'attribut que le navigateur emploie déjà pour cela, et lui qui fixe alors la largeur. */
@@ -1301,4 +1318,34 @@ fieldset.app-field {
 .app-pagination-gap {
     padding: 0 var(--app-space-xs);
     color: var(--app-ink-muted);
+}
+
+/* ═══ La mesure du doigt ═══════════════════════════════════════════════════════════════ */
+
+/*
+ * Sur un écran qu'on tient d'une main, tout ce qui se touche atteint `--app-touch`. En dessous,
+ * le doigt masque sa propre cible au moment de la viser : on ne corrige pas, on manque.
+ *
+ * La hauteur ne suffit pas seule. Un élément qui n'était pas déjà une boîte flexible garderait
+ * son texte collé en haut d'une cible devenue deux fois plus grande, et l'on croirait la zone
+ * sensible plus petite qu'elle n'est. Chacun reçoit donc aussi son alignement.
+ *
+ * La marge intérieure reste celle du bureau : c'est un plancher, pas un étirement. Un bouton qui
+ * porte deux mots larges garde la taille que son contenu lui donne.
+ */
+@media (max-width: 37.5rem) {
+    :is(.app-btn, .app-menu-item, .app-nav-item, .app-tabs-item, .app-pagination-item) {
+        min-height: var(--app-touch);
+    }
+
+    :is(.app-nav-item, .app-tabs-item) {
+        display: flex;
+        align-items: center;
+    }
+
+    /* Un numéro de page est étroit par nature : sans largeur minimale, la hauteur seule
+       laisserait une cible haute et fine. */
+    .app-pagination-item {
+        min-width: var(--app-touch);
+    }
 }

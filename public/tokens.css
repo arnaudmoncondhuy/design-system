@@ -355,6 +355,48 @@
  * contraste que la palette se donne, quand il dépasse les 4,5:1 ordinaires.
  */
 
+/*
+ * ── La mesure d'une cible que l'on vise du doigt ──────────────────────────────────────────────
+ *
+ * Quarante-quatre pixels : c'est ce que demande le niveau AAA du critère de taille de cible, et
+ * ce que recommandent les deux systèmes mobiles. Le niveau AA se contente de vingt-quatre, qui
+ * suffit à ne pas manquer un lien mais pas à viser sans regarder.
+ *
+ * **Une cible faite pour le doigt reste confortable à la souris ; l'inverse est faux.** C'est
+ * pourquoi cette mesure s'applique à partir du petit écran et non l'inverse : ce n'est pas le
+ * téléphone qui s'étire, c'est le bureau qui resserre.
+ */
+:root {
+    --app-touch: 2.75rem;
+}
+
+/*
+ * ── Ce qui change quand la fenêtre est celle d'un téléphone ───────────────────────────────────
+ *
+ * Le seuil est celui du gabarit « compact » : en dessous, on tient l'appareil d'une main, à
+ * trente centimètres des yeux, et l'on vise du pouce. Au-dessus, il y a une souris ou deux mains,
+ * et l'échelle du bureau convient.
+ *
+ * L'échelle entière se décale d'un cran. Elle est écrite ici et nulle part ailleurs : tout le
+ * reste s'exprime en `rem` et la suit, si bien qu'un composant n'a aucune règle à reprendre.
+ */
+@media (max-width: 37.5rem) {
+    :root {
+        /* Le texte courant rejoint la mesure de lecture courante sur écran. Les deux tailles
+           basses montent d'autant : à treize pixels, une mention cesse d'être lue. */
+        --app-text-xs: .8125rem;
+        --app-text-sm: .875rem;
+        --app-text: 1rem;
+        --app-text-lg: 1.125rem;
+        --app-text-xl: 1.375rem;
+        --app-text-2xl: 1.75rem;
+
+        /* La gouttière suit : une cible plus haute sans marge autour ne se vise pas mieux, elle
+           se manque simplement de plus près. */
+        --app-gap: 9px;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     :root {
         --app-speed: 0s;
