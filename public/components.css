@@ -577,6 +577,78 @@ fieldset.app-field {
     white-space: nowrap;
 }
 
+/*
+ * Un tableau qui se range en fiches sur un écran étroit.
+ *
+ * Faire glisser un tableau de côté, au doigt, pour lire une ligne n'est pas tenable : sous 40 em,
+ * un tableau qui porte `data-stack` pose chaque ligne en fiche, où chaque valeur reprend à sa
+ * gauche l'étiquette de sa colonne — celle que la cellule porte dans `data-label`. Une cellule
+ * sans étiquette occupe la fiche seule, sans rien à sa gauche.
+ *
+ * L'entête reste dans la page, hors de vue : ses étiquettes ont changé de place, pas de lecteur.
+ */
+@media (max-width: 39.99em) {
+    .app-table[data-stack] thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    .app-table[data-stack],
+    .app-table[data-stack] tbody,
+    .app-table[data-stack] tr {
+        display: block;
+    }
+
+    .app-table[data-stack] tbody tr {
+        padding: var(--app-space-sm) 0;
+        border-bottom: 1px solid var(--app-line);
+    }
+
+    .app-table[data-stack] tbody tr:last-child {
+        border-bottom: 0;
+    }
+
+    .app-table[data-stack] tbody :is(th, td) {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--app-space-lg);
+        width: auto;
+        padding: var(--app-space-sm) var(--app-space-lg);
+        border-bottom: 0;
+        text-align: right;
+        white-space: normal;
+    }
+
+    .app-table[data-stack] tbody :is(th, td)::before {
+        content: attr(data-label);
+        flex: none;
+        font-size: var(--app-text-xs);
+        font-weight: var(--app-weight-bold);
+        text-align: left;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        color: var(--app-ink-soft);
+    }
+
+    .app-table[data-stack] tbody :is(th, td):not([data-label]) {
+        justify-content: flex-start;
+    }
+
+    .app-table[data-stack] tbody :is(th, td):not([data-label])::before {
+        content: none;
+    }
+
+    /* Une cellule vide ne prend pas de place dans une fiche : son étiquette n'aurait rien en face. */
+    .app-table[data-stack] tbody :is(th, td):empty {
+        display: none;
+    }
+}
+
 /* Le tri se porte sur l'entête : `aria-sort` dit dans quel sens la colonne est rangée, et la
    flèche ne fait que le montrer. Elle reste muette pour un lecteur d'écran, qui lit déjà
    l'attribut.

@@ -218,6 +218,32 @@ et aucune règle du catalogue n'est reprise :
 :root { --app-gap: 6px; }
 ```
 
+### Un tableau sur un écran étroit
+
+Un tableau large oblige, sur un téléphone, à le faire glisser de côté pour lire une ligne. Poser
+`data-stack` sur le tableau le range, sous 40 em, en fiches : chaque ligne devient un bloc, et
+chaque valeur reprend à sa gauche l'étiquette de sa colonne, que la cellule porte dans
+`data-label`.
+
+```twig
+<table class="app-table" data-stack>
+    <thead>
+        <tr><th scope="col">Date</th><th scope="col">Sens</th></tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-label="Date">11/10/2026</td>
+            <td data-label="Sens">Reçu</td>
+        </tr>
+    </tbody>
+</table>
+```
+
+L'entête reste dans la page, hors de vue, pour les lecteurs d'écran. Une cellule sans `data-label`
+occupe la fiche seule, sans étiquette — une vignette, par exemple. Une cellule vide, au sens strict
+— `<td></td>`, sans même une espace — disparaît de la fiche. Au-delà de 40 em, rien ne change :
+le tableau reste un tableau.
+
 ### La charpente et son menu latéral
 
 Le squelette donne un en-tête, un contenu et un pied. Remplir le bloc `sidebar` **suffit** à le

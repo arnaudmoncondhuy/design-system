@@ -485,7 +485,7 @@
             </div>
             <div class="app-stack">
                 <div class="app-table-wrap">
-                    <table class="app-table">
+                    <table class="app-table" data-stack>
                         <thead>
                             <tr>
                                 {# `aria-sort` dit dans quel sens la colonne est rangée ; la flèche
@@ -506,9 +506,9 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{ 'styleguide.table.row_one'|trans({}, 'design_system') }}</td>
-                                <td><span class="app-badge" data-tone="success">{{ 'styleguide.tone.success'|trans({}, 'design_system') }}</span></td>
-                                <td class="app-muted">12/03/2026</td>
+                                <td data-label="{{ 'styleguide.table.name'|trans({}, 'design_system') }}">{{ 'styleguide.table.row_one'|trans({}, 'design_system') }}</td>
+                                <td data-label="{{ 'styleguide.table.status'|trans({}, 'design_system') }}"><span class="app-badge" data-tone="success">{{ 'styleguide.tone.success'|trans({}, 'design_system') }}</span></td>
+                                <td data-label="{{ 'styleguide.table.date'|trans({}, 'design_system') }}" class="app-muted">12/03/2026</td>
                                 <td data-actions>
                                     <button type="button" class="app-btn" data-variant="ghost" data-size="sm">{{ 'action.edit'|trans({}, 'design_system') }}</button>
                                 </td>
@@ -516,9 +516,9 @@
                             {# La ligne retenue se marque par `aria-selected`, que le lecteur
                                d'écran annonce déjà : la teinte ne fait que le doubler. #}
                             <tr aria-selected="true">
-                                <td>{{ 'styleguide.table.row_two'|trans({}, 'design_system') }}</td>
-                                <td><span class="app-badge" data-tone="warning">{{ 'styleguide.tone.warning'|trans({}, 'design_system') }}</span></td>
-                                <td class="app-muted">28/05/2026</td>
+                                <td data-label="{{ 'styleguide.table.name'|trans({}, 'design_system') }}">{{ 'styleguide.table.row_two'|trans({}, 'design_system') }}</td>
+                                <td data-label="{{ 'styleguide.table.status'|trans({}, 'design_system') }}"><span class="app-badge" data-tone="warning">{{ 'styleguide.tone.warning'|trans({}, 'design_system') }}</span></td>
+                                <td data-label="{{ 'styleguide.table.date'|trans({}, 'design_system') }}" class="app-muted">28/05/2026</td>
                                 <td data-actions>
                                     <button type="button" class="app-btn" data-variant="ghost" data-size="sm" data-tone="danger">{{ 'action.delete'|trans({}, 'design_system') }}</button>
                                 </td>
