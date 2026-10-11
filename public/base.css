@@ -387,7 +387,7 @@ hr {
     align-items: center;
     gap: var(--app-space-lg);
     min-height: var(--app-topbar-height);
-    padding: var(--app-space-sm) var(--app-space-xl);
+    padding: var(--app-space-sm) var(--app-space-lg);
     background: var(--app-surface);
     border-bottom: 1px solid var(--app-line);
 }
@@ -426,7 +426,17 @@ hr {
     width: 100%;
     max-width: var(--app-content-width);
     margin: 0 auto;
-    padding: var(--app-space-2xl) var(--app-space-xl);
+    padding: var(--app-space-2xl) var(--app-space-lg);
+}
+
+/* Une seule gouttière sur un écran étroit : la marque du menu replié, l'en-tête et le contenu
+   partent du même bord, là où trois marges différentes se lisaient comme une double marge. Ce
+   que le contenu y perd en largeur, une table le regagne. Plus large, la page respire. */
+@media (min-width: 60em) {
+    .app-header,
+    .app-main {
+        padding-inline: var(--app-space-xl);
+    }
 }
 
 .app-footer {
