@@ -232,6 +232,10 @@ faire passer en deux colonnes : il n'y a aucun attribut à poser en plus.
 {% endblock %}
 ```
 
+**Le contenu prend toute la largeur à droite du menu** : la colonne centrée, plafonnée par
+`--app-content-width`, est celle du squelette sans menu. Pour garder une lecture étroite, un écran
+borne lui-même son contenu — un `max-width` sur son conteneur, en citant ce jeton.
+
 **Le menu prend le coin haut gauche**, et toute la hauteur ; l'en-tête commence à sa droite et
 ne porte plus que le contexte de la page. C'est la disposition des interfaces dont le menu est
 la navigation principale — et la marque suit le coin : elle se rend en tête du menu quand il y

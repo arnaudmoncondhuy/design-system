@@ -180,8 +180,12 @@ hr {
     grid-area: sidebar;
 }
 
+/* À droite du menu, le contenu prend toute la largeur : la colonne centrée du squelette sans menu
+   y laisserait, de part et d'autre, un vide que rien n'occupe. */
 .app-shell[data-layout="sidebar"] > .app-main {
     grid-area: main;
+    max-width: none;
+    margin: 0;
 }
 
 .app-shell[data-layout="sidebar"] > .app-footer {
