@@ -653,6 +653,8 @@ fieldset.app-field {
     }
 
     .app-table[data-stack=""] tbody :is(th, td)[data-slot="lead"] {
+        display: flex;
+        align-items: center;
         order: -1;
         flex: none;
     }
