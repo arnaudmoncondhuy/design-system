@@ -577,6 +577,12 @@ fieldset.app-field {
     white-space: nowrap;
 }
 
+/* La colonne de tête — une icône, un repère — se serre contre le bord et ne se coupe jamais. */
+.app-table :is(th, td)[data-slot="lead"] {
+    width: 1%;
+    white-space: nowrap;
+}
+
 /*
  * Un tableau qui se range en lignes sur un écran étroit.
  *
@@ -584,6 +590,7 @@ fieldset.app-field {
  * un tableau qui porte `data-stack` pose chaque ligne en deux lignes de texte, comme un journal
  * d'appels. Trois emplacements, que la cellule choisit par `data-slot` :
  *
+ *   - `lead` : en tête de la première ligne, avant le titre — une icône, un repère ;
  *   - `title` : la première ligne, celle qu'on lit d'abord ;
  *   - `aside` : à droite de la première ligne, pour l'action ;
  *   - sans emplacement : la seconde ligne, atténuée, où les cellules se suivent.
@@ -643,6 +650,11 @@ fieldset.app-field {
         white-space: normal;
         font-size: var(--app-text-sm);
         color: var(--app-ink-soft);
+    }
+
+    .app-table[data-stack=""] tbody :is(th, td)[data-slot="lead"] {
+        order: -1;
+        flex: none;
     }
 
     .app-table[data-stack=""] tbody :is(th, td)[data-slot="title"] {

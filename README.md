@@ -243,9 +243,12 @@ journal d'appels : le titre et l'action en haut, le reste dessous. La cellule ch
 
 | `data-slot` | Place |
 | --- | --- |
+| `lead` | en tête de la première ligne, avant le titre : une icône, un repère |
 | `title` | la première ligne, en plus gros |
 | `aside` | à droite de la première ligne, pour l'action |
 | aucun | la seconde ligne, atténuée ; les cellules s'y suivent dans l'ordre de la page |
+
+Sur grand écran, une cellule `lead` est la colonne de tête : elle se serre contre le bord.
 
 Une liste de cent lignes reste ainsi lisible : une ligne en prend deux, et non une par colonne.
 
