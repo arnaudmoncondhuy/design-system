@@ -206,7 +206,8 @@ préfixe `app-` se renomme d'un remplacement, dans `public/` et dans
 Trois composants demandent au navigateur ce qu'il sait déjà faire, plutôt que de le réécrire :
 la fenêtre modale est un `<dialog>` ouvert par `showModal()`, l'accordéon et le menu déroulant
 sont des `<details>`. Le comportement `menu` n'ajoute au second que ce que l'élément ne donne
-pas — la fermeture par Échap et par un clic au-dehors.
+pas — la fermeture par Échap et par un clic au-dehors. Le comportement `dialog` en fait autant
+pour la fenêtre modale : Échap la ferme déjà, un clic sur le fond assombri aussi.
 
 ### La densité
 
