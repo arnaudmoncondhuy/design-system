@@ -781,6 +781,18 @@
                             <button type="button" class="app-menu-item" data-tone="danger">{{ 'styleguide.menu.logout'|trans({}, 'design_system') }}</button>
                         </div>
                     </details>
+
+                    {# Le compte au pied d'un menu latéral : la pastille et le nom. #}
+                    <details class="app-menu" data-controller="menu" data-drop="up" data-align="start">
+                        <summary class="app-account">
+                            <span class="app-avatar">AM</span>
+                            <span class="app-account-name">{{ 'styleguide.topbar.account'|trans({}, 'design_system') }}</span>
+                        </summary>
+                        <div class="app-menu-panel">
+                            <a class="app-menu-item" href="#topbar">{{ 'styleguide.menu.profile'|trans({}, 'design_system') }}</a>
+                            <button type="button" class="app-menu-item" data-tone="danger">{{ 'styleguide.menu.logout'|trans({}, 'design_system') }}</button>
+                        </div>
+                    </details>
                 </div>
             </div>
         </section>
