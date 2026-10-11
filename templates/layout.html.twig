@@ -66,9 +66,10 @@
                         <button type="button" class="app-btn app-sidebar-toggle" data-variant="subtle" data-icon
                                 data-sidebar-target="toggle" data-action="sidebar#toggle"
                                 aria-expanded="true" aria-controls="app-sidebar-panel">
-                            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor"
-                                      stroke-width="2" stroke-linecap="round"/>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M4 5h16" />
+                                <path d="M4 12h16" />
+                                <path d="M4 19h16" />
                             </svg>
                             <span class="app-sr-only">{{ 'sidebar.menu'|trans({}, 'design_system') }}</span>
                         </button>
@@ -79,9 +80,9 @@
                            met sous le focus en ouvrant. #}
                         <button type="button" class="app-btn app-sidebar-close" data-variant="ghost" data-icon
                                 data-action="sidebar#toggle">
-                            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor"
-                                      stroke-width="2" stroke-linecap="round"/>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
                             </svg>
                             <span class="app-sr-only">{{ 'action.close'|trans({}, 'design_system') }}</span>
                         </button>

@@ -86,6 +86,9 @@ Il **ne décide de rien de ce qui s'affiche**. Quelles zones l'application a, ce
 montre, quand un message apparaît : c'est l'affaire des écrans. Ce paquet garantit seulement
 qu'un écran peut se composer sans écrire une couleur, une taille ni un ordre d'empilement.
 
+Les quelques icônes que ses écrans emploient viennent de Lucide, copiées telles quelles : aucune n'est
+dessinée à la main.
+
 Une fonctionnalité qui empiéterait sur le contenu — une bibliothèque d'icônes, un composant qui
 suppose un modèle de données, la mise en page d'un écran particulier — n'entre pas ici. Elle
 appartient au projet.

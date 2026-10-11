@@ -1,0 +1,15 @@
+# Carte d'identité du projet, lue par le socle pour dresser la liste du parc.
+#
+# `id` réunit les serveurs : la même valeur partout, et le projet ne fait qu'une fiche.
+#
+# Un paquet ne tourne pas et ne s'adresse pas : il n'a ni `stack` ni `domains`, et
+# c'est `package` qui l'identifie là où il se publie.
+
+id: design-system
+name: Design System
+summary: Jetons de style, catalogue de composants et palettes, dont une à contraste renforcé.
+type: package
+
+package: arnaudmoncondhuy/design-system
+
+repository: https://github.com/arnaudmoncondhuy/design-system

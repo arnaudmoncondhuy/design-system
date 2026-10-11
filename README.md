@@ -326,6 +326,26 @@ L'en-tête reste au-dessus — le choix de palette doit rester joignable avant m
 menu latéral, s'il y en a un, l'emporte sur ce choix. La largeur de la colonne est le jeton
 `--app-content-narrow`.
 
+### Les icônes
+
+Toutes les icônes viennent de [Lucide](https://lucide.dev) (licence ISC). Le paquet n'en livre pas la
+bibliothèque : il n'embarque que les quelques-unes dont ses écrans ont besoin, copiées telles quelles
+de Lucide — trait de 2, bouts arrondis, couleur `currentColor`. Un projet qui veut une icône la prend
+de même sur lucide.dev et la colle en SVG, dans un bouton ou un lien :
+
+```twig
+<button type="button" class="app-btn" data-variant="ghost" data-icon aria-label="Fermer">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+    </svg>
+</button>
+```
+
+L'icône seule ne dit rien : `aria-hidden="true"` la cache aux lecteurs d'écran, et le libellé du
+bouton — `aria-label` ou texte masqué — parle pour elle.
+
 ## Ajouter une palette
 
 **Une palette, un fichier.** On le dépose, et c'est tout : rien à déclarer ailleurs — ni enum,

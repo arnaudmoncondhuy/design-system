@@ -263,8 +263,9 @@
                     <button type="button" class="app-btn" disabled>{{ 'styleguide.state.disabled'|trans({}, 'design_system') }}</button>
                     <button type="button" class="app-btn" aria-busy="true">{{ 'styleguide.state.busy'|trans({}, 'design_system') }}</button>
                     <button type="button" class="app-btn" data-variant="subtle" data-icon aria-label="{{ 'styleguide.state.icon'|trans({}, 'design_system') }}">
-                        <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M5 12h14" />
+                            <path d="M12 5v14" />
                         </svg>
                     </button>
                 </div>
@@ -707,9 +708,9 @@
                     <details class="app-menu" data-controller="menu">
                         <summary class="app-btn" data-variant="subtle" data-icon
                                  aria-label="{{ 'styleguide.topbar.notifications'|trans({}, 'design_system') }}">
-                            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0"
-                                      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M10.268 21a2 2 0 0 0 3.464 0" />
+                                <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
                             </svg>
                             <span class="app-dot" data-tone="danger"></span>
                         </summary>
@@ -739,9 +740,11 @@
                     <details class="app-menu" data-controller="menu">
                         <summary class="app-btn" data-variant="subtle" data-icon
                                  aria-label="{{ 'styleguide.topbar.apps'|trans({}, 'design_system') }}">
-                            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"
-                                      fill="none" stroke="currentColor" stroke-width="2"/>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect width="7" height="7" x="3" y="3" rx="1" />
+                                <rect width="7" height="7" x="14" y="3" rx="1" />
+                                <rect width="7" height="7" x="14" y="14" rx="1" />
+                                <rect width="7" height="7" x="3" y="14" rx="1" />
                             </svg>
                         </summary>
                         <div class="app-menu-panel" data-size="lg">
@@ -808,8 +811,9 @@
                         <h3 id="sg-modal-title">{{ 'styleguide.modal.title'|trans({}, 'design_system') }}</h3>
                         <button type="button" class="app-btn" data-variant="ghost" data-size="sm" data-icon
                                 data-action="dialog#close" aria-label="{{ 'action.close'|trans({}, 'design_system') }}">
-                            <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
                             </svg>
                         </button>
                     </div>
