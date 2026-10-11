@@ -221,28 +221,40 @@ et aucune règle du catalogue n'est reprise :
 ### Un tableau sur un écran étroit
 
 Un tableau large oblige, sur un téléphone, à le faire glisser de côté pour lire une ligne. Poser
-`data-stack` sur le tableau le range, sous 40 em, en fiches : chaque ligne devient un bloc, et
-chaque valeur reprend à sa gauche l'étiquette de sa colonne, que la cellule porte dans
-`data-label`.
+`data-stack` sur le tableau le range, sous 40 em, en lignes de deux lignes de texte, comme un
+journal d'appels : le titre et l'action en haut, le reste dessous. La cellule choisit sa place par
+`data-slot`.
 
 ```twig
 <table class="app-table" data-stack>
     <thead>
-        <tr><th scope="col">Date</th><th scope="col">Sens</th></tr>
+        <tr><th scope="col">Date</th><th scope="col">Sens</th><th scope="col">Numéro</th><th></th></tr>
     </thead>
     <tbody>
         <tr>
-            <td data-label="Date">11/10/2026</td>
-            <td data-label="Sens">Reçu</td>
+            <td>11/10/2026 18:41</td>
+            <td><span class="app-badge">Reçu</span></td>
+            <td data-slot="title">06 38 97 11 18</td>
+            <td data-slot="aside"><button type="button" class="app-btn" data-size="sm">Écouter</button></td>
         </tr>
     </tbody>
 </table>
 ```
 
-L'entête reste dans la page, hors de vue, pour les lecteurs d'écran. Une cellule sans `data-label`
-occupe la fiche seule, sans étiquette — une vignette, par exemple. Une cellule vide, au sens strict
-— `<td></td>`, sans même une espace — disparaît de la fiche. Au-delà de 40 em, rien ne change :
-le tableau reste un tableau.
+| `data-slot` | Place |
+| --- | --- |
+| `title` | la première ligne, en plus gros |
+| `aside` | à droite de la première ligne, pour l'action |
+| aucun | la seconde ligne, atténuée ; les cellules s'y suivent dans l'ordre de la page |
+
+Une liste de cent lignes reste ainsi lisible : une ligne en prend deux, et non une par colonne.
+
+Quand l'étiquette de chaque colonne compte, `data-stack="labels"` pose une fiche à la place : chaque
+valeur reprend à sa gauche le `data-label` de sa cellule.
+
+L'entête reste dans la page, hors de vue, pour les lecteurs d'écran. Une cellule vide, au sens
+strict — `<td></td>`, sans même une espace — disparaît. Au-delà de 40 em, rien ne change : le tableau
+reste un tableau.
 
 ### La charpente et son menu latéral
 

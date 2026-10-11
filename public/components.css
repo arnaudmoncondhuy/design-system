@@ -578,12 +578,19 @@ fieldset.app-field {
 }
 
 /*
- * Un tableau qui se range en fiches sur un écran étroit.
+ * Un tableau qui se range en lignes sur un écran étroit.
  *
  * Faire glisser un tableau de côté, au doigt, pour lire une ligne n'est pas tenable : sous 40 em,
- * un tableau qui porte `data-stack` pose chaque ligne en fiche, où chaque valeur reprend à sa
- * gauche l'étiquette de sa colonne — celle que la cellule porte dans `data-label`. Une cellule
- * sans étiquette occupe la fiche seule, sans rien à sa gauche.
+ * un tableau qui porte `data-stack` pose chaque ligne en deux lignes de texte, comme un journal
+ * d'appels. Trois emplacements, que la cellule choisit par `data-slot` :
+ *
+ *   - `title` : la première ligne, celle qu'on lit d'abord ;
+ *   - `aside` : à droite de la première ligne, pour l'action ;
+ *   - sans emplacement : la seconde ligne, atténuée, où les cellules se suivent.
+ *
+ * Une longue liste reste ainsi lisible : une ligne en prend deux, et non une par colonne. Pour
+ * garder l'étiquette de chaque colonne, `data-stack="labels"` pose une fiche à la place, où chaque
+ * valeur reprend à sa gauche le `data-label` de sa cellule.
  *
  * L'entête reste dans la page, hors de vue : ses étiquettes ont changé de place, pas de lecteur.
  */
@@ -598,13 +605,11 @@ fieldset.app-field {
     }
 
     .app-table[data-stack],
-    .app-table[data-stack] tbody,
-    .app-table[data-stack] tr {
+    .app-table[data-stack] tbody {
         display: block;
     }
 
     .app-table[data-stack] tbody tr {
-        padding: var(--app-space-sm) 0;
         border-bottom: 1px solid var(--app-line);
     }
 
@@ -612,7 +617,55 @@ fieldset.app-field {
         border-bottom: 0;
     }
 
-    .app-table[data-stack] tbody :is(th, td) {
+    /* Les lignes : le titre et l'action sur la première, le reste sur la seconde. Le filet de
+       `::before` ne sert qu'à renvoyer la seconde ligne sous la première. */
+    .app-table[data-stack=""] tbody tr {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--app-space-2xs) var(--app-space-md);
+        padding: var(--app-space-md) var(--app-space-lg);
+    }
+
+    .app-table[data-stack=""] tbody tr::before {
+        content: "";
+        order: 2;
+        flex-basis: 100%;
+        height: 0;
+    }
+
+    .app-table[data-stack=""] tbody :is(th, td) {
+        order: 3;
+        width: auto;
+        padding: 0;
+        border-bottom: 0;
+        text-align: left;
+        white-space: normal;
+        font-size: var(--app-text-sm);
+        color: var(--app-ink-soft);
+    }
+
+    .app-table[data-stack=""] tbody :is(th, td)[data-slot="title"] {
+        order: 0;
+        flex: 1 1 0;
+        min-width: 0;
+        font-size: var(--app-text);
+        font-weight: var(--app-weight-semibold);
+        color: var(--app-ink);
+    }
+
+    .app-table[data-stack=""] tbody :is(th, td)[data-slot="aside"] {
+        order: 1;
+        flex: none;
+    }
+
+    /* Les fiches : chaque valeur reprend à sa gauche l'étiquette de sa colonne. */
+    .app-table[data-stack="labels"] tbody tr {
+        display: block;
+        padding: var(--app-space-sm) 0;
+    }
+
+    .app-table[data-stack="labels"] tbody :is(th, td) {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -624,7 +677,7 @@ fieldset.app-field {
         white-space: normal;
     }
 
-    .app-table[data-stack] tbody :is(th, td)::before {
+    .app-table[data-stack="labels"] tbody :is(th, td)::before {
         content: attr(data-label);
         flex: none;
         font-size: var(--app-text-xs);
@@ -635,15 +688,15 @@ fieldset.app-field {
         color: var(--app-ink-soft);
     }
 
-    .app-table[data-stack] tbody :is(th, td):not([data-label]) {
+    .app-table[data-stack="labels"] tbody :is(th, td):not([data-label]) {
         justify-content: flex-start;
     }
 
-    .app-table[data-stack] tbody :is(th, td):not([data-label])::before {
+    .app-table[data-stack="labels"] tbody :is(th, td):not([data-label])::before {
         content: none;
     }
 
-    /* Une cellule vide ne prend pas de place dans une fiche : son étiquette n'aurait rien en face. */
+    /* Une cellule vide ne prend pas de place : son étiquette n'aurait rien en face. */
     .app-table[data-stack] tbody :is(th, td):empty {
         display: none;
     }
