@@ -1,11 +1,13 @@
 /*
  * Le catalogue : ce qui se répète d'un écran à l'autre.
  *
- * La grammaire tient en trois axes, et un composant ne connaît rien d'autre :
+ * La grammaire tient en quatre axes, et un composant ne connaît rien d'autre :
  *
  *   `data-tone`     le sens — neutral, accent, success, warning, danger, info
  *   `data-variant`  la forme — plein par défaut, `subtle` bordé, `ghost` sans fond
  *   `data-size`     la taille
+ *   `data-hue`      la couleur décorative, de 1 à 6 — elle distingue sans rien signaler, et
+ *                   cède la place à `data-tone` quand les deux se croisent
  *
  * L'état, lui, ne s'invente pas : il passe par les attributs que le navigateur et les lecteurs
  * d'écran connaissent déjà — `disabled`, `aria-busy`, `aria-current`, `aria-sort`,
@@ -36,16 +38,22 @@
     text-decoration: none;
     white-space: nowrap;
     cursor: pointer;
-    background: var(--app-accent);
+    background: var(--app-accent-fill);
     color: var(--app-on-accent);
+    box-shadow: var(--app-accent-glow);
     transition: background var(--app-speed) var(--app-ease),
                 border-color var(--app-speed) var(--app-ease),
                 color var(--app-speed) var(--app-ease);
 }
 
 .app-btn:hover {
-    background: var(--app-accent-hover);
+    background: var(--app-accent-fill-hover);
     text-decoration: none;
+}
+
+/* Le halo n'appartient qu'à l'action principale : un ton ou une forme le retirent. */
+.app-btn:is([data-tone], [data-variant]) {
+    box-shadow: none;
 }
 
 /* Le ton prend la place de l'accent. Deux règles, et les six tons existent. */
@@ -165,9 +173,9 @@
     gap: var(--app-space-md);
     padding: var(--app-space-xl);
     background: var(--app-surface);
-    border: 1px solid var(--app-line);
+    border: 1px solid var(--app-card-line);
     border-radius: var(--app-radius);
-    box-shadow: var(--app-shadow-sm);
+    box-shadow: var(--app-card-shadow);
 }
 
 .app-card[data-tone] {
@@ -175,6 +183,7 @@
 }
 
 .app-card-title {
+    font-family: var(--app-font-display);
     font-size: var(--app-text-lg);
     font-weight: var(--app-weight-bold);
 }
@@ -237,6 +246,22 @@
 .app-badge[data-variant="solid"][data-tone] {
     background: var(--app-tone);
     color: var(--app-tone-on);
+}
+
+/* Un point en tête : l'étiquette dit un état — en ligne, en attente, en panne — et le point se
+   repère d'un coup d'œil dans une colonne. Il prend la couleur pleine du ton, que le fond teinté
+   laisse ressortir. */
+.app-badge[data-variant="dot"]::before {
+    content: "";
+    flex: none;
+    width: .5em;
+    height: .5em;
+    border-radius: var(--app-radius-pill);
+    background: currentcolor;
+}
+
+.app-badge[data-variant="dot"][data-tone]::before {
+    background: var(--app-tone);
 }
 
 /* ═══ Formulaires ══════════════════════════════════════════════════════════════════════ */
@@ -529,7 +554,7 @@ fieldset.app-field {
     min-width: 0;
     overflow-x: auto;
     background: var(--app-surface);
-    border: 1px solid var(--app-line);
+    border: 1px solid var(--app-card-line);
     border-radius: var(--app-radius);
 }
 
@@ -880,9 +905,9 @@ fieldset.app-field {
     gap: var(--app-space-xs);
     padding: var(--app-space-xl);
     background: var(--app-surface);
-    border: 1px solid var(--app-line);
+    border: 1px solid var(--app-card-line);
     border-radius: var(--app-radius);
-    box-shadow: var(--app-shadow-sm);
+    box-shadow: var(--app-card-shadow);
 }
 
 .app-stat-label {
@@ -894,6 +919,7 @@ fieldset.app-field {
 }
 
 .app-stat-value {
+    font-family: var(--app-font-display);
     font-size: var(--app-text-2xl);
     font-weight: var(--app-weight-heavy);
     line-height: var(--app-leading-none);
@@ -906,6 +932,55 @@ fieldset.app-field {
 .app-stat-hint {
     font-size: var(--app-text-sm);
     color: var(--app-ink-muted);
+}
+
+/* La pastille : une icône sur un aplat, qui dit de quoi parle le chiffre avant qu'on le lise.
+   Elle prend la couleur décorative que la statistique porte, ou son ton s'il y en a un. */
+.app-stat-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--app-radius-ui);
+    background: var(--app-accent-soft);
+    color: var(--app-accent-ink);
+}
+
+.app-stat-icon > svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.app-stat[data-hue] > .app-stat-icon {
+    background: var(--app-hue);
+    color: var(--app-hue-on);
+}
+
+.app-stat[data-tone] > .app-stat-icon {
+    background: var(--app-tone);
+    color: var(--app-tone-on);
+}
+
+/* Avec une pastille, le libellé et le chiffre se rangent à sa droite, et la précision passe
+   dessous, sur toute la largeur. Un navigateur qui ignore `:has` garde la colonne : la pastille
+   se pose alors au-dessus du libellé, et rien ne manque. */
+.app-stat:has(> .app-stat-icon) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: var(--app-space-lg);
+}
+
+.app-stat:has(> .app-stat-icon) > .app-stat-icon {
+    grid-row: span 2;
+    align-self: center;
+}
+
+.app-stat:has(> .app-stat-icon) > .app-stat-hint {
+    grid-column: 1 / -1;
 }
 
 /* ═══ Progression ══════════════════════════════════════════════════════════════════════ */
@@ -926,12 +1001,17 @@ fieldset.app-field {
     height: 100%;
     /* Le repli rend visible l'avancement que l'instance a oublié de poser. */
     width: var(--app-progress, 0%);
-    background: var(--app-accent);
+    background: var(--app-accent-fill);
     transition: width var(--app-speed-slow) var(--app-ease);
 }
 
 .app-progress[data-tone]::after {
     background: var(--app-tone);
+}
+
+/* Épaisse : la jauge que l'on compare d'une ligne à l'autre, dans une colonne de table. */
+.app-progress[data-size="lg"] {
+    height: var(--app-space-lg);
 }
 
 /* ═══ Fil d'étapes ═════════════════════════════════════════════════════════════════════ */
@@ -1016,7 +1096,7 @@ fieldset.app-field {
    même attribut `name` sur plusieurs d'entre eux n'en laisse qu'un ouvert à la fois. */
 .app-accordion {
     background: var(--app-surface);
-    border: 1px solid var(--app-line);
+    border: 1px solid var(--app-card-line);
     border-radius: var(--app-radius);
 }
 
@@ -1121,6 +1201,7 @@ fieldset.app-field {
     max-width: calc(100vw - var(--app-space-lg) * 2);
     padding: var(--app-space-xs);
     background: var(--app-surface);
+    color: var(--app-ink);
     border: 1px solid var(--app-line);
     border-radius: var(--app-radius-ui);
     box-shadow: var(--app-shadow-pop);
@@ -1286,9 +1367,22 @@ fieldset.app-field {
     overflow: hidden;
 }
 
+/* Des initiales sur un aplat : la couleur décorative distingue deux noms voisins. */
+.app-avatar[data-hue] {
+    background: var(--app-hue);
+    color: var(--app-hue-on);
+}
+
 .app-avatar[data-tone] {
     background: var(--app-tone-soft);
     color: var(--app-tone-ink);
+}
+
+/* Petite : celle qui se pose dans une ligne de table, à côté d'un nom. */
+.app-avatar[data-size="sm"] {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: var(--app-text-xs);
 }
 
 .app-avatar img {
@@ -1340,7 +1434,12 @@ fieldset.app-field {
 }
 
 
+/* Un lien peut porter une icône en tête et une étiquette en bout de ligne — le nombre de
+   choses qui attendent derrière lui. */
 .app-nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--app-space-sm);
     padding: var(--app-space-xs) var(--app-space-md);
     border-radius: var(--app-radius-ui);
     font-size: var(--app-text);
@@ -1358,6 +1457,46 @@ fieldset.app-field {
 .app-nav-item[aria-current="page"] {
     background: var(--app-accent-soft);
     color: var(--app-accent-ink);
+}
+
+.app-nav-item > svg {
+    flex: none;
+}
+
+.app-nav-item > .app-badge {
+    margin-left: auto;
+}
+
+/* Dans le menu latéral, les liens prennent les couleurs du menu, et non celles de la page. */
+.app-sidebar .app-nav-item {
+    color: var(--app-sidebar-ink);
+}
+
+.app-sidebar .app-nav-item > svg {
+    color: var(--app-sidebar-icon);
+}
+
+.app-sidebar .app-nav-item:hover {
+    background: var(--app-sidebar-hover);
+    color: var(--app-sidebar-ink-strong);
+}
+
+.app-sidebar .app-nav-item[aria-current="page"] {
+    background: var(--app-sidebar-current);
+    color: var(--app-sidebar-current-ink);
+    box-shadow: var(--app-sidebar-current-shadow);
+}
+
+.app-sidebar .app-nav-item[aria-current="page"] > svg {
+    color: inherit;
+}
+
+.app-sidebar .app-account {
+    color: var(--app-sidebar-ink-strong);
+}
+
+.app-sidebar .app-account:hover {
+    background: var(--app-sidebar-hover);
 }
 
 /* ═══ Fil d'Ariane ═════════════════════════════════════════════════════════════════════ */

@@ -11,6 +11,7 @@
 {% extends 'base.html.twig' %}
 
 {% set tones = ['neutral', 'accent', 'success', 'warning', 'danger', 'info'] %}
+{% set hues = ['1', '2', '3', '4', '5', '6'] %}
 {% set sections = {
     tokens: 'styleguide.section.tokens',
     typography: 'styleguide.section.typography',
@@ -88,8 +89,27 @@
             </div>
             <div class="app-stack">
                 <div class="app-sg-palette">
-                    {% for token in ['app-bg', 'app-surface', 'app-raised', 'app-hover', 'app-ink', 'app-ink-soft', 'app-ink-muted', 'app-ink-inverse', 'app-line', 'app-line-strong', 'app-line-control', 'app-backdrop'] %}
+                    {% for token in ['app-bg', 'app-surface', 'app-raised', 'app-hover', 'app-ink', 'app-ink-soft', 'app-ink-muted', 'app-ink-inverse', 'app-line', 'app-line-strong', 'app-line-control', 'app-card-line', 'app-backdrop'] %}
                         <span class="app-sg-swatch" style="--app-sg-color: var(--{{ token }})">--{{ token }}</span>
+                    {% endfor %}
+                </div>
+                {# L'aplat de l'action principale, qui peut être un dégradé. #}
+                <div class="app-sg-palette">
+                    {% for token in ['app-accent-fill', 'app-accent-fill-hover'] %}
+                        <span class="app-sg-swatch" style="--app-sg-color: var(--{{ token }})">--{{ token }}</span>
+                    {% endfor %}
+                </div>
+                {# Le menu latéral, que la palette peut peindre à part de la page. #}
+                <div class="app-sg-palette">
+                    {% for token in ['app-sidebar-bg', 'app-sidebar-ink', 'app-sidebar-ink-strong', 'app-sidebar-icon', 'app-sidebar-hover', 'app-sidebar-current', 'app-sidebar-current-ink', 'app-sidebar-line'] %}
+                        <span class="app-sg-swatch" style="--app-sg-color: var(--{{ token }})">--{{ token }}</span>
+                    {% endfor %}
+                </div>
+                {# Les couleurs décoratives, chacune avec ce qui se pose dessus. #}
+                <div class="app-sg-palette">
+                    {% for hue in hues %}
+                        <span class="app-sg-swatch" style="--app-sg-color: var(--app-hue-{{ hue }})">--app-hue-{{ hue }}</span>
+                        <span class="app-sg-swatch" style="--app-sg-color: var(--app-on-hue-{{ hue }})">--app-on-hue-{{ hue }}</span>
                     {% endfor %}
                 </div>
                 {# Les cinq jetons d'un ton, ton par ton : c'est la ligne entière qu'une palette
@@ -130,6 +150,7 @@
                 {% endfor %}
                 {% for token, label in {
                     'app-font': 'styleguide.font.sans',
+                    'app-font-display': 'styleguide.font.display',
                     'app-font-mono': 'styleguide.font.mono',
                 } %}
                     <p class="app-sg-type" style="font-family: var(--{{ token }})">
@@ -193,7 +214,7 @@
                 </div>
                 <h3>{{ 'styleguide.shapes.shadow'|trans({}, 'design_system') }}</h3>
                 <div class="app-sg-palette">
-                    {% for token in ['app-shadow-sm', 'app-shadow', 'app-shadow-pop', 'app-shadow-focus'] %}
+                    {% for token in ['app-shadow-sm', 'app-shadow', 'app-shadow-pop', 'app-shadow-focus', 'app-card-shadow', 'app-accent-glow', 'app-sidebar-shadow', 'app-sidebar-current-shadow'] %}
                         <span class="app-sg-shape" style="--app-sg-shadow: var(--{{ token }})">--{{ token }}</span>
                     {% endfor %}
                 </div>
@@ -308,6 +329,13 @@
                         <span class="app-badge" data-variant="solid" data-tone="{{ tone }}">{{ ('styleguide.tone.' ~ tone)|trans({}, 'design_system') }}</span>
                     {% endfor %}
                 </div>
+                {# Un état : le point se repère d'un coup d'œil dans une colonne. #}
+                <div class="app-sg-demo">
+                    <span class="app-badge" data-variant="dot">{{ 'styleguide.tone.none'|trans({}, 'design_system') }}</span>
+                    {% for tone in tones %}
+                        <span class="app-badge" data-variant="dot" data-tone="{{ tone }}">{{ ('styleguide.tone.' ~ tone)|trans({}, 'design_system') }}</span>
+                    {% endfor %}
+                </div>
             </div>
         </section>
 
@@ -346,6 +374,16 @@
                     </div>
                 </article>
             </div>
+            {# Des initiales : la couleur décorative distingue des noms voisins, en grand puis en
+               petit, à la taille d'une ligne de table. #}
+            <div class="app-sg-demo">
+                {% for hue in hues %}
+                    <span class="app-avatar" data-hue="{{ hue }}">AM</span>
+                {% endfor %}
+                {% for hue in hues %}
+                    <span class="app-avatar" data-hue="{{ hue }}" data-size="sm">AM</span>
+                {% endfor %}
+            </div>
         </section>
 
         <section class="app-sg-section" id="dashboard">
@@ -370,6 +408,38 @@
                         <p class="app-stat-hint">{{ 'styleguide.stat.hint'|trans({}, 'design_system') }}</p>
                     </div>
                 </div>
+                {# Les mêmes avec leur pastille : une couleur décorative chacune, et le ton pour
+                   celle qui signale quelque chose. #}
+                <div class="app-grid" data-cols="4">
+                    <div class="app-stat" data-hue="1">
+                        <span class="app-stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="22 12 16 12 14 15 10 15 8 12 2 12" />
+                            <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
+                        </svg></span>
+                        <p class="app-stat-label">{{ 'styleguide.stat.open'|trans({}, 'design_system') }}</p>
+                        <p class="app-stat-value">128</p>
+                        <p class="app-stat-hint">{{ 'styleguide.stat.hint'|trans({}, 'design_system') }}</p>
+                    </div>
+                    <div class="app-stat" data-hue="4">
+                        <span class="app-stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="m16 9-5.5 5.5L8 12" />
+                        </svg></span>
+                        <p class="app-stat-label">{{ 'styleguide.stat.closed'|trans({}, 'design_system') }}</p>
+                        <p class="app-stat-value">96</p>
+                        <p class="app-stat-hint">{{ 'styleguide.stat.hint'|trans({}, 'design_system') }}</p>
+                    </div>
+                    <div class="app-stat" data-tone="danger">
+                        <span class="app-stat-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                            <path d="M12 9v4" />
+                            <path d="M12 17h.01" />
+                        </svg></span>
+                        <p class="app-stat-label">{{ 'styleguide.stat.late'|trans({}, 'design_system') }}</p>
+                        <p class="app-stat-value">4</p>
+                        <p class="app-stat-hint">{{ 'styleguide.stat.hint'|trans({}, 'design_system') }}</p>
+                    </div>
+                </div>
                 <div class="app-field">
                     <span class="app-field-label" id="sg-progress-label">{{ 'styleguide.progress.label'|trans({}, 'design_system') }}</span>
                     {# Le rôle et les trois valeurs se déclarent en ARIA : la largeur du remplissage
@@ -380,6 +450,9 @@
                     <div class="app-progress" data-tone="warning" style="--app-progress: 24%"
                          role="progressbar" aria-label="{{ 'styleguide.progress.late'|trans({}, 'design_system') }}"
                          aria-valuenow="24" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="app-progress" data-size="lg" data-tone="danger" style="--app-progress: 92%"
+                         role="progressbar" aria-label="{{ 'styleguide.progress.full'|trans({}, 'design_system') }}"
+                         aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
         </section>
@@ -673,11 +746,24 @@
             {# La colonne de gauche de cette page en est déjà une ; celle-ci n'est là que pour la
                montrer de près, avec ses états. #}
             <div class="app-sg-shell">
+                {# Chaque lien porte son icône, et celui qui a du travail en attente en dit le
+                   nombre. #}
                 <div class="app-sidebar">
                     <nav class="app-nav" data-orientation="vertical" aria-label="{{ 'styleguide.layout.example'|trans({}, 'design_system') }}">
-                        <a class="app-nav-item" href="#layout" aria-current="page">{{ 'styleguide.nav.overview'|trans({}, 'design_system') }}</a>
-                        <a class="app-nav-item" href="#layout">{{ 'styleguide.nav.files'|trans({}, 'design_system') }}</a>
-                        <a class="app-nav-item" href="#layout">{{ 'styleguide.nav.settings'|trans({}, 'design_system') }}</a>
+                        <a class="app-nav-item" href="#layout" aria-current="page"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect width="7" height="9" x="3" y="3" rx="1" />
+                                <rect width="7" height="5" x="14" y="3" rx="1" />
+                                <rect width="7" height="9" x="14" y="12" rx="1" />
+                                <rect width="7" height="5" x="3" y="16" rx="1" />
+                            </svg>{{ 'styleguide.nav.overview'|trans({}, 'design_system') }}</a>
+                        <a class="app-nav-item" href="#layout"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+                                <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+                            </svg>{{ 'styleguide.nav.files'|trans({}, 'design_system') }}<span class="app-badge" data-variant="solid" data-tone="danger">3</span></a>
+                        <a class="app-nav-item" href="#layout"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>{{ 'styleguide.nav.settings'|trans({}, 'design_system') }}</a>
                     </nav>
                 </div>
                 <div class="app-sg-shell-main">

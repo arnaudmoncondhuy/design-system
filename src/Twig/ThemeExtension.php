@@ -16,11 +16,15 @@ use Twig\TwigFunction;
  */
 final class ThemeExtension extends AbstractExtension
 {
-    /** @param list<string> $stylesheets les feuilles de palette, en chemins d'AssetMapper */
+    /**
+     * @param list<string> $stylesheets  les feuilles de palette, en chemins d'AssetMapper
+     * @param ?string      $defaultTheme la palette d'ouverture, quand l'application en nomme une
+     */
     public function __construct(
         private readonly ThemeStorage $storage,
         private readonly ThemeCatalog $catalog,
         private readonly array $stylesheets = [],
+        private readonly ?string $defaultTheme = null,
     ) {
     }
 
@@ -29,18 +33,29 @@ final class ThemeExtension extends AbstractExtension
     {
         return [
             new TwigFunction('current_theme', $this->currentTheme(...)),
+            new TwigFunction('default_theme', $this->defaultTheme(...)),
             new TwigFunction('available_themes', $this->availableThemes(...)),
             new TwigFunction('theme_stylesheets', $this->themeStylesheets(...)),
         ];
     }
 
     /**
-     * La valeur à poser dans `<html data-theme="…">`, ou `null` quand aucun choix n'a été
-     * exprimé — l'attribut est alors à omettre, et non à rendre vide.
+     * La valeur à poser dans `<html data-theme="…">` : le choix du visiteur, sinon la palette
+     * d'ouverture de l'application. `null` quand il n'y a ni l'un ni l'autre — l'attribut est
+     * alors à omettre, et non à rendre vide.
      */
     public function currentTheme(): ?string
     {
-        return $this->storage->current()?->value;
+        return $this->storage->current()?->value ?? $this->defaultTheme;
+    }
+
+    /**
+     * La palette d'ouverture, ou `null` quand l'application laisse le système trancher. Le menu
+     * s'en sert pour savoir s'il doit proposer « selon mon système ».
+     */
+    public function defaultTheme(): ?string
+    {
+        return $this->defaultTheme;
     }
 
     /**

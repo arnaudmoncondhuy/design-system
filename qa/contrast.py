@@ -118,7 +118,20 @@ PAIRS = [
  # et le texte qui porte le sens. Le filet ne devient structurant que là où une palette relève
  # son seuil, parce qu'elle a renoncé aux fonds teintés — d'où la réserve.
  ('filet d\'étiquette',     'line',        'raised',       3.0, 'renforce'),
+ # Le menu latéral a ses couleurs à lui : ce qui s'y lit se mesure sur son fond, et non sur
+ # celui de la page.
+ ('menu : lien',            'sidebar-ink',        'sidebar-bg',      4.5),
+ ('menu : marque',          'sidebar-ink-strong', 'sidebar-bg',      4.5),
+ ('menu : lien survolé',    'sidebar-ink-strong', 'sidebar-hover',   4.5),
+ ('menu : page en cours',   'sidebar-current-ink','sidebar-current', 4.5),
+ # L'aplat de l'action principale peut différer de l'accent — un dégradé, par exemple.
+ ('action principale',          'on-accent', 'accent-fill',       4.5),
+ ('action principale survolée', 'on-accent', 'accent-fill-hover', 4.5),
 ]
+
+# Les couleurs décoratives portent des initiales : du texte, donc le seuil du texte.
+for n in range(1, 7):
+    PAIRS.append((f'couleur {n} : pastille', f'on-hue-{n}', f'hue-{n}', 4.5))
 
 # Ce que la grammaire permet de composer, pour chacun des six tons. Chaque ligne est une
 # combinaison qu'un écran peut afficher : plein, plein survolé, bordé ou discret sur une carte

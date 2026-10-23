@@ -1,6 +1,6 @@
 # arnaudmoncondhuy/design-system
 
-Des jetons en **deux étages**, un catalogue de composants gouverné par **trois attributs**, et
+Des jetons en **deux étages**, un catalogue de composants gouverné par **quatre attributs**, et
 des palettes qui se déclarent sans qu'aucun composant ne les connaisse — dont une à contraste
 renforcé, destinée à la basse vision.
 
@@ -160,7 +160,15 @@ design_system:
 
     # Les palettes réellement proposées, dans l'ordre du menu. Absente : toutes.
     themes: ['light', 'dark', 'contrast']
+
+    # La palette d'ouverture, tant que le visiteur n'en a choisi aucune. Absente : le système.
+    default_theme: ~
 ```
+
+`default_theme` donne à une application sa palette de base. Le visiteur reste libre d'en changer,
+et le menu ne propose plus « selon mon système » : sans choix, c'est cette palette qui
+s'applique. Elle doit figurer parmi celles que le menu propose, faute de quoi la compilation
+s'arrête.
 
 `themes` ne sert qu'à restreindre et à ordonner ; nommer une palette qu'aucune feuille ne
 déclare arrête la compilation du conteneur, en disant ce que les feuilles déclarent. C'est le
@@ -176,14 +184,19 @@ services:
 
 ## Le catalogue
 
-Une classe déclare le composant, et **trois attributs** le déclinent. Chacun répond à une seule
-question, et deux d'entre eux se combinent librement :
+Une classe déclare le composant, et **quatre attributs** le déclinent. Chacun répond à une seule
+question, et ils se combinent librement :
 
 | Attribut | Question | Valeurs |
 | --- | --- | --- |
 | `data-tone` | quel sens ? | `neutral` `accent` `success` `warning` `danger` `info` |
-| `data-variant` | quelle insistance ? | plein par défaut, `subtle` bordé, `ghost` sans fond |
+| `data-variant` | quelle insistance ? | plein par défaut, `subtle` bordé, `ghost` sans fond — et, pour une étiquette, `solid` et `dot` |
 | `data-size` | quelle taille ? | `sm`, `lg` |
+| `data-hue` | quel voisin ? | `1` à `6` : une couleur qui distingue sans rien signaler |
+
+`data-hue` sert là où la couleur n'a qu'à séparer — la pastille d'un chiffre clé, les initiales
+d'un client. Elle ne dit jamais « attention » : quand un composant porte les deux attributs,
+c'est `data-tone` qui l'emporte.
 
 ```html
 <button class="app-btn" data-tone="danger">Supprimer</button>
@@ -212,9 +225,9 @@ et un code à six chiffres cesse de ressembler à un champ qui en attendrait tre
 
 Boutons, cartes, étiquettes, formulaires, champs accolés, cases à cocher, boutons radio,
 interrupteurs, contrôle segmenté, tableaux triables, listes d'objets avec leur action,
-messages, chiffres, barre de progression,
+messages, chiffres clés et leur pastille, barre de progression,
 listes de définitions, état vide, fil d'étapes, fenêtre modale, menu déroulant, accordéon,
-navigation principale et latérale, fil d'Ariane, onglets, pagination, avatar, grilles. Le
+navigation principale et latérale, fil d'Ariane, onglets, pagination, avatar et initiales, grilles. Le
 préfixe `app-` se renomme d'un remplacement, dans `public/` et dans
 `templates/layout.html.twig`.
 
@@ -223,6 +236,25 @@ la fenêtre modale est un `<dialog>` ouvert par `showModal()`, l'accordéon et l
 sont des `<details>`. Le comportement `menu` n'ajoute au second que ce que l'élément ne donne
 pas — la fermeture par Échap et par un clic au-dehors. Le comportement `dialog` en fait autant
 pour la fenêtre modale : Échap la ferme déjà, un clic sur le fond assombri aussi.
+
+### Chiffres clés, initiales, états
+
+Un chiffre clé prend une pastille en posant une icône dans `app-stat-icon`, en tête : le libellé
+et le chiffre se rangent alors à sa droite. La pastille prend la couleur décorative de la
+statistique, ou son ton s'il y en a un.
+
+```twig
+<div class="app-stat" data-hue="1">
+    <span class="app-stat-icon"><svg …></svg></span>
+    <span class="app-stat-label">Postes</span>
+    <span class="app-stat-value">37</span>
+</div>
+```
+
+Des initiales sur un aplat distinguent deux noms voisins : `<span class="app-avatar" data-hue="3"
+data-size="sm">CL</span>`. Une étiquette qui dit un état — en ligne, en panne — prend un point en
+tête avec `data-variant="dot"`. Une jauge que l'on compare d'une ligne à l'autre s'épaissit avec
+`data-size="lg"`.
 
 ### La densité
 
@@ -297,6 +329,14 @@ borne lui-même son contenu — un `max-width` sur son conteneur, en citant ce j
 ne porte plus que le contexte de la page. C'est la disposition des interfaces dont le menu est
 la navigation principale — et la marque suit le coin : elle se rend en tête du menu quand il y
 en a un, dans l'en-tête sinon. Le bloc `brand` est le même dans les deux cas.
+
+**Un lien porte son icône** en tête, collée telle quelle dans le `<a>`, et une étiquette en bout
+de ligne pour dire ce qui attend derrière lui — `<span class="app-badge" data-variant="solid"
+data-tone="danger">8</span>`.
+
+**Le menu a ses propres couleurs** — fond, liens, survol, page en cours, filet, ombre —, toutes
+reprises de la page par défaut. Une palette peut ainsi le peindre en aplat ou en dégradé sans
+toucher au reste.
 
 Le reste se comporte comme on l'attend, sans qu'une ligne soit à écrire pour cela :
 

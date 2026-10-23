@@ -38,10 +38,13 @@ final class DesignSystemBundle extends AbstractBundle
     /** Les feuilles de palette que le gabarit doit faire servir, en chemins d'AssetMapper. */
     public const string LINKS_PARAMETER = 'design_system.theme_links';
 
+    /** La palette en vigueur tant que le visiteur n'en a choisi aucune, ou `null`. */
+    public const string DEFAULT_PARAMETER = 'design_system.default_theme';
+
     /**
-     * Quatre clés, et chacune ne sert qu'à restreindre : sans configuration, le paquet monte la
-     * lecture par cookie, propose toutes les palettes que les feuilles déclarent, et n'expose
-     * aucune route.
+     * Chaque clé ne sert qu'à restreindre ou à orienter : sans configuration, le paquet monte la
+     * lecture par cookie, propose toutes les palettes que les feuilles déclarent, laisse le
+     * système trancher tant que rien n'est choisi, et n'expose aucune route.
      */
     public function configure(DefinitionConfigurator $definition): void
     {
@@ -90,6 +93,15 @@ final class DesignSystemBundle extends AbstractBundle
                         'Les palettes réellement proposées, dans l\'ordre du menu. Vide : toutes celles que les '
                         .'feuilles déclarent. Nommer ici une palette qu\'aucune feuille ne déclare arrête la '
                         .'compilation.'
+                    )
+                ->end()
+                ->scalarNode('default_theme')
+                    ->defaultNull()
+                    ->info(
+                        'La palette sur laquelle l\'application s\'ouvre tant que le visiteur n\'en a choisi aucune. '
+                        .'Absente : la préférence du système tranche entre clair et sombre. Le menu ne propose alors '
+                        .'plus « selon mon système », puisque l\'absence de choix désigne cette palette. Nommer une '
+                        .'palette que le menu ne propose pas arrête la compilation.'
                     )
                 ->end()
             ->end()
@@ -142,7 +154,9 @@ final class DesignSystemBundle extends AbstractBundle
         $container->setParameter(self::COOKIE_PARAMETER, $config['cookie_name'] ?? 'theme');
         $container->setParameter(self::STYLESHEETS_PARAMETER, $stylesheets['read']);
         $container->setParameter(self::LINKS_PARAMETER, $stylesheets['links']);
-        $container->setParameter(self::THEMES_PARAMETER, $this->themes($config, $stylesheets['read']));
+        $themes = $this->themes($config, $stylesheets['read']);
+        $container->setParameter(self::THEMES_PARAMETER, $themes);
+        $container->setParameter(self::DEFAULT_PARAMETER, $this->defaultTheme($config, $themes));
 
         $configurator->import('../config/services.php');
 
@@ -156,6 +170,33 @@ final class DesignSystemBundle extends AbstractBundle
                 ? Theme\NoThemeStorage::class
                 : Theme\CookieThemeStorage::class,
         );
+    }
+
+    /**
+     * La palette d'ouverture, quand l'application en nomme une. Elle doit figurer au menu : une
+     * palette qu'on ne peut pas choisir serait une palette qu'on ne peut plus quitter puis
+     * retrouver.
+     *
+     * @param array<array-key, mixed> $config
+     * @param array<string, ?string>  $themes les palettes du menu
+     */
+    private function defaultTheme(array $config, array $themes): ?string
+    {
+        $default = $config['default_theme'] ?? null;
+
+        if (null === $default) {
+            return null;
+        }
+
+        if (!\is_string($default) || !\array_key_exists($default, $themes)) {
+            throw new \InvalidArgumentException(\sprintf(
+                'design_system.default_theme nomme « %s », que le menu ne propose pas. Palettes proposées : %s.',
+                \is_scalar($default) ? (string) $default : get_debug_type($default),
+                [] === $themes ? 'aucune' : '« '.implode(' », « ', array_keys($themes)).' »',
+            ));
+        }
+
+        return $default;
     }
 
     /**

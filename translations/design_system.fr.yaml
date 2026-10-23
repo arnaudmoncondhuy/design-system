@@ -103,6 +103,7 @@ styleguide:
 
     font:
         sans: Police du texte courant
+        display: Police des titres et des chiffres clés
         mono: Police à chasse fixe
 
     leading:
@@ -180,6 +181,7 @@ styleguide:
     progress:
         label: Avancement du traitement
         late: Dossiers traités dans les délais
+        full: Espace occupé sur le disque
 
     form:
         text: Champ texte

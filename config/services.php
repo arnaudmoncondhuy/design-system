@@ -34,6 +34,7 @@ return static function (Symfony\Component\DependencyInjection\Loader\Configurato
             service(ArnaudMoncondhuy\DesignSystem\Theme\ThemeStorage::class),
             service(ThemeCatalog::class),
             param(DesignSystemBundle::LINKS_PARAMETER),
+            param(DesignSystemBundle::DEFAULT_PARAMETER),
         ])
         ->tag('twig.extension');
 

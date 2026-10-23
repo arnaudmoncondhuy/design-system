@@ -81,9 +81,27 @@
     --app-blue-100: #dbeafe;
     --app-blue-400: #60a5fa;
     --app-blue-500: #3b82f6;
+    --app-blue-600: #2563eb;
     --app-blue-700: #1d4ed8;
     --app-blue-800: #1e40af;
     --app-blue-950: #0c142e;
+
+    /* La matière des couleurs décoratives : deux pas par teinte, l'un pour les fonds clairs,
+       l'autre pour les fonds sombres. */
+    --app-violet-400: #a78bfa;
+    --app-violet-600: #7c3aed;
+
+    --app-fuchsia-400: #e879f9;
+    --app-fuchsia-600: #c026d3;
+
+    --app-teal-400: #2dd4bf;
+    --app-teal-700: #0f766e;
+
+    --app-orange-400: #fb923c;
+    --app-orange-700: #c2410c;
+
+    --app-cyan-400: #22d3ee;
+    --app-cyan-700: #0e7490;
 
     /* ═══ Étage 2 — alias ══════════════════════════════════════════════════════════════ */
 
@@ -162,10 +180,68 @@
     --app-info-ink: light-dark(#1e3a8a, var(--app-blue-100));
     --app-on-info: var(--app-ink-inverse);
 
+    /* L'aplat de l'action principale : le bouton plein sans ton, et le remplissage d'une jauge.
+       Il suit l'accent tant qu'une palette ne le change pas, et peut être un dégradé — chacun de
+       ses arrêts porte alors le texte, et c'est le pire qui se mesure. Le halo est l'ombre que
+       le bouton projette. */
+    --app-accent-fill: var(--app-accent);
+    --app-accent-fill-hover: var(--app-accent-hover);
+    --app-accent-glow: none;
+
+    /*
+     * ─── Les six couleurs décoratives ─────────────────────────────────────────────────────
+     *
+     * Une couleur qui distingue sans rien signaler : la pastille d'un chiffre clé, les initiales
+     * d'un client. Un ton dit « attention » ou « échec » ; une couleur décorative dit seulement
+     * « pas le même que le voisin ». Chacune se décline en deux jetons :
+     *
+     *   `--app-hue-<n>`     l'aplat
+     *   `--app-on-hue-<n>`  ce qui se pose dessus, texte ou icône
+     */
+    --app-hue-1: light-dark(var(--app-blue-600), var(--app-blue-400));
+    --app-on-hue-1: var(--app-ink-inverse);
+    --app-hue-2: light-dark(var(--app-violet-600), var(--app-violet-400));
+    --app-on-hue-2: var(--app-ink-inverse);
+    --app-hue-3: light-dark(var(--app-fuchsia-600), var(--app-fuchsia-400));
+    --app-on-hue-3: var(--app-ink-inverse);
+    --app-hue-4: light-dark(var(--app-teal-700), var(--app-teal-400));
+    --app-on-hue-4: var(--app-ink-inverse);
+    --app-hue-5: light-dark(var(--app-orange-700), var(--app-orange-400));
+    --app-on-hue-5: var(--app-ink-inverse);
+    --app-hue-6: light-dark(var(--app-cyan-700), var(--app-cyan-400));
+    --app-on-hue-6: var(--app-ink-inverse);
+
+    /*
+     * ─── Le menu latéral ──────────────────────────────────────────────────────────────────
+     *
+     * Il a ses propres couleurs, pour qu'une palette puisse le peindre à part du reste — en
+     * aplat ou en dégradé. Toutes reprennent par défaut celles de la page : sans palette qui
+     * les déplace, le menu est une carte comme les autres.
+     */
+    --app-sidebar-bg: var(--app-surface);
+    --app-sidebar-ink: var(--app-ink-soft);
+    --app-sidebar-ink-strong: var(--app-ink);
+    --app-sidebar-icon: currentcolor;
+    --app-sidebar-hover: var(--app-hover);
+    --app-sidebar-current: var(--app-accent-soft);
+    --app-sidebar-current-ink: var(--app-accent-ink);
+    --app-sidebar-current-shadow: none;
+    --app-sidebar-line: var(--app-line);
+    --app-sidebar-shadow: none;
+
+    /* Le contour d'une carte — et de ce qui en tient lieu : chiffre clé, table, accordéon. Une
+       palette qui détache ses blocs par l'ombre plutôt que par le trait le rend transparent. */
+    --app-card-line: var(--app-line);
+    --app-card-shadow: var(--app-shadow-sm);
+
     /* ═══ Hors couleur ═════════════════════════════════════════════════════════════════ */
 
     --app-font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --app-font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+    /* La police des titres, de la marque et des chiffres clés. Elle reprend celle du texte tant
+       qu'une palette ne lui en donne pas une autre. */
+    --app-font-display: var(--app-font);
 
     /* La taille de la racine. Toute autre taille s'exprime en `rem`, donc la suit : la relever
        agrandit l'interface entière, et pas seulement le texte courant. Elle s'écrit elle-même
@@ -321,6 +397,44 @@
     --app-tone-soft: var(--app-info-soft);
     --app-tone-ink: var(--app-info-ink);
     --app-tone-on: var(--app-on-info);
+}
+
+
+/*
+ * `data-hue` fait de même pour les couleurs décoratives, avec deux variables locales au lieu de
+ * cinq : `--app-hue` et `--app-hue-on`. Il obéit à la même réserve — seul un composant qui porte
+ * lui-même l'attribut les lit —, et il s'efface devant `data-tone` quand les deux se croisent :
+ * le sens l'emporte sur le décor.
+ */
+
+[data-hue="1"] {
+    --app-hue: var(--app-hue-1);
+    --app-hue-on: var(--app-on-hue-1);
+}
+
+[data-hue="2"] {
+    --app-hue: var(--app-hue-2);
+    --app-hue-on: var(--app-on-hue-2);
+}
+
+[data-hue="3"] {
+    --app-hue: var(--app-hue-3);
+    --app-hue-on: var(--app-on-hue-3);
+}
+
+[data-hue="4"] {
+    --app-hue: var(--app-hue-4);
+    --app-hue-on: var(--app-on-hue-4);
+}
+
+[data-hue="5"] {
+    --app-hue: var(--app-hue-5);
+    --app-hue-on: var(--app-on-hue-5);
+}
+
+[data-hue="6"] {
+    --app-hue: var(--app-hue-6);
+    --app-hue-on: var(--app-on-hue-6);
 }
 
 

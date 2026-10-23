@@ -193,7 +193,7 @@
 
     .app-sg-shell > .app-sidebar {
         border-bottom: 0;
-        border-right: 1px solid var(--app-line);
+        border-right: 1px solid var(--app-sidebar-line);
     }
 }
 

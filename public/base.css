@@ -53,6 +53,7 @@ h2,
 h3,
 h4 {
     margin: 0;
+    font-family: var(--app-font-display);
     font-weight: var(--app-weight-bold);
     line-height: var(--app-leading-tight);
     letter-spacing: -.01em;
@@ -233,12 +234,17 @@ hr {
  * Il se replie derrière un bouton là où il n'y a pas de côté, et reste déplié partout ailleurs.
  * Le repli est posé par le comportement `sidebar` et non par cette feuille : sans script, le
  * menu reste visible et utilisable, ce qui est le pire cas acceptable.
+ *
+ * Ses couleurs sont les siennes : une palette peut le peindre à part de la page. Le texte qui y
+ * est posé prend son encre la plus soutenue ; les liens, eux, ont la leur.
  */
 .app-sidebar {
     display: flex;
     flex-direction: column;
-    background: var(--app-surface);
-    border-bottom: 1px solid var(--app-line);
+    background: var(--app-sidebar-bg);
+    color: var(--app-sidebar-ink-strong);
+    border-bottom: 1px solid var(--app-sidebar-line);
+    box-shadow: var(--app-sidebar-shadow);
 }
 
 /* La marque et le bouton de repli, sur une ligne : c'est ce qui reste du menu une fois replié.
@@ -252,7 +258,7 @@ hr {
     gap: var(--app-space-sm);
     min-height: var(--app-topbar-height);
     padding: var(--app-space-sm) var(--app-space-lg);
-    border-bottom: 1px solid var(--app-line);
+    border-bottom: 1px solid var(--app-sidebar-line);
 }
 
 /* L'affichage n'est pas déclaré ici : un dialogue fermé est caché par le navigateur, et une
@@ -302,8 +308,8 @@ hr {
     max-height: none;
     margin: 0;
     border: 0;
-    border-left: 1px solid var(--app-line);
-    background: var(--app-surface);
+    border-left: 1px solid var(--app-sidebar-line);
+    background: var(--app-sidebar-bg);
     color: inherit;
     box-shadow: var(--app-shadow-pop);
     overflow-y: auto;
@@ -319,6 +325,15 @@ hr {
 .app-sidebar[data-drawer] > .app-sidebar-panel > .app-sidebar-close {
     display: inline-flex;
     align-self: flex-end;
+}
+
+/* Il se pose sur le fond du menu, et non sur celui de la page : il en prend l'encre. */
+.app-sidebar > .app-sidebar-panel > .app-sidebar-close {
+    color: var(--app-sidebar-ink-strong);
+}
+
+.app-sidebar > .app-sidebar-panel > .app-sidebar-close:hover {
+    background: var(--app-sidebar-hover);
 }
 
 .app-sidebar-panel::backdrop {
@@ -338,7 +353,7 @@ hr {
 .app-sidebar-footer {
     margin-top: auto;
     padding-top: var(--app-space-md);
-    border-top: 1px solid var(--app-line);
+    border-top: 1px solid var(--app-sidebar-line);
 }
 
 @media (min-width: 60em) {
@@ -361,7 +376,7 @@ hr {
         align-self: start;
         height: 100dvh;
         border-bottom: 0;
-        border-right: 1px solid var(--app-line);
+        border-right: 1px solid var(--app-sidebar-line);
     }
 
     .app-shell > .app-sidebar > .app-sidebar-head {
@@ -400,9 +415,17 @@ hr {
 }
 
 .app-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--app-space-sm);
+    font-family: var(--app-font-display);
     font-weight: var(--app-weight-heavy);
     font-size: var(--app-text-lg);
     color: var(--app-ink);
+}
+
+.app-sidebar .app-brand {
+    color: var(--app-sidebar-ink-strong);
 }
 
 .app-brand:hover {

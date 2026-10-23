@@ -63,10 +63,13 @@ Il tient **cinq règles**, et chacune est tenue par un fichier, pas par ce parag
 
 ## La grammaire
 
-Trois attributs, et chacun répond à une seule question : `data-tone` au sens, `data-variant` à
-l'insistance, `data-size` à la taille. **Un axe ne doit jamais empiéter sur un autre** : une
-valeur qui décrirait à la fois une couleur et une forme — un `data-variant="danger"` — ferme la
-porte à toutes les combinaisons qu'elle prétend remplacer.
+Quatre attributs, et chacun répond à une seule question : `data-tone` au sens, `data-variant` à
+l'insistance, `data-size` à la taille, `data-hue` à la distinction — une couleur qui sépare deux
+voisins sans rien signaler. **Un axe ne doit jamais empiéter sur un autre** : une valeur qui
+décrirait à la fois une couleur et une forme — un `data-variant="danger"` — ferme la porte à
+toutes les combinaisons qu'elle prétend remplacer. Pour la même raison, une couleur décorative
+ne porte jamais de sens : ce qui alerte passe par `data-tone`, qui l'emporte quand les deux se
+croisent.
 
 Un composant qui reçoit une couleur la reçoit donc ainsi, et pas autrement :
 
