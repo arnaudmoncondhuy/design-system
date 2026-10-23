@@ -75,8 +75,12 @@ feuilles — servies depuis `bundles/designsystem/`, l'espace qu'AssetMapper don
 `public/` d'un bundle.
 
 Les blocs qu'elle remplit : `title`, `javascripts`, `brand`, `nav`, `header_actions`,
-`sidebar`, `layout`, `body`, `footer`. `stylesheets` appelle `parent()` pour garder les feuilles
-du paquet.
+`sidebar`, `sidebar_actions`, `layout`, `body`, `footer`. `stylesheets` appelle `parent()` pour
+garder les feuilles du paquet.
+
+`sidebar_actions` se pose en tête du menu latéral, entre la marque et le bouton de repli : ce
+qui doit rester sous la main même menu replié. Un menu qu'on y ouvre part du bouton vers la
+droite sur un grand écran, et se cale contre le bord droit de la fenêtre sur un écran étroit.
 
 Les messages éphémères sont rendus par le squelette, et **leur type devient un ton** : `error`
 est teinté en `danger`, `notice` en `info`, et ce qui n'est pas dans cette liste passe tel quel
@@ -390,7 +394,9 @@ le comportement `menu` ajoute la fermeture par Échap et par un clic au-dehors.
 Ce que le panneau sait faire, et qu'il ne faut pas réécrire :
 
 - **la tête ne défile pas**, le corps si — sa hauteur se règle par `--app-menu-height` ;
-- **`data-size="lg"`** lui donne la largeur d'une grille plutôt que celle d'une liste, et sa
+- **`app-menu-tiles`** range ses liens en tuiles, trois par ligne — c'est la forme d'un lanceur
+  d'applications. Chaque `app-menu-tile` porte une `app-menu-tile-icon` au-dessus de son nom,
+  `data-hue` pour distinguer deux voisines, et `aria-current` pour celle où l'on se trouve. Sa
   largeur ne dépasse jamais celle de l'écran ;
 - **`data-drop="up"`** l'ouvre vers le haut. C'est ce qu'il faut à un menu de compte posé au bas
   d'un menu latéral : vers le bas, il tomberait sous le bord de la fenêtre ;

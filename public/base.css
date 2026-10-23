@@ -261,6 +261,25 @@ hr {
     border-bottom: 1px solid var(--app-sidebar-line);
 }
 
+/* La marque prend la place libre : ce qui la suit — les actions de la tête, puis le bouton de
+   repli — se range contre le bord droit. */
+.app-sidebar-head > :first-child {
+    margin-right: auto;
+}
+
+/*
+ * Un menu ouvert depuis la tête, sur un écran étroit : le bouton est près du bord droit, et un
+ * panneau accroché à lui sortirait de l'écran par la gauche. Il se pose donc contre le bord
+ * droit de la fenêtre, sous la barre que la tête forme. Le sélecteur passe par le parent : la
+ * forme ordinaire du panneau est déclarée dans la feuille suivante.
+ */
+.app-sidebar-head .app-menu-panel {
+    position: fixed;
+    top: calc(var(--app-topbar-height) + var(--app-space-xs));
+    right: var(--app-space-lg);
+    left: auto;
+}
+
 /* L'affichage n'est pas déclaré ici : un dialogue fermé est caché par le navigateur, et une
    règle d'auteur — fût-elle moins spécifique — l'emporterait sur la sienne. Ce sont les deux
    règles qui suivent, chacune dans son état, qui l'affichent. */
@@ -370,9 +389,12 @@ hr {
     /* Le filet du menu court du haut en bas sans rien qui le coupe : la colonne est ce qu'on
        lit d'abord, et la barre du haut n'est que celle de la colonne de droite. Rien ne passe
        donc sous la marque, qui appartient au menu et non à cette barre. */
+    /* Le menu passe devant la colonne de droite : un panneau ouvert depuis sa tête déborde sur
+       le contenu, qui sinon le recouvrirait. */
     .app-shell > .app-sidebar {
         position: sticky;
         top: 0;
+        z-index: var(--app-z-sticky);
         align-self: start;
         height: 100dvh;
         border-bottom: 0;
@@ -381,6 +403,15 @@ hr {
 
     .app-shell > .app-sidebar > .app-sidebar-head {
         border-bottom: 0;
+    }
+
+    /* Le menu latéral est étroit : le panneau part du bouton vers la droite, par-dessus le
+       contenu, plutôt que de sortir de l'écran par la gauche. */
+    .app-sidebar-head .app-menu-panel {
+        position: absolute;
+        top: calc(100% + var(--app-space-xs));
+        right: auto;
+        left: 0;
     }
 
     .app-shell > .app-sidebar > .app-sidebar-panel {

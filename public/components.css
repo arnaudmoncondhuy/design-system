@@ -1208,12 +1208,6 @@ fieldset.app-field {
     box-shadow: var(--app-shadow-pop);
 }
 
-/* Un panneau qui montre une grille plutôt qu'une liste : il lui faut la largeur de plusieurs
-   colonnes, que douze rem ne donnent pas. */
-.app-menu-panel[data-size="lg"] {
-    min-width: 22rem;
-}
-
 /*
  * Un menu qui vit en bas de l'écran — le compte, au pied d'un menu latéral — ouvre son panneau
  * vers le haut. Vers le bas, il tomberait sous le bord de la fenêtre, ou hors du tiroir qui le
@@ -1288,6 +1282,66 @@ fieldset.app-field {
     flex-direction: column;
     max-height: var(--app-menu-height, 18rem);
     overflow-y: auto;
+}
+
+/*
+ * Des raccourcis en tuiles, trois par ligne : l'icône au-dessus du nom. C'est la forme d'un
+ * lanceur d'applications, où l'on reconnaît une destination à son icône avant de lire son nom.
+ * La largeur ne dépasse jamais celle du panneau, qui ne dépasse jamais celle de l'écran.
+ */
+.app-menu-tiles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--app-space-xs);
+    width: 20rem;
+    max-width: 100%;
+}
+
+.app-menu-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--app-space-sm);
+    padding: var(--app-space-md) var(--app-space-xs);
+    border-radius: var(--app-radius-ui);
+    font-size: var(--app-text-sm);
+    text-align: center;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    color: var(--app-ink);
+}
+
+.app-menu-tile:hover {
+    background: var(--app-hover);
+    text-decoration: none;
+}
+
+/* La destination où l'on se trouve déjà. */
+.app-menu-tile[aria-current] {
+    background: var(--app-accent-soft);
+    color: var(--app-accent-ink);
+}
+
+.app-menu-tile-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--app-radius-ui);
+    background: var(--app-accent-soft);
+    color: var(--app-accent-ink);
+}
+
+.app-menu-tile-icon > svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* La couleur décorative distingue deux destinations voisines. */
+.app-menu-tile[data-hue] > .app-menu-tile-icon {
+    background: var(--app-hue);
+    color: var(--app-hue-on);
 }
 
 /*
