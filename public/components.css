@@ -51,8 +51,9 @@
     text-decoration: none;
 }
 
-/* Le halo n'appartient qu'à l'action principale : un ton ou une forme le retirent. */
-.app-btn:is([data-tone], [data-variant]) {
+/* Le halo n'appartient qu'à l'action principale : un ton, ou une forme secondaire, le
+   retirent. */
+.app-btn:is([data-tone], [data-variant="subtle"], [data-variant="ghost"]) {
     box-shadow: none;
 }
 
