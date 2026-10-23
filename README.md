@@ -158,7 +158,8 @@ design_system:
     # Des feuilles que l'application sert déjà, simplement lues.
     theme_stylesheets: ['%kernel.project_dir%/assets/styles/app.css']
 
-    # Les palettes réellement proposées, dans l'ordre du menu. Absente : toutes.
+    # Les palettes réellement proposées, dans l'ordre du menu. Absente : toutes, dans l'ordre
+    # des feuilles, celles à contraste renforcé en dernier.
     themes: ['light', 'dark', 'contrast']
 
     # La palette d'ouverture, tant que le visiteur n'en a choisi aucune. Absente : le système.
@@ -559,7 +560,14 @@ elle ne se télécharge que lorsque la palette est choisie.
 **Une palette fige le clair ou le sombre, ou suit le système.** `color-scheme: light` ou `dark` la
 fige ; `color-scheme: light dark`, et des alias écrits en `light-dark()`, la font suivre le
 réglage de l'ordinateur — y compris dans les arrêts d'un dégradé. `qa/contrast.py` mesure alors
-les deux côtés.
+les deux côtés. Pour proposer un même thème en clair et en sombre, deux palettes partagent un
+bloc d'alias écrits en `light-dark()`, puis chacune fige son `color-scheme` :
+
+```css
+[data-theme="ocean-light"], [data-theme="ocean-dark"] { --app-accent: light-dark(#0e7490, #22d3ee); … }
+[data-theme="ocean-light"] { color-scheme: light; }
+[data-theme="ocean-dark"]  { color-scheme: dark; }
+```
 
 ### Où le déposer
 
@@ -568,11 +576,13 @@ les deux côtés.
   la compilation s'arrête en le disant — une palette qu'AssetMapper ne peut pas servir serait
   proposée sans jamais arriver au navigateur.
 - **Dans le paquet** — `public/themes/`, pour une palette qui appartient au design system
-  lui-même. C'est là que vivent « contraste renforcé », et trois palettes plus colorées, qui
-  suivent le réglage clair ou sombre du système : « violet » (menu en aplat violet, police
-  Poppins), « magenta » (page en cours et boutons en dégradé, police Nunito) et « multicolore »
-  (quatre couleurs vives, police Montserrat). Leurs polices sont dans `public/fonts/`, avec leur
-  licence (SIL Open Font License).
+  lui-même. C'est là que vivent « contraste renforcé », et trois thèmes plus colorés, chacun en
+  palette claire et sombre : « violet » (`violet-light`, `violet-dark` — menu en aplat violet,
+  police Poppins), « magenta » (`magenta-light`, `magenta-dark` — page en cours et boutons en
+  dégradé, police Nunito) et « multicolore » (`multicolor-light`, `multicolor-dark` — quatre
+  couleurs vives, police Montserrat). Leurs polices sont dans `public/fonts/`, avec leur licence
+  (SIL Open Font License). Le thème de base, celui de `tokens.css`, s'appelle « Indigo » dans le
+  menu : `light` et `dark`, ou le réglage du système.
 
 `theme_stylesheets` couvre l'autre cas : une feuille que l'application sert **déjà** — sa
 `app.css`, par exemple — et où une palette est écrite au milieu d'autre chose. Le paquet l'y lit,

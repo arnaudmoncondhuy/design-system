@@ -6,13 +6,16 @@
 
 theme:
     label: Thème
-    system: Selon mon système
-    light: Clair
-    dark: Sombre
+    system: Indigo, selon mon système
+    light: Indigo clair
+    dark: Indigo sombre
     contrast: Contraste renforcé
-    violet: Violet
-    magenta: Magenta
-    multicolor: Multicolore
+    violet-light: Violet clair
+    violet-dark: Violet sombre
+    magenta-light: Magenta clair
+    magenta-dark: Magenta sombre
+    multicolor-light: Multicolore clair
+    multicolor-dark: Multicolore sombre
 
 skip:
     content: Aller au contenu

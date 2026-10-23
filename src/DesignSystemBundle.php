@@ -300,7 +300,9 @@ final class DesignSystemBundle extends AbstractBundle
 
     /**
      * Les palettes du catalogue. Sans liste configurée, ce sont toutes celles que les feuilles
-     * déclarent ; avec une liste, ce sont celles qu'elle nomme, dans son ordre.
+     * déclarent, dans l'ordre où elles les déclarent — sauf celles qui relèvent leur seuil de
+     * contraste, qui ferment la liste ; avec une liste, ce sont celles qu'elle nomme, dans son
+     * ordre.
      *
      * @param array<array-key, mixed> $config
      * @param list<string>            $stylesheets
@@ -315,7 +317,14 @@ final class DesignSystemBundle extends AbstractBundle
         $wanted = $config['themes'] ?? [];
 
         if ([] === $wanted) {
-            return $declared;
+            $properties = StylesheetThemes::declarations(...$stylesheets);
+            $reinforced = array_filter(
+                $declared,
+                static fn (string $value): bool => (float) ($properties[$value][StylesheetThemes::RATIO] ?? 0) > 4.5,
+                \ARRAY_FILTER_USE_KEY,
+            );
+
+            return array_diff_key($declared, $reinforced) + $reinforced;
         }
 
         if ([] !== $unknown = array_diff($wanted, array_keys($declared))) {
