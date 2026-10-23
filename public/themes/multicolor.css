@@ -1,10 +1,11 @@
 /*
- * MULTICOLORE — quatre couleurs vives, bleu, violet, magenta et vert d'eau, en plus de celles
- * qui alertent ; un menu blanc aux icônes bleues, des cartes très arrondies sur un fond bleuté.
+ * MULTICOLORE — quatre couleurs vives, bleu, violet, magenta et vert d'eau, en plus de celles qui
+ * alertent ; un menu aux icônes bleues, des cartes très arrondies sur un fond bleuté.
  * Police Montserrat.
  *
- * Palette claire : `color-scheme` la fige, quel que soit le réglage du système. Elle ne
- * redéfinit que des alias, et la police qu'elle emploie ; aucun composant n'est repris ici.
+ * Elle suit le réglage du système : claire ou sombre selon l'ordinateur, chaque alias portant
+ * ses deux valeurs. Elle ne redéfinit que des alias, et les polices qu'elle emploie ; aucun
+ * composant n'est repris ici.
  */
 @font-face {
     font-family: "Montserrat";
@@ -16,7 +17,7 @@
 }
 
 [data-theme="multicolor"] {
-    color-scheme: light;
+    color-scheme: light dark;
 
     --app-font: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --app-weight-medium: 500;
@@ -26,83 +27,81 @@
     --app-radius: 16px;
     --app-radius-ui: 12px;
 
-    --app-bg: #f2f6fd;
-    --app-surface: #ffffff;
-    --app-raised: #f4f7fd;
-    --app-hover: #edf3fe;
+    --app-bg: light-dark(#f2f6fd, #0e1424);
+    --app-surface: light-dark(#ffffff, #151d33);
+    --app-raised: light-dark(#f4f7fd, #1c2642);
+    --app-hover: light-dark(#edf3fe, #22305a);
 
-    --app-ink: #14183a;
-    --app-ink-soft: #464b6e;
-    --app-ink-muted: #5b6087;
-    --app-ink-inverse: #ffffff;
+    --app-ink: light-dark(#14183a, #e7ecf8);
+    --app-ink-soft: light-dark(#464b6e, #c3cbe2);
+    --app-ink-muted: light-dark(#5b6087, #a0aac8);
+    --app-ink-inverse: light-dark(#ffffff, #0e1424);
 
-    --app-line: #e3e9f5;
-    --app-line-strong: #d0d9ec;
-    --app-line-control: #8188aa;
+    --app-line: light-dark(#e3e9f5, #233052);
+    --app-line-strong: light-dark(#d0d9ec, #31406a);
+    --app-line-control: light-dark(#8188aa, #7884ab);
 
-    --app-neutral: #5b6087;
-    --app-neutral-hover: #464b6e;
-    --app-neutral-soft: #f4f7fd;
-    --app-neutral-ink: #464b6e;
-    --app-on-neutral: #ffffff;
+    --app-neutral: light-dark(#5b6087, #a0aac8);
+    --app-neutral-hover: light-dark(#464b6e, #c3cbe2);
+    --app-neutral-soft: light-dark(#f4f7fd, #1c2642);
+    --app-neutral-ink: light-dark(#464b6e, #c3cbe2);
+    --app-on-neutral: light-dark(#ffffff, #0e1424);
 
-    --app-accent: #1659d6;
-    --app-accent-hover: #1047b0;
-    --app-accent-soft: #e3edfd;
-    --app-accent-ink: #0b3a96;
-    --app-on-accent: #ffffff;
+    --app-accent: light-dark(#1659d6, #6f9dff);
+    --app-accent-hover: light-dark(#1047b0, #94b6ff);
+    --app-accent-soft: light-dark(#e3edfd, #172a55);
+    --app-accent-ink: light-dark(#0b3a96, #d3e1ff);
+    --app-on-accent: light-dark(#ffffff, #0e1424);
 
-    --app-success: #067a5b;
-    --app-success-hover: #05553f;
-    --app-success-soft: #dff6ee;
-    --app-success-ink: #05553f;
-    --app-on-success: #ffffff;
+    --app-success: light-dark(#067a5b, #3fd09a);
+    --app-success-hover: light-dark(#05553f, #6ddcb2);
+    --app-success-soft: light-dark(#dff6ee, #0f2f25);
+    --app-success-ink: light-dark(#05553f, #b8f2d9);
+    --app-on-success: light-dark(#ffffff, #0e1424);
+    --app-warning: light-dark(#9a5200, #ffbf3d);
+    --app-warning-hover: light-dark(#7c4100, #ffd06e);
+    --app-warning-soft: light-dark(#fff1dc, #3a2c0a);
+    --app-warning-ink: light-dark(#6b3a00, #ffe2a6);
+    --app-on-warning: light-dark(#ffffff, #0e1424);
+    --app-danger: light-dark(#c8261b, #ff7a6e);
+    --app-danger-hover: light-dark(#a51e15, #ff9b91);
+    --app-danger-soft: light-dark(#fdeceb, #3d1714);
+    --app-danger-ink: light-dark(#8f1a12, #ffc9c3);
+    --app-on-danger: light-dark(#ffffff, #0e1424);
 
-    --app-warning: #9a5200;
-    --app-warning-hover: #7c4100;
-    --app-warning-soft: #fff1dc;
-    --app-warning-ink: #6b3a00;
-    --app-on-warning: #ffffff;
+    --app-info: light-dark(#0e7490, #4cc9e6);
+    --app-info-hover: light-dark(#0a5c72, #7ad8ee);
+    --app-info-soft: light-dark(#ddf3f8, #0d2d38);
+    --app-info-ink: light-dark(#0a4f63, #c2eef9);
+    --app-on-info: light-dark(#ffffff, #0e1424);
 
-    --app-danger: #c8261b;
-    --app-danger-hover: #a51e15;
-    --app-danger-soft: #fdeceb;
-    --app-danger-ink: #8f1a12;
-    --app-on-danger: #ffffff;
-
-    --app-info: #0e7490;
-    --app-info-hover: #0a5c72;
-    --app-info-soft: #ddf3f8;
-    --app-info-ink: #0a4f63;
-    --app-on-info: #ffffff;
-
-    --app-accent-glow: 0 8px 18px -10px rgb(22 89 214 / .8);
+    --app-accent-glow: 0 8px 18px -10px light-dark(rgb(22 89 214 / .8), rgb(111 157 255 / .5));
 
     /* Les quatre couleurs vives d'abord, puis orange et bleu canard. */
-    --app-hue-1: #1659d6;
-    --app-on-hue-1: #ffffff;
-    --app-hue-2: #6d3fe0;
-    --app-on-hue-2: #ffffff;
-    --app-hue-3: #c4119f;
-    --app-on-hue-3: #ffffff;
-    --app-hue-4: #0b7d6e;
-    --app-on-hue-4: #ffffff;
-    --app-hue-5: #c2410c;
-    --app-on-hue-5: #ffffff;
-    --app-hue-6: #0e7490;
-    --app-on-hue-6: #ffffff;
+    --app-hue-1: light-dark(#1659d6, #6f9dff);
+    --app-on-hue-1: light-dark(#ffffff, #0e1424);
+    --app-hue-2: light-dark(#6d3fe0, #a98bff);
+    --app-on-hue-2: light-dark(#ffffff, #0e1424);
+    --app-hue-3: light-dark(#c4119f, #ff6ad8);
+    --app-on-hue-3: light-dark(#ffffff, #0e1424);
+    --app-hue-4: light-dark(#0b7d6e, #3fd0bd);
+    --app-on-hue-4: light-dark(#ffffff, #0e1424);
+    --app-hue-5: light-dark(#c2410c, #ff9a57);
+    --app-on-hue-5: light-dark(#ffffff, #0e1424);
+    --app-hue-6: light-dark(#0e7490, #4cc9e6);
+    --app-on-hue-6: light-dark(#ffffff, #0e1424);
 
-    /* Un menu blanc, aux icônes bleues ; la page en cours y prend un fond bleu clair. */
-    --app-sidebar-bg: #ffffff;
-    --app-sidebar-ink: #464b6e;
-    --app-sidebar-ink-strong: #14183a;
-    --app-sidebar-icon: #1659d6;
-    --app-sidebar-hover: #f4f7fd;
-    --app-sidebar-current: #e3edfd;
-    --app-sidebar-current-ink: #0b3a96;
-    --app-sidebar-line: #edf1f9;
+    /* Un menu de la couleur des cartes, aux icônes bleues ; la page en cours y prend un fond bleu. */
+    --app-sidebar-bg: light-dark(#ffffff, #151d33);
+    --app-sidebar-ink: light-dark(#464b6e, #c3cbe2);
+    --app-sidebar-ink-strong: light-dark(#14183a, #e7ecf8);
+    --app-sidebar-icon: light-dark(#1659d6, #6f9dff);
+    --app-sidebar-hover: light-dark(#f4f7fd, #1c2642);
+    --app-sidebar-current: light-dark(#e3edfd, #172a55);
+    --app-sidebar-current-ink: light-dark(#0b3a96, #d3e1ff);
+    --app-sidebar-line: light-dark(#edf1f9, #1f2a47);
 
     --app-card-line: transparent;
-    --app-card-shadow: 0 2px 12px rgb(20 24 58 / .06);
-    --app-shadow-sm: 0 1px 3px rgb(20 24 58 / .08);
+    --app-card-shadow: 0 2px 12px light-dark(rgb(20 24 58 / .06), rgb(0 0 0 / .35));
+    --app-shadow-sm: 0 1px 3px light-dark(rgb(20 24 58 / .08), rgb(0 0 0 / .4));
 }

@@ -1,10 +1,11 @@
 /*
- * MAGENTA — un menu blanc d'où la page en cours sort en dégradé, du magenta au violet ; les
- * boutons reprennent ce dégradé, avec un halo, et les cartes flottent sur une ombre très douce.
- * Police Nunito.
+ * MAGENTA — un menu de la couleur des cartes d'où la page en cours sort en dégradé, du magenta au
+ * violet ; les boutons reprennent ce dégradé, avec un halo, et les cartes flottent sur une ombre
+ * très douce. Police Nunito.
  *
- * Palette claire : `color-scheme` la fige, quel que soit le réglage du système. Elle ne
- * redéfinit que des alias, et la police qu'elle emploie ; aucun composant n'est repris ici.
+ * Elle suit le réglage du système : claire ou sombre selon l'ordinateur, chaque alias portant
+ * ses deux valeurs. Elle ne redéfinit que des alias, et les polices qu'elle emploie ; aucun
+ * composant n'est repris ici.
  */
 @font-face {
     font-family: "Nunito";
@@ -16,7 +17,7 @@
 }
 
 [data-theme="magenta"] {
-    color-scheme: light;
+    color-scheme: light dark;
 
     --app-font: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --app-weight-medium: 600;
@@ -26,87 +27,85 @@
     --app-radius: 12px;
     --app-radius-ui: 9px;
 
-    --app-bg: #f5f6fb;
-    --app-surface: #ffffff;
-    --app-raised: #f6f7fb;
-    --app-hover: #fcf0f8;
+    --app-bg: light-dark(#f5f6fb, #11142a);
+    --app-surface: light-dark(#ffffff, #1a1e3a);
+    --app-raised: light-dark(#f6f7fb, #22274a);
+    --app-hover: light-dark(#fcf0f8, #2a2346);
 
-    --app-ink: #1f2a5a;
-    --app-ink-soft: #48507a;
-    --app-ink-muted: #5d6488;
-    --app-ink-inverse: #ffffff;
+    --app-ink: light-dark(#1f2a5a, #e9eaf5);
+    --app-ink-soft: light-dark(#48507a, #c6c9e0);
+    --app-ink-muted: light-dark(#5d6488, #a3a7c6);
+    --app-ink-inverse: light-dark(#ffffff, #11142a);
 
-    --app-line: #ebedf5;
-    --app-line-strong: #dcdfeb;
-    --app-line-control: #858aa5;
+    --app-line: light-dark(#ebedf5, #2a2f55);
+    --app-line-strong: light-dark(#dcdfeb, #393f6b);
+    --app-line-control: light-dark(#858aa5, #7c81a8);
 
-    --app-neutral: #5d6488;
-    --app-neutral-hover: #48507a;
-    --app-neutral-soft: #f6f7fb;
-    --app-neutral-ink: #48507a;
-    --app-on-neutral: #ffffff;
+    --app-neutral: light-dark(#5d6488, #a3a7c6);
+    --app-neutral-hover: light-dark(#48507a, #c6c9e0);
+    --app-neutral-soft: light-dark(#f6f7fb, #22274a);
+    --app-neutral-ink: light-dark(#48507a, #c6c9e0);
+    --app-on-neutral: light-dark(#ffffff, #11142a);
 
-    --app-accent: #c0128f;
-    --app-accent-hover: #9f0d76;
-    --app-accent-soft: #fde7f5;
-    --app-accent-ink: #8a0b67;
-    --app-on-accent: #ffffff;
+    --app-accent: light-dark(#c0128f, #ff6ac8);
+    --app-accent-hover: light-dark(#9f0d76, #ff94d8);
+    --app-accent-soft: light-dark(#fde7f5, #3f1636);
+    --app-accent-ink: light-dark(#8a0b67, #ffd0ee);
+    --app-on-accent: light-dark(#ffffff, #11142a);
 
-    --app-success: #067a46;
-    --app-success-hover: #05603a;
-    --app-success-soft: #e3f8ee;
-    --app-success-ink: #05603a;
-    --app-on-success: #ffffff;
+    --app-success: light-dark(#067a46, #34c98a);
+    --app-success-hover: light-dark(#05603a, #5fd8a3);
+    --app-success-soft: light-dark(#e3f8ee, #10302a);
+    --app-success-ink: light-dark(#05603a, #b6f0d4);
+    --app-on-success: light-dark(#ffffff, #11142a);
+    --app-warning: light-dark(#9a5200, #f0a63c);
+    --app-warning-hover: light-dark(#7c4100, #f6bd68);
+    --app-warning-soft: light-dark(#fff1dc, #3a2c14);
+    --app-warning-ink: light-dark(#6b3a00, #ffdca8);
+    --app-on-warning: light-dark(#ffffff, #11142a);
+    --app-danger: light-dark(#c8261b, #ff7a6e);
+    --app-danger-hover: light-dark(#a51e15, #ff9b91);
+    --app-danger-soft: light-dark(#fdeceb, #3d1720);
+    --app-danger-ink: light-dark(#8f1a12, #ffc9c3);
+    --app-on-danger: light-dark(#ffffff, #11142a);
 
-    --app-warning: #9a5200;
-    --app-warning-hover: #7c4100;
-    --app-warning-soft: #fff1dc;
-    --app-warning-ink: #6b3a00;
-    --app-on-warning: #ffffff;
-
-    --app-danger: #c8261b;
-    --app-danger-hover: #a51e15;
-    --app-danger-soft: #fdeceb;
-    --app-danger-ink: #8f1a12;
-    --app-on-danger: #ffffff;
-
-    --app-info: #2a62d8;
-    --app-info-hover: #1f4fb3;
-    --app-info-soft: #e7efff;
-    --app-info-ink: #173d8f;
-    --app-on-info: #ffffff;
+    --app-info: light-dark(#2a62d8, #7aa7ff);
+    --app-info-hover: light-dark(#1f4fb3, #9dbdff);
+    --app-info-soft: light-dark(#e7efff, #172650);
+    --app-info-ink: light-dark(#173d8f, #d2e1ff);
+    --app-on-info: light-dark(#ffffff, #11142a);
 
     /* L'action principale passe du magenta au violet. */
-    --app-accent-fill: linear-gradient(90deg, #c0128f 0%, #7b2fbf 100%);
-    --app-accent-fill-hover: linear-gradient(90deg, #9f0d76 0%, #65259f 100%);
-    --app-accent-glow: 0 10px 22px -12px rgb(192 18 143 / .7);
+    --app-accent-fill: linear-gradient(90deg, light-dark(#c0128f, #ff6ac8) 0%, light-dark(#7b2fbf, #b98bff) 100%);
+    --app-accent-fill-hover: linear-gradient(90deg, light-dark(#9f0d76, #ff94d8) 0%, light-dark(#65259f, #cdaaff) 100%);
+    --app-accent-glow: 0 10px 22px -12px light-dark(rgb(192 18 143 / .7), rgb(255 106 200 / .45));
 
     /* Les pastilles : magenta, violet, bleu, vert d'eau, orange, bleu canard. */
-    --app-hue-1: #c0128f;
-    --app-on-hue-1: #ffffff;
-    --app-hue-2: #7b2fbf;
-    --app-on-hue-2: #ffffff;
-    --app-hue-3: #2a62d8;
-    --app-on-hue-3: #ffffff;
-    --app-hue-4: #0f7f73;
-    --app-on-hue-4: #ffffff;
-    --app-hue-5: #c2410c;
-    --app-on-hue-5: #ffffff;
-    --app-hue-6: #0e7490;
-    --app-on-hue-6: #ffffff;
+    --app-hue-1: light-dark(#c0128f, #ff6ac8);
+    --app-on-hue-1: light-dark(#ffffff, #11142a);
+    --app-hue-2: light-dark(#7b2fbf, #b98bff);
+    --app-on-hue-2: light-dark(#ffffff, #11142a);
+    --app-hue-3: light-dark(#2a62d8, #7aa7ff);
+    --app-on-hue-3: light-dark(#ffffff, #11142a);
+    --app-hue-4: light-dark(#0f7f73, #3fd0bd);
+    --app-on-hue-4: light-dark(#ffffff, #11142a);
+    --app-hue-5: light-dark(#c2410c, #ff9a57);
+    --app-on-hue-5: light-dark(#ffffff, #11142a);
+    --app-hue-6: light-dark(#0e7490, #4cc9e6);
+    --app-on-hue-6: light-dark(#ffffff, #11142a);
 
-    /* Le menu reste blanc, détaché par une ombre ; la page en cours y porte le dégradé. */
-    --app-sidebar-bg: #ffffff;
-    --app-sidebar-ink: #5d6488;
-    --app-sidebar-ink-strong: #1f2a5a;
-    --app-sidebar-hover: #fcf0f8;
-    --app-sidebar-current: linear-gradient(90deg, #c0128f 0%, #7b2fbf 100%);
-    --app-sidebar-current-ink: #ffffff;
-    --app-sidebar-current-shadow: 0 10px 22px -10px rgb(192 18 143 / .6);
-    --app-sidebar-line: #f0f1f7;
-    --app-sidebar-shadow: 6px 0 30px -18px rgb(31 42 90 / .3);
+    /* Le menu reste de la couleur des cartes, détaché par une ombre ; la page en cours y porte le dégradé. */
+    --app-sidebar-bg: light-dark(#ffffff, #1a1e3a);
+    --app-sidebar-ink: light-dark(#5d6488, #a3a7c6);
+    --app-sidebar-ink-strong: light-dark(#1f2a5a, #e9eaf5);
+    --app-sidebar-hover: light-dark(#fcf0f8, #2a2346);
+    --app-sidebar-current: linear-gradient(90deg, light-dark(#c0128f, #ff6ac8) 0%, light-dark(#7b2fbf, #b98bff) 100%);
+    --app-sidebar-current-ink: light-dark(#ffffff, #11142a);
+    --app-sidebar-current-shadow: 0 10px 22px -10px light-dark(rgb(192 18 143 / .6), rgb(255 106 200 / .35));
+    --app-sidebar-line: light-dark(#f0f1f7, #262a4c);
+    --app-sidebar-shadow: 6px 0 30px -18px light-dark(rgb(31 42 90 / .3), rgb(0 0 0 / .7));
 
     --app-card-line: transparent;
-    --app-card-shadow: 0 1px 2px rgb(31 42 90 / .04), 0 6px 24px rgb(31 42 90 / .06);
-    --app-shadow-sm: 0 2px 6px rgb(31 42 90 / .06);
+    --app-card-shadow: 0 1px 2px light-dark(rgb(31 42 90 / .04), rgb(0 0 0 / .3)), 0 6px 24px light-dark(rgb(31 42 90 / .06), rgb(0 0 0 / .3));
+    --app-shadow-sm: 0 2px 6px light-dark(rgb(31 42 90 / .06), rgb(0 0 0 / .4));
 }

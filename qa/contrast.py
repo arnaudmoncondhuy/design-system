@@ -93,6 +93,9 @@ def resoudre(nom, palette, cote, vu=None):
         mv = re.fullmatch(r'var\((--app-[\w-]+)\)', part)
         return resoudre(mv.group(1), palette, cote, vu) if mv else [part]
     if 'gradient(' in v:
+        # Un arrêt peut être un light-dark() : on n'en garde que le côté mesuré.
+        cote_idx = 0 if cote == 'clair' else 1
+        v = re.sub(r'light-dark\(((?:[^()]|\([^()]*\))*)\)', lambda m: split_top(m.group(1))[cote_idx], v)
         arrets = []
         for m in re.finditer(r'var\((--app-[\w-]+)\)|(#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3})\b', v):
             arrets += resoudre(m.group(1), palette, cote, set(vu)) if m.group(1) else [m.group(2)]
@@ -153,9 +156,18 @@ for ton in TONS:
 MESURES = [('sans attribut, système clair', {}, 'clair', 4.5),
            ('sans attribut, système sombre', {}, 'sombre', 4.5)]
 
+# Une palette qui fige son `color-scheme` se mesure du côté qu'elle fige ; une palette qui le
+# laisse à `light dark` suit le système, et se mesure des deux côtés.
 for nom, palette in PALETTES.items():
-    cote = 'sombre' if palette.get('color-scheme', '').split() == ['dark'] else 'clair'
-    MESURES.append((nom, palette, cote, float(palette.get('--app-theme-ratio', 4.5))))
+    seuil = float(palette.get('--app-theme-ratio', 4.5))
+    schema = palette.get('color-scheme', 'light dark').split()
+    if schema == ['dark']:
+        MESURES.append((nom, palette, 'sombre', seuil))
+    elif schema == ['light']:
+        MESURES.append((nom, palette, 'clair', seuil))
+    else:
+        MESURES.append((f'{nom}, système clair', palette, 'clair', seuil))
+        MESURES.append((f'{nom}, système sombre', palette, 'sombre', seuil))
 
 fautes = 0
 for nom, palette, cote, seuil in MESURES:

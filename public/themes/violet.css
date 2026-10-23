@@ -1,9 +1,10 @@
 /*
- * VIOLET — un menu en aplat violet, des cartes blanches posées sur un gris très clair, sans
- * contour, et des pastilles de couleur franche pour les chiffres clés. Police Poppins.
+ * VIOLET — un menu en aplat violet, des cartes posées sur un fond très clair — ou très sombre —,
+ * sans contour, et des pastilles de couleur franche pour les chiffres clés. Police Poppins.
  *
- * Palette claire : `color-scheme` la fige, quel que soit le réglage du système. Elle ne
- * redéfinit que des alias, et les polices qu'elle emploie ; aucun composant n'est repris ici.
+ * Elle suit le réglage du système : claire ou sombre selon l'ordinateur, chaque alias portant
+ * ses deux valeurs. Elle ne redéfinit que des alias, et les polices qu'elle emploie ; aucun
+ * composant n'est repris ici.
  */
 @font-face {
     font-family: "Poppins";
@@ -39,7 +40,7 @@
 }
 
 [data-theme="violet"] {
-    color-scheme: light;
+    color-scheme: light dark;
 
     --app-font: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --app-weight-medium: 500;
@@ -49,81 +50,79 @@
     --app-radius: 10px;
     --app-radius-ui: 8px;
 
-    --app-bg: #f3f4f9;
-    --app-surface: #ffffff;
-    --app-raised: #f4f5f9;
-    --app-hover: #f1edfd;
+    --app-bg: light-dark(#f3f4f9, #121020);
+    --app-surface: light-dark(#ffffff, #1c1930);
+    --app-raised: light-dark(#f4f5f9, #24203b);
+    --app-hover: light-dark(#f1edfd, #2b2646);
 
-    --app-ink: #262a3b;
-    --app-ink-soft: #4b5068;
-    --app-ink-muted: #5f6480;
-    --app-ink-inverse: #ffffff;
+    --app-ink: light-dark(#262a3b, #e8e6f3);
+    --app-ink-soft: light-dark(#4b5068, #c9c5dd);
+    --app-ink-muted: light-dark(#5f6480, #a9a4c4);
+    --app-ink-inverse: light-dark(#ffffff, #121020);
 
-    --app-line: #e6e8f0;
-    --app-line-strong: #d5d8e4;
-    --app-line-control: #858aa1;
+    --app-line: light-dark(#e6e8f0, #2e2948);
+    --app-line-strong: light-dark(#d5d8e4, #3d3760);
+    --app-line-control: light-dark(#858aa1, #7d77a0);
 
-    --app-neutral: #5f6480;
-    --app-neutral-hover: #4b5068;
-    --app-neutral-soft: #f4f5f9;
-    --app-neutral-ink: #4b5068;
-    --app-on-neutral: #ffffff;
+    --app-neutral: light-dark(#5f6480, #a9a4c4);
+    --app-neutral-hover: light-dark(#4b5068, #c9c5dd);
+    --app-neutral-soft: light-dark(#f4f5f9, #24203b);
+    --app-neutral-ink: light-dark(#4b5068, #c9c5dd);
+    --app-on-neutral: light-dark(#ffffff, #121020);
 
-    --app-accent: #5b2ee6;
-    --app-accent-hover: #4a1fd0;
-    --app-accent-soft: #efe9fe;
-    --app-accent-ink: #3d17a8;
-    --app-on-accent: #ffffff;
+    --app-accent: light-dark(#5b2ee6, #a48bff);
+    --app-accent-hover: light-dark(#4a1fd0, #bfaeff);
+    --app-accent-soft: light-dark(#efe9fe, #2a2150);
+    --app-accent-ink: light-dark(#3d17a8, #e2d9ff);
+    --app-on-accent: light-dark(#ffffff, #121020);
 
-    --app-success: #067a46;
-    --app-success-hover: #05603a;
-    --app-success-soft: #e3f8ee;
-    --app-success-ink: #05603a;
-    --app-on-success: #ffffff;
+    --app-success: light-dark(#067a46, #34c98a);
+    --app-success-hover: light-dark(#05603a, #5fd8a3);
+    --app-success-soft: light-dark(#e3f8ee, #0f2e22);
+    --app-success-ink: light-dark(#05603a, #b6f0d4);
+    --app-on-success: light-dark(#ffffff, #121020);
+    --app-warning: light-dark(#9a5200, #f0a63c);
+    --app-warning-hover: light-dark(#7c4100, #f6bd68);
+    --app-warning-soft: light-dark(#fff1dc, #3a2a0e);
+    --app-warning-ink: light-dark(#6b3a00, #ffdca8);
+    --app-on-warning: light-dark(#ffffff, #121020);
+    --app-danger: light-dark(#c8261b, #ff7a6e);
+    --app-danger-hover: light-dark(#a51e15, #ff9b91);
+    --app-danger-soft: light-dark(#fdeceb, #3d1714);
+    --app-danger-ink: light-dark(#8f1a12, #ffc9c3);
+    --app-on-danger: light-dark(#ffffff, #121020);
 
-    --app-warning: #9a5200;
-    --app-warning-hover: #7c4100;
-    --app-warning-soft: #fff1dc;
-    --app-warning-ink: #6b3a00;
-    --app-on-warning: #ffffff;
-
-    --app-danger: #c8261b;
-    --app-danger-hover: #a51e15;
-    --app-danger-soft: #fdeceb;
-    --app-danger-ink: #8f1a12;
-    --app-on-danger: #ffffff;
-
-    --app-info: #1d5fd1;
-    --app-info-hover: #164bab;
-    --app-info-soft: #e6efff;
-    --app-info-ink: #123c8a;
-    --app-on-info: #ffffff;
+    --app-info: light-dark(#1d5fd1, #6ea8ff);
+    --app-info-hover: light-dark(#164bab, #93bfff);
+    --app-info-soft: light-dark(#e6efff, #13254a);
+    --app-info-ink: light-dark(#123c8a, #cfe0ff);
+    --app-on-info: light-dark(#ffffff, #121020);
 
     /* Les pastilles : vert, mauve, orange, violet, bleu canard, framboise. */
-    --app-hue-1: #0b7f46;
-    --app-on-hue-1: #ffffff;
-    --app-hue-2: #8b3fd9;
-    --app-on-hue-2: #ffffff;
-    --app-hue-3: #c2410c;
-    --app-on-hue-3: #ffffff;
-    --app-hue-4: #5b2ee6;
-    --app-on-hue-4: #ffffff;
-    --app-hue-5: #0e7490;
-    --app-on-hue-5: #ffffff;
-    --app-hue-6: #c0267a;
-    --app-on-hue-6: #ffffff;
+    --app-hue-1: light-dark(#0b7f46, #4cd08a);
+    --app-on-hue-1: light-dark(#ffffff, #121020);
+    --app-hue-2: light-dark(#8b3fd9, #c08bff);
+    --app-on-hue-2: light-dark(#ffffff, #121020);
+    --app-hue-3: light-dark(#c2410c, #ff9a57);
+    --app-on-hue-3: light-dark(#ffffff, #121020);
+    --app-hue-4: light-dark(#5b2ee6, #a48bff);
+    --app-on-hue-4: light-dark(#ffffff, #121020);
+    --app-hue-5: light-dark(#0e7490, #4cc9e6);
+    --app-on-hue-5: light-dark(#ffffff, #121020);
+    --app-hue-6: light-dark(#c0267a, #ff7ab8);
+    --app-on-hue-6: light-dark(#ffffff, #121020);
 
-    /* Le menu est un aplat violet ; la page en cours s'y marque d'un violet plus soutenu. */
-    --app-sidebar-bg: #5b2ee6;
-    --app-sidebar-ink: #e9e3fe;
+    /* Le menu est un aplat violet, plus profond en sombre ; la page en cours s'y marque d'un violet plus soutenu. */
+    --app-sidebar-bg: light-dark(#5b2ee6, #2b1d72);
+    --app-sidebar-ink: light-dark(#e9e3fe, #d9d0ff);
     --app-sidebar-ink-strong: #ffffff;
-    --app-sidebar-hover: #6a42ea;
-    --app-sidebar-current: #4318c4;
+    --app-sidebar-hover: light-dark(#6a42ea, #382890);
+    --app-sidebar-current: light-dark(#4318c4, #5b2ee6);
     --app-sidebar-current-ink: #ffffff;
-    --app-sidebar-line: #7652ec;
+    --app-sidebar-line: light-dark(#7652ec, #3a2c85);
 
-    /* Les blocs se détachent du fond par leur blancheur, et une ombre à peine marquée. */
+    /* Les blocs se détachent du fond par leur teinte, et une ombre à peine marquée. */
     --app-card-line: transparent;
-    --app-card-shadow: 0 1px 2px rgb(38 42 59 / .04), 0 4px 16px rgb(38 42 59 / .04);
-    --app-shadow-sm: 0 1px 2px rgb(38 42 59 / .06);
+    --app-card-shadow: 0 1px 2px light-dark(rgb(38 42 59 / .04), rgb(0 0 0 / .3)), 0 4px 16px light-dark(rgb(38 42 59 / .04), rgb(0 0 0 / .25));
+    --app-shadow-sm: 0 1px 2px light-dark(rgb(38 42 59 / .06), rgb(0 0 0 / .4));
 }
