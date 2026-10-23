@@ -537,7 +537,7 @@ Deux propriétés ne peignent rien et ne servent qu'à déclarer la palette :
 
 | Propriété | Rôle |
 | --- | --- |
-| `--app-theme-label` | Ce que le menu affiche. Sans elle, c'est la traduction `theme.<valeur>` du domaine `design_system` — ce dont vivent les trois palettes du paquet, qui restent ainsi traduisibles. |
+| `--app-theme-label` | Ce que le menu affiche. Sans elle, c'est la traduction `theme.<valeur>` du domaine `design_system` — ce dont vivent les palettes du paquet, qui restent ainsi traduisibles. |
 | `--app-theme-ratio` | Le seuil de contraste que la palette se donne, quand il dépasse les 4,5:1 ordinaires. `qa/contrast.py` l'applique à toutes les paires de texte. |
 
 Le paquet lit ces fichiers **à la compilation du conteneur**, jamais à l'exécution : il n'y a ni
@@ -549,6 +549,13 @@ C'est ce qui fait disparaître toute une famille de pannes : une palette propos�
 rien, ou un bloc que rien ne rend, ne peuvent plus exister — la déclaration et la peinture sont
 le même fichier.
 
+**Une palette peut aller au-delà des couleurs de la page.** Elle peint le menu latéral à part
+(`--app-sidebar-*`), détache les blocs par l'ombre plutôt que par le trait (`--app-card-line`,
+`--app-card-shadow`), donne un dégradé et un halo à l'action principale (`--app-accent-fill`,
+`--app-accent-glow`), choisit ses six couleurs décoratives (`--app-hue-*`), sa police, ses rayons.
+Une police se déclare dans le même fichier, par un `@font-face` dont le fichier se range à côté :
+elle ne se télécharge que lorsque la palette est choisie.
+
 ### Où le déposer
 
 - **Dans l'application** — `assets/styles/themes/`, et rien d'autre à faire. `theme_directories`
@@ -556,7 +563,11 @@ le même fichier.
   la compilation s'arrête en le disant — une palette qu'AssetMapper ne peut pas servir serait
   proposée sans jamais arriver au navigateur.
 - **Dans le paquet** — `public/themes/`, pour une palette qui appartient au design system
-  lui-même. C'est là que vit « contraste renforcé ».
+  lui-même. C'est là que vivent « contraste renforcé », et trois palettes claires plus
+  colorées : « violet » (menu en aplat violet, police Poppins), « magenta » (page en cours et
+  boutons en dégradé, police Nunito) et « multicolore » (quatre couleurs vives, police
+  Montserrat). Leurs polices sont dans `public/fonts/`, avec leur licence (SIL Open Font
+  License).
 
 `theme_stylesheets` couvre l'autre cas : une feuille que l'application sert **déjà** — sa
 `app.css`, par exemple — et où une palette est écrite au milieu d'autre chose. Le paquet l'y lit,

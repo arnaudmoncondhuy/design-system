@@ -1,0 +1,129 @@
+/*
+ * VIOLET — un menu en aplat violet, des cartes blanches posées sur un gris très clair, sans
+ * contour, et des pastilles de couleur franche pour les chiffres clés. Police Poppins.
+ *
+ * Palette claire : `color-scheme` la fige, quel que soit le réglage du système. Elle ne
+ * redéfinit que des alias, et les polices qu'elle emploie ; aucun composant n'est repris ici.
+ */
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/poppins-400.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("../fonts/poppins-500.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("../fonts/poppins-600.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../fonts/poppins-700.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+[data-theme="violet"] {
+    color-scheme: light;
+
+    --app-font: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --app-weight-medium: 500;
+    --app-weight-semibold: 600;
+    --app-weight-bold: 600;
+    --app-weight-heavy: 700;
+    --app-radius: 10px;
+    --app-radius-ui: 8px;
+
+    --app-bg: #f3f4f9;
+    --app-surface: #ffffff;
+    --app-raised: #f4f5f9;
+    --app-hover: #f1edfd;
+
+    --app-ink: #262a3b;
+    --app-ink-soft: #4b5068;
+    --app-ink-muted: #5f6480;
+    --app-ink-inverse: #ffffff;
+
+    --app-line: #e6e8f0;
+    --app-line-strong: #d5d8e4;
+    --app-line-control: #858aa1;
+
+    --app-neutral: #5f6480;
+    --app-neutral-hover: #4b5068;
+    --app-neutral-soft: #f4f5f9;
+    --app-neutral-ink: #4b5068;
+    --app-on-neutral: #ffffff;
+
+    --app-accent: #5b2ee6;
+    --app-accent-hover: #4a1fd0;
+    --app-accent-soft: #efe9fe;
+    --app-accent-ink: #3d17a8;
+    --app-on-accent: #ffffff;
+
+    --app-success: #067a46;
+    --app-success-hover: #05603a;
+    --app-success-soft: #e3f8ee;
+    --app-success-ink: #05603a;
+    --app-on-success: #ffffff;
+
+    --app-warning: #9a5200;
+    --app-warning-hover: #7c4100;
+    --app-warning-soft: #fff1dc;
+    --app-warning-ink: #6b3a00;
+    --app-on-warning: #ffffff;
+
+    --app-danger: #c8261b;
+    --app-danger-hover: #a51e15;
+    --app-danger-soft: #fdeceb;
+    --app-danger-ink: #8f1a12;
+    --app-on-danger: #ffffff;
+
+    --app-info: #1d5fd1;
+    --app-info-hover: #164bab;
+    --app-info-soft: #e6efff;
+    --app-info-ink: #123c8a;
+    --app-on-info: #ffffff;
+
+    /* Les pastilles : vert, mauve, orange, violet, bleu canard, framboise. */
+    --app-hue-1: #0b7f46;
+    --app-on-hue-1: #ffffff;
+    --app-hue-2: #8b3fd9;
+    --app-on-hue-2: #ffffff;
+    --app-hue-3: #c2410c;
+    --app-on-hue-3: #ffffff;
+    --app-hue-4: #5b2ee6;
+    --app-on-hue-4: #ffffff;
+    --app-hue-5: #0e7490;
+    --app-on-hue-5: #ffffff;
+    --app-hue-6: #c0267a;
+    --app-on-hue-6: #ffffff;
+
+    /* Le menu est un aplat violet ; la page en cours s'y marque d'un violet plus soutenu. */
+    --app-sidebar-bg: #5b2ee6;
+    --app-sidebar-ink: #e9e3fe;
+    --app-sidebar-ink-strong: #ffffff;
+    --app-sidebar-hover: #6a42ea;
+    --app-sidebar-current: #4318c4;
+    --app-sidebar-current-ink: #ffffff;
+    --app-sidebar-line: #7652ec;
+
+    /* Les blocs se détachent du fond par leur blancheur, et une ombre à peine marquée. */
+    --app-card-line: transparent;
+    --app-card-shadow: 0 1px 2px rgb(38 42 59 / .04), 0 4px 16px rgb(38 42 59 / .04);
+    --app-shadow-sm: 0 1px 2px rgb(38 42 59 / .06);
+}

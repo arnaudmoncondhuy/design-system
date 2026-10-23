@@ -10,6 +10,9 @@ theme:
     light: Clair
     dark: Sombre
     contrast: Contraste renforcé
+    violet: Violet
+    magenta: Magenta
+    multicolor: Multicolore
 
 skip:
     content: Aller au contenu

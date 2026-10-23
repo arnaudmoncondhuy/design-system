@@ -1,0 +1,112 @@
+/*
+ * MAGENTA — un menu blanc d'où la page en cours sort en dégradé, du magenta au violet ; les
+ * boutons reprennent ce dégradé, avec un halo, et les cartes flottent sur une ombre très douce.
+ * Police Nunito.
+ *
+ * Palette claire : `color-scheme` la fige, quel que soit le réglage du système. Elle ne
+ * redéfinit que des alias, et la police qu'elle emploie ; aucun composant n'est repris ici.
+ */
+@font-face {
+    font-family: "Nunito";
+    font-style: normal;
+    font-weight: 400 800;
+    font-display: swap;
+    src: url("../fonts/nunito.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+[data-theme="magenta"] {
+    color-scheme: light;
+
+    --app-font: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --app-weight-medium: 600;
+    --app-weight-semibold: 700;
+    --app-weight-bold: 700;
+    --app-weight-heavy: 800;
+    --app-radius: 12px;
+    --app-radius-ui: 9px;
+
+    --app-bg: #f5f6fb;
+    --app-surface: #ffffff;
+    --app-raised: #f6f7fb;
+    --app-hover: #fcf0f8;
+
+    --app-ink: #1f2a5a;
+    --app-ink-soft: #48507a;
+    --app-ink-muted: #5d6488;
+    --app-ink-inverse: #ffffff;
+
+    --app-line: #ebedf5;
+    --app-line-strong: #dcdfeb;
+    --app-line-control: #858aa5;
+
+    --app-neutral: #5d6488;
+    --app-neutral-hover: #48507a;
+    --app-neutral-soft: #f6f7fb;
+    --app-neutral-ink: #48507a;
+    --app-on-neutral: #ffffff;
+
+    --app-accent: #c0128f;
+    --app-accent-hover: #9f0d76;
+    --app-accent-soft: #fde7f5;
+    --app-accent-ink: #8a0b67;
+    --app-on-accent: #ffffff;
+
+    --app-success: #067a46;
+    --app-success-hover: #05603a;
+    --app-success-soft: #e3f8ee;
+    --app-success-ink: #05603a;
+    --app-on-success: #ffffff;
+
+    --app-warning: #9a5200;
+    --app-warning-hover: #7c4100;
+    --app-warning-soft: #fff1dc;
+    --app-warning-ink: #6b3a00;
+    --app-on-warning: #ffffff;
+
+    --app-danger: #c8261b;
+    --app-danger-hover: #a51e15;
+    --app-danger-soft: #fdeceb;
+    --app-danger-ink: #8f1a12;
+    --app-on-danger: #ffffff;
+
+    --app-info: #2a62d8;
+    --app-info-hover: #1f4fb3;
+    --app-info-soft: #e7efff;
+    --app-info-ink: #173d8f;
+    --app-on-info: #ffffff;
+
+    /* L'action principale passe du magenta au violet. */
+    --app-accent-fill: linear-gradient(90deg, #c0128f 0%, #7b2fbf 100%);
+    --app-accent-fill-hover: linear-gradient(90deg, #9f0d76 0%, #65259f 100%);
+    --app-accent-glow: 0 10px 22px -12px rgb(192 18 143 / .7);
+
+    /* Les pastilles : magenta, violet, bleu, vert d'eau, orange, bleu canard. */
+    --app-hue-1: #c0128f;
+    --app-on-hue-1: #ffffff;
+    --app-hue-2: #7b2fbf;
+    --app-on-hue-2: #ffffff;
+    --app-hue-3: #2a62d8;
+    --app-on-hue-3: #ffffff;
+    --app-hue-4: #0f7f73;
+    --app-on-hue-4: #ffffff;
+    --app-hue-5: #c2410c;
+    --app-on-hue-5: #ffffff;
+    --app-hue-6: #0e7490;
+    --app-on-hue-6: #ffffff;
+
+    /* Le menu reste blanc, détaché par une ombre ; la page en cours y porte le dégradé. */
+    --app-sidebar-bg: #ffffff;
+    --app-sidebar-ink: #5d6488;
+    --app-sidebar-ink-strong: #1f2a5a;
+    --app-sidebar-hover: #fcf0f8;
+    --app-sidebar-current: linear-gradient(90deg, #c0128f 0%, #7b2fbf 100%);
+    --app-sidebar-current-ink: #ffffff;
+    --app-sidebar-current-shadow: 0 10px 22px -10px rgb(192 18 143 / .6);
+    --app-sidebar-line: #f0f1f7;
+    --app-sidebar-shadow: 6px 0 30px -18px rgb(31 42 90 / .3);
+
+    --app-card-line: transparent;
+    --app-card-shadow: 0 1px 2px rgb(31 42 90 / .04), 0 6px 24px rgb(31 42 90 / .06);
+    --app-shadow-sm: 0 2px 6px rgb(31 42 90 / .06);
+}
