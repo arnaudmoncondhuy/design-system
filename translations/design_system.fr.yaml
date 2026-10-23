@@ -57,6 +57,7 @@ styleguide:
         disclosure: Menu et accordéon
         topbar: Barre du haut
         modal: Fenêtre modale
+        behaviors: Comportements
 
     tokens:
         hint: les seuls noms qu'un composant a le droit d'employer
@@ -261,9 +262,13 @@ styleguide:
         current: Dossier 128
 
     tab:
+        label: Exemple d'onglets
         one: Vue d'ensemble
         two: Détail
         three: Historique
+        one_body: Le premier panneau s'ouvre quand l'adresse n'en désigne aucun.
+        two_body: L'onglet ouvert s'écrit dans l'adresse, et se retrouve au rechargement.
+        three_body: Sans script, les trois panneaux restent affichés l'un sous l'autre.
 
     menu:
         open: Mon compte
@@ -280,3 +285,35 @@ styleguide:
         open: Ouvrir la fenêtre
         title: Confirmer la suppression
         body: Cette action ne peut pas être annulée.
+
+    behaviors:
+        hint: ce que le navigateur ne fait pas seul, et rien de plus
+        sort: "Classement reçu par le serveur à %time%."
+        sent: "Envoi reçu par le serveur à %time%."
+        deleted: "Suppression reçue par le serveur à %time%."
+
+    filter:
+        label: Filtrer la liste
+        placeholder: Un mot, avec ou sans accents
+        empty: Aucun élément ne contient ces mots.
+
+    autosubmit:
+        label: Classer par
+        recent: Les plus récents
+        name: Ordre alphabétique
+
+    busy:
+        send: Envoyer
+
+    confirm:
+        question: Supprimer « Clé bleue » ?
+
+    autorefresh:
+        clock: "Heure du serveur : %time% — relue toutes les cinq secondes."
+
+    flash:
+        show: Afficher des messages
+        success: Les modifications sont enregistrées.
+        notice: Une copie a été envoyée par e-mail.
+        warning: Deux fichiers ont été ignorés.
+        error: L'envoi a échoué.

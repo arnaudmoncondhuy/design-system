@@ -455,6 +455,44 @@ hr {
     margin-bottom: var(--app-space-xl);
 }
 
+/* Le bouton qui ferme un message se range au bout de la ligne, sans grandir le message qui le
+   porte. */
+.app-flashes > .app-alert > .app-btn {
+    flex: none;
+    margin-block: calc(-1 * var(--app-space-xs));
+    margin-inline-start: auto;
+}
+
+/*
+ * Posés par-dessus la page, sous la barre du haut et contre le bord droit ; sur un écran
+ * étroit, ils en prennent la largeur. Le cadre laisse passer les clics vers la page : seuls les
+ * messages les arrêtent.
+ */
+.app-flashes[data-floating] {
+    position: fixed;
+    inset-block-start: calc(var(--app-topbar-height) + var(--app-space-sm));
+    inset-inline: var(--app-space-lg);
+    z-index: var(--app-z-dropdown);
+    max-width: 24rem;
+    margin: 0;
+    margin-inline-start: auto;
+    pointer-events: none;
+}
+
+.app-flashes[data-floating] > .app-alert {
+    align-items: center;
+    box-shadow: var(--app-shadow-pop);
+    pointer-events: auto;
+    animation: app-flash-in var(--app-speed-slow) var(--app-ease);
+}
+
+@keyframes app-flash-in {
+    from {
+        opacity: 0;
+        transform: translateY(calc(-1 * var(--app-space-sm)));
+    }
+}
+
 /* ═══ Utilitaires ══════════════════════════════════════════════════════════════════════ */
 
 /* Empile ses enfants ; l'écart se règle par `--app-stack-gap` sur l'instance. */

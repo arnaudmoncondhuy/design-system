@@ -34,6 +34,7 @@
     disclosure: 'styleguide.section.disclosure',
     topbar: 'styleguide.section.topbar',
     modal: 'styleguide.section.modal',
+    behaviors: 'styleguide.section.behaviors',
 } %}
 
 {% block title %}{{ 'styleguide.title'|trans({}, 'design_system') }}{% endblock %}
@@ -44,6 +45,20 @@
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('bundles/designsystem/styleguide.css') }}">
+{% endblock %}
+
+{# Les messages de démonstration passent par le même gabarit que ceux de la session. #}
+{% block flashes %}
+    {% if app.request.query.has('sg-flashes') %}
+        {{ include('@DesignSystem/flashes.html.twig', {flashes: {
+            success: ['styleguide.flash.success'|trans({}, 'design_system')],
+            notice: ['styleguide.flash.notice'|trans({}, 'design_system')],
+            warning: ['styleguide.flash.warning'|trans({}, 'design_system')],
+            error: ['styleguide.flash.error'|trans({}, 'design_system')],
+        }}) }}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
 {% endblock %}
 
 {% block sidebar %}
@@ -635,11 +650,18 @@
                     </ol>
                 </nav>
 
-                <nav class="app-tabs">
-                    <a class="app-tabs-item" href="#navigation" aria-current="page">{{ 'styleguide.tab.one'|trans({}, 'design_system') }}</a>
-                    <a class="app-tabs-item" href="#navigation">{{ 'styleguide.tab.two'|trans({}, 'design_system') }}</a>
-                    <a class="app-tabs-item" href="#navigation">{{ 'styleguide.tab.three'|trans({}, 'design_system') }}</a>
-                </nav>
+                {# Des liens d'ancre vers les panneaux : sans script, tous restent affichés et le
+                   lien y saute. Le comportement `tabs` n'en laisse voir qu'un. #}
+                <div class="app-stack" data-controller="tabs">
+                    <nav class="app-tabs" aria-label="{{ 'styleguide.tab.label'|trans({}, 'design_system') }}">
+                        {% for entry in ['one', 'two', 'three'] %}
+                            <a class="app-tabs-item" href="#sg-tab-{{ entry }}" data-tabs-target="link" data-action="tabs#select">{{ ('styleguide.tab.' ~ entry)|trans({}, 'design_system') }}</a>
+                        {% endfor %}
+                    </nav>
+                    {% for entry in ['one', 'two', 'three'] %}
+                        <p id="sg-tab-{{ entry }}" data-tabs-target="panel">{{ ('styleguide.tab.' ~ entry ~ '_body')|trans({}, 'design_system') }}</p>
+                    {% endfor %}
+                </div>
             </div>
         </section>
 
@@ -823,6 +845,73 @@
                         <button type="button" class="app-btn" data-tone="danger" data-action="dialog#close">{{ 'action.confirm'|trans({}, 'design_system') }}</button>
                     </div>
                 </dialog>
+            </div>
+        </section>
+
+        <section class="app-sg-section" id="behaviors">
+            <div class="app-section-title">
+                <h2>{{ 'styleguide.section.behaviors'|trans({}, 'design_system') }}</h2>
+                <span class="app-muted">{{ 'styleguide.behaviors.hint'|trans({}, 'design_system') }}</span>
+            </div>
+            <div class="app-stack">
+                {# `filter` : la liste est déjà là, le champ ne fait que cacher. Les accents ne
+                   comptent pas — « telephone » trouve « Mon téléphone ». #}
+                <div class="app-card" data-controller="filter">
+                    <div class="app-field">
+                        <label class="app-field-label" for="sg-filter">{{ 'styleguide.filter.label'|trans({}, 'design_system') }}</label>
+                        <input id="sg-filter" type="search" placeholder="{{ 'styleguide.filter.placeholder'|trans({}, 'design_system') }}"
+                               data-filter-target="input" data-action="filter#apply">
+                    </div>
+                    <ul class="app-list">
+                        {% for entry in ['one', 'two', 'three'] %}
+                            <li class="app-list-item" data-filter-target="item">
+                                <p class="app-list-title">{{ ('styleguide.list.' ~ entry)|trans({}, 'design_system') }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <p class="app-muted" role="status" data-filter-target="empty" hidden>{{ 'styleguide.filter.empty'|trans({}, 'design_system') }}</p>
+                </div>
+
+                {# `busy`, `autosubmit` et `confirm`, dans un cadre Turbo : l'envoi ne recharge que
+                   lui, et le serveur dit ce qu'il a reçu. #}
+                <turbo-frame id="sg-submit" data-controller="busy">
+                    <div class="app-sg-demo">
+                        <form method="get" data-controller="autosubmit">
+                            <div class="app-field">
+                                <label class="app-field-label" for="sg-sort">{{ 'styleguide.autosubmit.label'|trans({}, 'design_system') }}</label>
+                                <select id="sg-sort" name="sg-sort" data-action="change->autosubmit#submit">
+                                    {% for value in ['recent', 'name'] %}
+                                        <option value="{{ value }}"{{ app.request.query.get('sg-sort') == value ? ' selected' : '' }}>
+                                            {{ ('styleguide.autosubmit.' ~ value)|trans({}, 'design_system') }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </form>
+                        <form method="get">
+                            <button type="submit" class="app-btn" name="sg-sent" value="1">{{ 'styleguide.busy.send'|trans({}, 'design_system') }}</button>
+                        </form>
+                        <form method="get" data-controller="confirm" data-action="submit->confirm#ask"
+                              data-confirm-question-value="{{ 'styleguide.confirm.question'|trans({}, 'design_system') }}">
+                            <button type="submit" class="app-btn" data-variant="subtle" data-tone="danger" name="sg-deleted" value="1">{{ 'action.delete'|trans({}, 'design_system') }}</button>
+                        </form>
+                        {% for key in ['sg-sort', 'sg-sent', 'sg-deleted'] %}
+                            {% if app.request.query.has(key) %}
+                                <p class="app-muted" role="status">{{ ('styleguide.behaviors.' ~ key|replace({'sg-': ''}))|trans({'%time%': 'now'|date('H:i:s')}, 'design_system') }}</p>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </turbo-frame>
+
+                {# `autorefresh` : le cadre se relit seul, et l'heure du serveur avance. #}
+                <turbo-frame id="sg-clock" data-controller="autorefresh" data-autorefresh-interval-value="5000">
+                    <p class="app-sg-demo app-muted">{{ 'styleguide.autorefresh.clock'|trans({'%time%': 'now'|date('H:i:s')}, 'design_system') }}</p>
+                </turbo-frame>
+
+                {# `flashes` : les messages de la page, posés par-dessus elle. #}
+                <div class="app-sg-demo">
+                    <a class="app-btn" data-variant="subtle" href="?sg-flashes=1#behaviors">{{ 'styleguide.flash.show'|trans({}, 'design_system') }}</a>
+                </div>
             </div>
         </section>
     </div>

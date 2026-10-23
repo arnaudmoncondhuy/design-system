@@ -84,6 +84,21 @@ est teinté en `danger`, `notice` en `info`, et ce qui n'est pas dans cette list
 traduction, si bien qu'une clé y devient sa phrase et qu'une phrase déjà écrite en ressort
 intacte.
 
+**Ils se posent par-dessus la page**, contre le bord droit, sous la barre du haut, et chacun a
+son bouton pour se fermer. Un message de réussite ou d'information se retire seul au bout de six
+secondes ; un avertissement ou un échec reste jusqu'à ce qu'on le ferme. Le délai s'interrompt
+tant que le pointeur ou le focus est dessus. Sans script, ils restent en tête du contenu, dans le
+flux.
+
+Une application qui les rend ailleurs — dans un cadre Turbo, pour qu'ils suivent les envois qui
+s'y font — vide le bloc `flashes` et inclut le même gabarit à l'endroit voulu :
+
+```twig
+{% block flashes %}{% endblock %}
+{# … puis, dans le cadre : #}
+{{ include('@DesignSystem/flashes.html.twig') }}
+```
+
 **Il n'y a rien d'autre à écrire.** Le paquet ajoute lui-même son dossier de comportements à
 ceux que StimulusBundle balaye : ses contrôleurs s'enregistrent sous le nom de leur fichier, et
 l'application n'a ni entrée d'`importmap` à poser, ni contrôleur à enregistrer.
@@ -367,6 +382,70 @@ avec `centered` pose le contenu au milieu de l'écran, dans une colonne étroite
 L'en-tête reste au-dessus — le choix de palette doit rester joignable avant même d'entrer. Un
 menu latéral, s'il y en a un, l'emporte sur ce choix. La largeur de la colonne est le jeton
 `--app-content-narrow`.
+
+### Les comportements
+
+Six gestes que chaque application finit par écrire, et que le navigateur ne fait pas seul. Chacun
+s'enregistre sous le nom de son fichier, comme `menu` ou `dialog`.
+
+| Comportement | Ce qu'il fait | Où le poser |
+| --- | --- | --- |
+| `busy` | le bouton qui a envoyé un formulaire tourne jusqu'à la réponse | un formulaire, ou ce qui en contient plusieurs |
+| `autosubmit` | le formulaire part dès qu'un champ change | le formulaire ; le champ dit quand partir |
+| `autorefresh` | le cadre se recharge seul | un `<turbo-frame>` |
+| `filter` | ne garde que les éléments qui contiennent les mots saisis | ce qui contient le champ et la liste |
+| `tabs` | n'affiche qu'un panneau à la fois | ce qui contient les onglets et les panneaux |
+| `confirm` | pose une question avant une action qui ne se rattrape pas | un formulaire ou un lien |
+
+```twig
+{# Le bouton tourne pendant l'envoi ; la liste s'applique d'elle-même. #}
+<form method="post" data-controller="busy autosubmit">
+    <select name="sort" data-action="change->autosubmit#submit">…</select>
+    <button type="submit" class="app-btn">Enregistrer</button>
+</form>
+
+{# Une question avant de supprimer, qui nomme ce qu'elle concerne. #}
+<form method="post" data-controller="confirm" data-action="submit->confirm#ask"
+      data-confirm-question-value="{{ 'dossier.supprimer.question'|trans({'%nom%': dossier.nom}) }}">
+    <button type="submit" class="app-btn" data-tone="danger">Supprimer</button>
+</form>
+
+{# Rechargé chaque minute ; 15 secondes sans valeur. #}
+<turbo-frame id="etat" data-controller="autorefresh" data-autorefresh-interval-value="60000">…</turbo-frame>
+
+{# Le texte cherché est `data-search` s'il est posé, le texte de l'élément sinon. #}
+<div data-controller="filter">
+    <input type="search" data-filter-target="input" data-action="filter#apply">
+    <ul>
+        <li data-filter-target="item">…</li>
+    </ul>
+    <p role="status" data-filter-target="empty" hidden>Aucun élément ne contient ces mots.</p>
+</div>
+
+{# Des liens d'ancre vers les panneaux : l'onglet ouvert s'écrit dans l'adresse. #}
+<div data-controller="tabs">
+    <nav class="app-tabs" aria-label="Fiche">
+        <a class="app-tabs-item" href="#resume" data-tabs-target="link" data-action="tabs#select">Résumé</a>
+        <a class="app-tabs-item" href="#historique" data-tabs-target="link" data-action="tabs#select">Historique</a>
+    </nav>
+    <section id="resume" data-tabs-target="panel">…</section>
+    <section id="historique" data-tabs-target="panel">…</section>
+</div>
+```
+
+Ce qu'ils ne font pas, exprès :
+
+- **`busy` ne suit que les envois que Turbo conduit**, les seuls dont on sait quand ils finissent :
+  un formulaire qui télécharge un fichier, sous `data-turbo="false"`, laisserait sinon son bouton
+  tourner pour toujours. Le bouton n'est pas désactivé — il ne serait plus transmis ;
+- **`autorefresh` attend** quand l'onglet est caché, qu'une fenêtre est ouverte, qu'un champ du
+  cadre a le focus ou que le cadre charge déjà : un rechargement ne doit rien faire perdre ;
+- **`tabs` laisse tout affiché sans script**, et le lien saute au panneau.
+
+**Le nom d'un comportement du paquet l'emporte sur celui d'une application** : StimulusBundle lit
+le dossier du paquet après celui de l'application, et le dernier lu gagne. Une application qui
+avait son propre `filter` ou son propre `tabs` le renomme avant de monter de version, ou passe à
+celui du paquet.
 
 ### Les icônes
 

@@ -1,0 +1,40 @@
+{#
+    Les messages éphémères.
+
+    Un message éphémère se retire de la session au moment où on le demande : il est donc relevé
+    une fois, et c'est cette copie qu'on interroge. Demander d'abord s'il y en a, puis les lire,
+    ne rendrait qu'un cadre vide. Une variable `flashes` passée à l'inclusion prend la place de
+    la session.
+
+    Le type d'un message éphémère n'est pas un ton : Symfony dit « error » et « notice », que
+    `data-tone` ne connaît pas, et une valeur inconnue laisse l'alerte sans fond ni teinte sans
+    qu'aucune erreur ne le dise. Ce qui n'est pas traduit ici passe tel quel : un ton ajouté reste
+    joignable.
+
+    Le message traverse le catalogue de traduction, qui rend intacte une phrase qui n'y figure pas.
+
+    Le comportement `flashes` les pose par-dessus la page et découvre le bouton qui les ferme ;
+    sans lui, ils restent là où le gabarit les rend, dans le flux.
+#}
+{% set flashes = flashes ?? app.flashes %}
+
+{% if flashes is not empty %}
+    {% set tones = {'error': 'danger', 'notice': 'info'} %}
+    <div class="app-flashes" data-controller="flashes">
+        {% for type, messages in flashes %}
+            {% for message in messages %}
+                <p class="app-alert" data-tone="{{ tones[type] ?? type }}" role="status" data-flashes-target="message">
+                    <span>{{ message|trans }}</span>
+                    <button type="button" class="app-btn" data-variant="ghost" data-size="sm" data-icon hidden
+                            data-flashes-target="close" data-action="flashes#close">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                        <span class="app-sr-only">{{ 'action.close'|trans({}, 'design_system') }}</span>
+                    </button>
+                </p>
+            {% endfor %}
+        {% endfor %}
+    </div>
+{% endif %}
