@@ -65,6 +65,9 @@
 {% block sidebar %}
     <nav class="app-nav" data-orientation="vertical" aria-label="{{ 'styleguide.sidebar.label'|trans({}, 'design_system') }}">
         {% for anchor, label in sections %}
+            {% if anchor in ['tokens', 'buttons'] %}
+                <span class="app-nav-heading">{{ ('styleguide.sidebar.' ~ anchor)|trans({}, 'design_system') }}</span>
+            {% endif %}
             <a class="app-nav-item" href="#{{ anchor }}">{{ label|trans({}, 'design_system') }}</a>
         {% endfor %}
     </nav>
@@ -712,6 +715,25 @@
                         <a class="app-nav-item" href="#navigation" aria-current="page">{{ 'styleguide.nav.overview'|trans({}, 'design_system') }}</a>
                         <a class="app-nav-item" href="#navigation">{{ 'styleguide.nav.files'|trans({}, 'design_system') }}</a>
                         <a class="app-nav-item" href="#navigation">{{ 'styleguide.nav.settings'|trans({}, 'design_system') }}</a>
+                    </div>
+                </nav>
+
+                {# Un menu vertical, ses liens précédés de leur icône, et un groupe sous son intertitre. #}
+                <nav class="app-sg-demo" aria-label="{{ 'styleguide.nav.grouped'|trans({}, 'design_system') }}">
+                    <div class="app-nav" data-orientation="vertical">
+                        <a class="app-nav-item" href="#navigation" aria-current="page">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="9" x="3" y="3" rx="1" /><rect width="7" height="5" x="14" y="3" rx="1" /><rect width="7" height="9" x="14" y="12" rx="1" /><rect width="7" height="5" x="3" y="16" rx="1" /></svg>
+                            {{ 'styleguide.nav.overview'|trans({}, 'design_system') }}
+                        </a>
+                        <a class="app-nav-item" href="#navigation">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" /></svg>
+                            {{ 'styleguide.nav.files'|trans({}, 'design_system') }}
+                        </a>
+                        <span class="app-nav-heading">{{ 'styleguide.nav.group'|trans({}, 'design_system') }}</span>
+                        <a class="app-nav-item" href="#navigation">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /><circle cx="12" cy="12" r="3" /></svg>
+                            {{ 'styleguide.nav.settings'|trans({}, 'design_system') }}
+                        </a>
                     </div>
                 </nav>
 

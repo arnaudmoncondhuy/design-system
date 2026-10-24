@@ -1522,6 +1522,26 @@ fieldset.app-field {
     margin-left: auto;
 }
 
+/* L'intertitre d'un groupe de liens, dans un menu vertical. Un espace et un trait au-dessus le
+   détachent du groupe qui précède ; en tête du menu, il n'a rien à détacher. Il nomme le groupe
+   sans être un lien : il ne prend ni survol ni page en cours. */
+.app-nav-heading {
+    margin-top: var(--app-space-md);
+    padding: var(--app-space-md) var(--app-space-md) var(--app-space-2xs);
+    border-top: 1px solid var(--app-line);
+    font-size: var(--app-text-xs);
+    font-weight: var(--app-weight-semibold);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--app-ink-muted);
+}
+
+.app-nav-heading:first-child {
+    margin-top: 0;
+    padding-top: var(--app-space-xs);
+    border-top: 0;
+}
+
 /* Dans le menu latéral, les liens prennent les couleurs du menu, et non celles de la page. */
 .app-sidebar .app-nav-item {
     color: var(--app-sidebar-ink);
@@ -1529,6 +1549,11 @@ fieldset.app-field {
 
 .app-sidebar .app-nav-item > svg {
     color: var(--app-sidebar-icon);
+}
+
+.app-sidebar .app-nav-heading {
+    border-top-color: var(--app-sidebar-line);
+    color: var(--app-sidebar-ink-muted);
 }
 
 .app-sidebar .app-nav-item:hover {

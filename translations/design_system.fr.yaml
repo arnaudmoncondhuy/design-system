@@ -40,6 +40,8 @@ styleguide:
     sidebar:
         label: Sections du catalogue
         footer: Collé en bas
+        tokens: Fondations
+        buttons: Composants
 
     section:
         tokens: Jetons
@@ -260,6 +262,8 @@ styleguide:
 
     nav:
         label: Navigation principale
+        grouped: Navigation par groupes
+        group: Administration
         overview: Tableau de bord
         files: Dossiers
         settings: Réglages

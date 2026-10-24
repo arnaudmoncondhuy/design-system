@@ -349,9 +349,15 @@ en a un, dans l'en-tête sinon. Le bloc `brand` est le même dans les deux cas.
 de ligne pour dire ce qui attend derrière lui — `<span class="app-badge" data-variant="solid"
 data-tone="danger">8</span>`.
 
-**Le menu a ses propres couleurs** — fond, liens, survol, page en cours, filet, ombre —, toutes
-reprises de la page par défaut. Une palette peut ainsi le peindre en aplat ou en dégradé sans
-toucher au reste.
+**Un groupe de liens se nomme** par un intertitre posé entre eux — `<span
+class="app-nav-heading">Standard</span>`. Un espace et un trait le détachent du groupe qui
+précède ; en tête du menu, il n'a rien à détacher.
+
+**Le menu a ses propres couleurs** — fond, liens, texte discret, survol, page en cours, filet,
+ombre —, toutes reprises de la page par défaut. Une palette peut ainsi le peindre en aplat ou en
+dégradé sans toucher au reste. Ce qu'une application pose elle-même dans le menu prend ces
+couleurs-là, `--app-sidebar-ink-muted` pour un texte discret, et non celles de la page : sur un
+menu peint, une couleur de page peut devenir illisible.
 
 Le reste se comporte comme on l'attend, sans qu'une ligne soit à écrire pour cela :
 
