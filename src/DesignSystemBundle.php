@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ArnaudMoncondhuy\DesignSystem;
 
+use ArnaudMoncondhuy\DesignSystem\Theme\Mode;
 use ArnaudMoncondhuy\DesignSystem\Theme\StylesheetThemes;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\Config\Resource\DirectoryResource;
@@ -29,7 +30,7 @@ final class DesignSystemBundle extends AbstractBundle
     /** Le nom du cookie relu, tel que `config/services.php` l'injecte à l'adaptateur. */
     public const string COOKIE_PARAMETER = 'design_system.cookie_name';
 
-    /** Les palettes retenues : valeur => libellé déclaré par sa feuille, ou `null`. */
+    /** Les palettes retenues : valeur => libellé déclaré par sa feuille, ou `null`, et modes qu'elle sait rendre. */
     public const string THEMES_PARAMETER = 'design_system.themes';
 
     /** Les feuilles où les palettes se déclarent, celle du paquet en tête. */
@@ -38,13 +39,16 @@ final class DesignSystemBundle extends AbstractBundle
     /** Les feuilles de palette que le gabarit doit faire servir, en chemins d'AssetMapper. */
     public const string LINKS_PARAMETER = 'design_system.theme_links';
 
-    /** La palette en vigueur tant que le visiteur n'en a choisi aucune, ou `null`. */
+    /** La palette en vigueur tant que le visiteur n'en a choisi aucune, et dans le mode qu'une autre n'a pas. */
     public const string DEFAULT_PARAMETER = 'design_system.default_theme';
+
+    /** Le mode en vigueur tant que le visiteur n'en a choisi aucun. */
+    public const string MODE_PARAMETER = 'design_system.default_mode';
 
     /**
      * Chaque clé ne sert qu'à restreindre ou à orienter : sans configuration, le paquet monte la
-     * lecture par cookie, propose toutes les palettes que les feuilles déclarent, laisse le
-     * système trancher tant que rien n'est choisi, et n'expose aucune route.
+     * lecture par cookie, propose toutes les palettes que les feuilles déclarent, ouvre sur
+     * Indigo en mode automatique tant que rien n'est choisi, et n'expose aucune route.
      */
     public function configure(DefinitionConfigurator $definition): void
     {
@@ -54,18 +58,20 @@ final class DesignSystemBundle extends AbstractBundle
                     ->values(['cookie', 'none'])
                     ->defaultValue('cookie')
                     ->info(
-                        "D'où se relit la palette choisie. « cookie » : le navigateur la retient, sans base ni "
-                        ."compte. « none » : rien n'est retenu, la préférence du système s'applique toujours. Pour "
-                        ."la lire ailleurs — le champ d'un compte connecté —, laisser cette clé et substituer le "
-                        .'service `ArnaudMoncondhuy\DesignSystem\Theme\ThemeStorage` dans son propre services.yaml.'
+                        "D'où se relisent le thème et le mode choisis. « cookie » : le navigateur les retient, sans "
+                        ."base ni compte. « none » : rien n'est retenu, le thème et le mode par défaut s'appliquent "
+                        ."toujours. Pour les lire ailleurs — le champ d'un compte connecté —, laisser cette clé et "
+                        .'substituer le service `ArnaudMoncondhuy\DesignSystem\Theme\ThemeStorage` dans son propre '
+                        .'services.yaml.'
                     )
                 ->end()
                 ->scalarNode('cookie_name')
                     ->defaultValue('theme')
                     ->cannotBeEmpty()
                     ->info(
-                        'Le nom du cookie relu. Doit rester celui que le contrôleur Stimulus écrit : un désaccord '
-                        ."ne produit aucune erreur, seulement un choix jamais relu."
+                        'Le nom du cookie du thème ; celui du mode y ajoute `_mode`. Doit rester celui que le '
+                        ."contrôleur Stimulus écrit : un désaccord ne produit aucune erreur, seulement un choix "
+                        .'jamais relu.'
                     )
                 ->end()
                 ->arrayNode('theme_stylesheets')
@@ -96,12 +102,20 @@ final class DesignSystemBundle extends AbstractBundle
                     )
                 ->end()
                 ->scalarNode('default_theme')
-                    ->defaultNull()
+                    ->defaultValue('indigo')
+                    ->cannotBeEmpty()
                     ->info(
-                        'La palette sur laquelle l\'application s\'ouvre tant que le visiteur n\'en a choisi aucune. '
-                        .'Absente : la préférence du système tranche entre clair et sombre. Le menu ne propose alors '
-                        .'plus « selon mon système », puisque l\'absence de choix désigne cette palette. Nommer une '
-                        .'palette que le menu ne propose pas arrête la compilation.'
+                        'Le thème sur lequel l\'application s\'ouvre tant que le visiteur n\'en a choisi aucun, et '
+                        .'celui qui s\'affiche dans le mode qu\'un autre thème n\'a pas. Il doit donc avoir les deux '
+                        .'modes, et figurer au menu : sinon, la compilation s\'arrête.'
+                    )
+                ->end()
+                ->enumNode('default_mode')
+                    ->values(array_map(static fn (Mode $mode): string => $mode->value, Mode::cases()))
+                    ->defaultValue(Mode::Auto->value)
+                    ->info(
+                        'Le mode sur lequel l\'application s\'ouvre tant que le visiteur n\'en a choisi aucun. '
+                        .'« auto » : la préférence du système tranche entre clair et sombre.'
                     )
                 ->end()
             ->end()
@@ -157,6 +171,8 @@ final class DesignSystemBundle extends AbstractBundle
         $themes = $this->themes($config, $stylesheets['read']);
         $container->setParameter(self::THEMES_PARAMETER, $themes);
         $container->setParameter(self::DEFAULT_PARAMETER, $this->defaultTheme($config, $themes));
+        $mode = $config['default_mode'] ?? null;
+        $container->setParameter(self::MODE_PARAMETER, \is_string($mode) ? $mode : Mode::Auto->value);
 
         $configurator->import('../config/services.php');
 
@@ -173,26 +189,39 @@ final class DesignSystemBundle extends AbstractBundle
     }
 
     /**
-     * La palette d'ouverture, quand l'application en nomme une. Elle doit figurer au menu : une
-     * palette qu'on ne peut pas choisir serait une palette qu'on ne peut plus quitter puis
-     * retrouver.
+     * La palette d'ouverture. Elle doit figurer au menu : une palette qu'on ne peut pas choisir
+     * serait une palette qu'on ne peut plus quitter puis retrouver. Elle doit avoir les deux
+     * modes : c'est elle qui s'affiche dans celui qu'une autre n'a pas, et rien ne la
+     * remplacerait dans celui qui lui manque.
      *
-     * @param array<array-key, mixed> $config
-     * @param array<string, ?string>  $themes les palettes du menu
+     * @param array<array-key, mixed>                                    $config
+     * @param array<string, array{label: ?string, modes: list<string>}> $themes les palettes du menu
      */
-    private function defaultTheme(array $config, array $themes): ?string
+    private function defaultTheme(array $config, array $themes): string
     {
-        $default = $config['default_theme'] ?? null;
-
-        if (null === $default) {
-            return null;
-        }
+        $default = $config['default_theme'] ?? 'indigo';
 
         if (!\is_string($default) || !\array_key_exists($default, $themes)) {
             throw new \InvalidArgumentException(\sprintf(
                 'design_system.default_theme nomme « %s », que le menu ne propose pas. Palettes proposées : %s.',
                 \is_scalar($default) ? (string) $default : get_debug_type($default),
                 [] === $themes ? 'aucune' : '« '.implode(' », « ', array_keys($themes)).' »',
+            ));
+        }
+
+        $complete = array_keys(array_filter(
+            $themes,
+            static fn (array $theme): bool => [] === array_diff([Mode::Light->value, Mode::Dark->value], $theme['modes']),
+        ));
+
+        if (!\in_array($default, $complete, true)) {
+            throw new \InvalidArgumentException(\sprintf(
+                'design_system.default_theme nomme « %s », qui n\'a que le mode « %s » : le thème par défaut '
+                ."s'affiche dans le mode qu'un autre n'a pas, et doit donc avoir les deux. Palettes aux deux "
+                .'modes : %s.',
+                $default,
+                implode(' », « ', $themes[$default]['modes']),
+                [] === $complete ? 'aucune' : '« '.implode(' », « ', $complete).' »',
             ));
         }
 
@@ -307,11 +336,16 @@ final class DesignSystemBundle extends AbstractBundle
      * @param array<array-key, mixed> $config
      * @param list<string>            $stylesheets
      *
-     * @return array<string, ?string>
+     * @return array<string, array{label: ?string, modes: list<string>}>
      */
     private function themes(array $config, array $stylesheets): array
     {
-        $declared = StylesheetThemes::labels(...$stylesheets);
+        $modes = StylesheetThemes::modes(...$stylesheets);
+        $declared = [];
+
+        foreach (StylesheetThemes::labels(...$stylesheets) as $value => $label) {
+            $declared[$value] = ['label' => $label, 'modes' => $modes[$value]];
+        }
 
         /** @var list<string> $wanted */
         $wanted = $config['themes'] ?? [];
@@ -337,9 +371,6 @@ final class DesignSystemBundle extends AbstractBundle
             ));
         }
 
-        return array_replace(
-            array_fill_keys($wanted, null),
-            array_intersect_key($declared, array_flip($wanted)),
-        );
+        return array_map(static fn (string $value): array => $declared[$value], array_combine($wanted, $wanted));
     }
 }

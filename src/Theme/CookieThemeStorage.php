@@ -7,10 +7,11 @@ namespace ArnaudMoncondhuy\DesignSystem\Theme;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Relit le choix dans un cookie que le navigateur a posé lui-même.
+ * Relit le choix dans deux cookies que le navigateur a posés lui-même : le thème sous
+ * `$cookieName`, le mode sous `$cookieName` suivi de `_mode`.
  *
- * Le cookie n'est ni signé ni chiffré, et ne porte aucune donnée personnelle : une valeur que le
- * catalogue ne connaît pas est traitée comme une absence de choix.
+ * Les cookies ne sont ni signés ni chiffrés, et ne portent aucune donnée personnelle : une
+ * valeur que le catalogue ne connaît pas est traitée comme une absence de choix.
  */
 final readonly class CookieThemeStorage implements ThemeStorage
 {
@@ -21,10 +22,24 @@ final readonly class CookieThemeStorage implements ThemeStorage
     ) {
     }
 
-    public function current(): ?Theme
+    public function theme(): ?Theme
     {
-        $value = $this->requests->getCurrentRequest()?->cookies->get($this->cookieName);
+        $value = $this->cookie($this->cookieName);
 
-        return \is_string($value) ? $this->catalog->get($value) : null;
+        return null === $value ? null : $this->catalog->get($value);
+    }
+
+    public function mode(): ?Mode
+    {
+        $value = $this->cookie($this->cookieName.'_mode');
+
+        return null === $value ? null : Mode::tryFrom($value);
+    }
+
+    private function cookie(string $name): ?string
+    {
+        $value = $this->requests->getCurrentRequest()?->cookies->get($name);
+
+        return \is_string($value) ? $value : null;
     }
 }

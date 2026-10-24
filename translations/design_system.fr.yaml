@@ -1,21 +1,22 @@
 # Catalogue du paquet, domaine « design_system ».
 #
-# Ces clés appartiennent au design system : le choix de palette, le lien d'évitement, les
+# Ces clés appartiennent au design system : le choix du thème et du mode, le lien d'évitement, les
 # libellés de la vitrine. Une application ne les redéclare pas ; elle peut les surcharger en
 # posant un fichier de même domaine dans ses propres traductions.
 
 theme:
     label: Thème
-    system: Indigo, selon mon système
-    light: Indigo clair
-    dark: Indigo sombre
+    indigo: Indigo
+    violet: Violet
+    magenta: Magenta
+    multicolor: Multicolore
     contrast: Contraste renforcé
-    violet-light: Violet clair
-    violet-dark: Violet sombre
-    magenta-light: Magenta clair
-    magenta-dark: Magenta sombre
-    multicolor-light: Multicolore clair
-    multicolor-dark: Multicolore sombre
+
+mode:
+    label: Mode
+    auto: Automatique
+    light: Clair
+    dark: Sombre
 
 skip:
     content: Aller au contenu
@@ -34,7 +35,7 @@ action:
 # Ce qui suit ne sert qu'à la page /styleguide, absente de la production.
 styleguide:
     title: Catalogue
-    intro: Chaque composant du design system, dans chacun de ses états. Le menu en haut à droite change de palette — dont « Contraste renforcé », destinée à la basse vision.
+    intro: Chaque composant du design system, dans chacun de ses états. Les menus en haut à droite changent de thème — dont « Contraste renforcé », destiné à la basse vision — et de mode, clair ou sombre.
 
     sidebar:
         label: Sections du catalogue

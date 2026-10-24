@@ -7,6 +7,8 @@
  * plus clair, une ombre, un filet discret — deviennent des bordures franches : ce qui ne se
  * distingue plus par la teinte se distingue par le trait.
  *
+ * Elle n'existe qu'en mode sombre : en mode clair, c'est le thème par défaut qui s'affiche.
+ *
  * Elle ne redéfinit que des alias. Aucun composant n'est repris ici, et aucun n'a besoin de
  * la connaître.
  */

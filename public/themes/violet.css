@@ -2,9 +2,9 @@
  * VIOLET — un menu en aplat violet, des cartes posées sur un fond très clair — ou très sombre —,
  * sans contour, et des pastilles de couleur franche pour les chiffres clés. Police Poppins.
  *
- * Deux palettes, la claire et la sombre, partagent un même bloc : chaque alias y porte ses deux
- * valeurs, et chacune fige ensuite le côté qu'elle montre. Elles ne redéfinissent que des
- * alias, et les polices qu'elles emploient ; aucun composant n'est repris ici.
+ * Le thème a ses deux modes : chaque alias y porte sa valeur claire et sa valeur sombre, et le
+ * mode choisi décide laquelle s'affiche. Il ne redéfinit que des alias, et les polices qu'il
+ * emploie ; aucun composant n'est repris ici.
  */
 @font-face {
     font-family: "Poppins";
@@ -39,8 +39,7 @@
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-[data-theme="violet-light"],
-[data-theme="violet-dark"] {
+[data-theme="violet"] {
     --app-font: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --app-weight-medium: 500;
     --app-weight-semibold: 600;
@@ -115,6 +114,7 @@
     --app-sidebar-bg: light-dark(#5b2ee6, #2b1d72);
     --app-sidebar-ink: light-dark(#e9e3fe, #d9d0ff);
     --app-sidebar-ink-strong: #ffffff;
+    --app-sidebar-ink-muted: light-dark(#dcd3fd, #a99ee0);
     --app-sidebar-hover: light-dark(#6a42ea, #382890);
     --app-sidebar-current: light-dark(#4318c4, #5b2ee6);
     --app-sidebar-current-ink: #ffffff;
@@ -124,12 +124,4 @@
     --app-card-line: transparent;
     --app-card-shadow: 0 1px 2px light-dark(rgb(38 42 59 / .04), rgb(0 0 0 / .3)), 0 4px 16px light-dark(rgb(38 42 59 / .04), rgb(0 0 0 / .25));
     --app-shadow-sm: 0 1px 2px light-dark(rgb(38 42 59 / .06), rgb(0 0 0 / .4));
-}
-
-[data-theme="violet-light"] {
-    color-scheme: light;
-}
-
-[data-theme="violet-dark"] {
-    color-scheme: dark;
 }

@@ -13,8 +13,11 @@
  * espacement, largeur de contenu, ordre d'empilement et durée sont des alias eux aussi.
  *
  * `light-dark()` choisit entre les deux valeurs selon le `color-scheme` en vigueur. Le
- * sélecteur `:root` déclare `light dark` : sans attribut sur `<html>`, la préférence du système
- * tranche. `[data-theme]` fige l'un des deux et l'emporte alors sur le système.
+ * sélecteur `:root` déclare `light dark` : en mode automatique, la préférence du système
+ * tranche. `data-mode="light"` ou `"dark"` sur `<html>` fige l'un des deux.
+ *
+ * Le thème et le mode sont deux choix distincts : `data-theme` dit quelles couleurs, `data-mode`
+ * dit de quel côté de `light-dark()` on les lit.
  */
 
 :root {
@@ -221,6 +224,7 @@
     --app-sidebar-bg: var(--app-surface);
     --app-sidebar-ink: var(--app-ink-soft);
     --app-sidebar-ink-strong: var(--app-ink);
+    --app-sidebar-ink-muted: var(--app-ink-muted);
     --app-sidebar-icon: currentcolor;
     --app-sidebar-hover: var(--app-hover);
     --app-sidebar-current: var(--app-accent-soft);
@@ -438,20 +442,27 @@
 }
 
 
-/* Un choix explicite fige le schéma et l'emporte sur la préférence du système. */
-[data-theme="light"] {
+/*
+ * Le mode clair ou sombre fige le schéma et l'emporte sur la préférence du système. `:root` lui
+ * donne le pas sur le `color-scheme` qu'un thème déclare, qui ne pèse qu'un attribut : un thème
+ * aux deux modes s'affiche ainsi du côté que le mode désigne.
+ */
+:root[data-mode="light"] {
     color-scheme: light;
 }
 
-[data-theme="dark"] {
+:root[data-mode="dark"] {
     color-scheme: dark;
+}
+
+/* Le thème de base, Indigo : ses couleurs sont celles de `:root`, en clair comme en sombre. */
+[data-theme="indigo"] {
+    color-scheme: light dark;
 }
 
 
 /*
- * Les deux palettes ci-dessus ne font que figer le schéma : tout le reste vient de `light-dark()`.
- *
- * Une palette qui déplace des alias prend son fichier, et rien d'autre — `themes/contrast.css`
+ * Un thème qui déplace des alias prend son fichier, et rien d'autre — `themes/contrast.css`
  * ici, `assets/styles/themes/<nom>.css` dans une application. Le fichier est lu, servi et
  * proposé du seul fait d'être là :
  *
@@ -464,9 +475,13 @@
  *         --app-accent-ink: #164e63;
  *     }
  *
+ * `color-scheme` dit les modes que le thème sait rendre : `light`, `dark`, ou `light dark` avec
+ * des alias écrits en `light-dark()`. Absent, le thème hérite des deux. Dans un mode qu'il n'a
+ * pas, c'est le thème par défaut de l'application qui s'affiche.
+ *
  * `--app-theme-label` est ce que le menu affiche ; sans lui, c'est la traduction
  * `theme.ocean` du domaine `design_system` qui sert. `--app-theme-ratio` déclare le seuil de
- * contraste que la palette se donne, quand il dépasse les 4,5:1 ordinaires.
+ * contraste que le thème se donne, quand il dépasse les 4,5:1 ordinaires.
  */
 
 /*

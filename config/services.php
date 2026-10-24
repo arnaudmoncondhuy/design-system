@@ -22,7 +22,7 @@ return static function (Symfony\Component\DependencyInjection\Loader\Configurato
 
     // Le catalogue est un paramètre figé à la compilation : aucune feuille n'est relue à l'exécution.
     $services->set(ThemeCatalog::class)
-        ->args([param(DesignSystemBundle::THEMES_PARAMETER)]);
+        ->args([param(DesignSystemBundle::THEMES_PARAMETER), param(DesignSystemBundle::DEFAULT_PARAMETER)]);
 
     $services->set(CookieThemeStorage::class)
         ->args([service(RequestStack::class), param(DesignSystemBundle::COOKIE_PARAMETER), service(ThemeCatalog::class)]);
@@ -34,7 +34,7 @@ return static function (Symfony\Component\DependencyInjection\Loader\Configurato
             service(ArnaudMoncondhuy\DesignSystem\Theme\ThemeStorage::class),
             service(ThemeCatalog::class),
             param(DesignSystemBundle::LINKS_PARAMETER),
-            param(DesignSystemBundle::DEFAULT_PARAMETER),
+            param(DesignSystemBundle::MODE_PARAMETER),
         ])
         ->tag('twig.extension');
 

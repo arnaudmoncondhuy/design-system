@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ArnaudMoncondhuy\DesignSystem\Twig;
 
+use ArnaudMoncondhuy\DesignSystem\Theme\Appearance;
+use ArnaudMoncondhuy\DesignSystem\Theme\Mode;
 use ArnaudMoncondhuy\DesignSystem\Theme\Theme;
 use ArnaudMoncondhuy\DesignSystem\Theme\ThemeCatalog;
 use ArnaudMoncondhuy\DesignSystem\Theme\ThemeStorage;
@@ -11,20 +13,20 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 /**
- * Ce que les gabarits savent de la palette : celle qui est en vigueur, et la liste de celles
- * qu'on peut proposer.
+ * Ce que les gabarits savent du thème et du mode : ce qui est en vigueur, et ce qu'on peut
+ * proposer.
  */
 final class ThemeExtension extends AbstractExtension
 {
     /**
-     * @param list<string> $stylesheets  les feuilles de palette, en chemins d'AssetMapper
-     * @param ?string      $defaultTheme la palette d'ouverture, quand l'application en nomme une
+     * @param list<string> $stylesheets les feuilles de palette, en chemins d'AssetMapper
+     * @param string       $defaultMode le mode d'ouverture de l'application
      */
     public function __construct(
         private readonly ThemeStorage $storage,
         private readonly ThemeCatalog $catalog,
         private readonly array $stylesheets = [],
-        private readonly ?string $defaultTheme = null,
+        private readonly string $defaultMode = 'auto',
     ) {
     }
 
@@ -32,41 +34,54 @@ final class ThemeExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('current_theme', $this->currentTheme(...)),
-            new TwigFunction('default_theme', $this->defaultTheme(...)),
+            new TwigFunction('theme_appearance', $this->appearance(...)),
+            new TwigFunction('theme_shown_in', $this->shownIn(...)),
             new TwigFunction('available_themes', $this->availableThemes(...)),
+            new TwigFunction('theme_modes', $this->modes(...)),
             new TwigFunction('theme_stylesheets', $this->themeStylesheets(...)),
         ];
     }
 
     /**
-     * La valeur à poser dans `<html data-theme="…">` : le choix du visiteur, sinon la palette
-     * d'ouverture de l'application. `null` quand il n'y a ni l'un ni l'autre — l'attribut est
-     * alors à omettre, et non à rendre vide.
+     * Le choix du visiteur, sinon le thème et le mode d'ouverture de l'application — chacun des
+     * deux pour son compte : un visiteur qui n'a choisi que le mode garde le thème par défaut.
      */
-    public function currentTheme(): ?string
+    public function appearance(): Appearance
     {
-        return $this->storage->current()?->value ?? $this->defaultTheme;
+        return $this->catalog->appearance(
+            $this->storage->theme() ?? $this->catalog->default(),
+            $this->storage->mode() ?? Mode::tryFrom($this->defaultMode) ?? Mode::Auto,
+        );
     }
 
     /**
-     * La palette d'ouverture, ou `null` quand l'application laisse le système trancher. Le menu
-     * s'en sert pour savoir s'il doit proposer « selon mon système ».
+     * La valeur du thème qui s'affiche quand `$theme` est choisi et que la page se lit en
+     * `$mode` — `light` ou `dark`. Le menu la donne à chaque option, pour que le changement se
+     * fasse dans la page sans la recharger.
      */
-    public function defaultTheme(): ?string
+    public function shownIn(Theme $theme, string $mode): string
     {
-        return $this->defaultTheme;
+        return $this->catalog->shownIn($theme, Mode::from($mode))->value;
     }
 
     /**
-     * Les palettes proposables, dans l'ordre du menu. L'absence de choix n'en fait pas partie :
-     * c'est au gabarit d'ouvrir la liste par l'option qui rend la main au système.
+     * Les palettes proposables, dans l'ordre du menu.
      *
      * @return list<Theme>
      */
     public function availableThemes(): array
     {
         return $this->catalog->all();
+    }
+
+    /**
+     * Les modes proposables, dans l'ordre du menu : automatique, clair, sombre.
+     *
+     * @return list<Mode>
+     */
+    public function modes(): array
+    {
+        return Mode::cases();
     }
 
     /**

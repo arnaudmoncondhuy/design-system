@@ -5,15 +5,20 @@ declare(strict_types=1);
 namespace ArnaudMoncondhuy\DesignSystem\Theme;
 
 /**
- * Ne retient aucun choix : `<html>` sort sans `data-theme`, et la préférence du système
- * s'applique à chaque chargement.
+ * Ne retient aucun choix : `<html>` sort avec le thème et le mode par défaut de l'application à
+ * chaque chargement.
  *
- * Le menu de choix continue de fonctionner dans la page ; son effet ne survit pas au
+ * Les menus de choix continuent de fonctionner dans la page ; leur effet ne survit pas au
  * rechargement.
  */
 final readonly class NoThemeStorage implements ThemeStorage
 {
-    public function current(): ?Theme
+    public function theme(): ?Theme
+    {
+        return null;
+    }
+
+    public function mode(): ?Mode
     {
         return null;
     }

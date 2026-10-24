@@ -101,7 +101,7 @@
                 </div>
                 {# Le menu latéral, que la palette peut peindre à part de la page. #}
                 <div class="app-sg-palette">
-                    {% for token in ['app-sidebar-bg', 'app-sidebar-ink', 'app-sidebar-ink-strong', 'app-sidebar-icon', 'app-sidebar-hover', 'app-sidebar-current', 'app-sidebar-current-ink', 'app-sidebar-line'] %}
+                    {% for token in ['app-sidebar-bg', 'app-sidebar-ink', 'app-sidebar-ink-strong', 'app-sidebar-ink-muted', 'app-sidebar-icon', 'app-sidebar-hover', 'app-sidebar-current', 'app-sidebar-current-ink', 'app-sidebar-line'] %}
                         <span class="app-sg-swatch" style="--app-sg-color: var(--{{ token }})">--{{ token }}</span>
                     {% endfor %}
                 </div>

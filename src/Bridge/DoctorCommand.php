@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ArnaudMoncondhuy\DesignSystem\Bridge;
 
+use ArnaudMoncondhuy\DesignSystem\Theme\Mode;
 use ArnaudMoncondhuy\DesignSystem\Theme\StylesheetThemes;
 use ArnaudMoncondhuy\DesignSystem\Theme\Theme;
 use ArnaudMoncondhuy\DesignSystem\Theme\ThemeCatalog;
@@ -66,12 +67,15 @@ final class DoctorCommand extends Command
 
         $console->writeln(\sprintf('Paquet  : %s', $this->bundleDirectory()));
         $console->writeln(\sprintf('Projet  : %s', $this->projectDirectory));
-        $console->writeln(\sprintf('Cookie  : %s', $this->cookieName));
+        $console->writeln(\sprintf('Cookies : %s, %s_mode', $this->cookieName, $this->cookieName));
         $console->writeln(\sprintf('Feuilles: %s', implode(', ', $this->stylesheets)));
         $console->writeln(\sprintf('Palettes: %s', implode(', ', array_map(
-            static fn (Theme $theme): string => $theme->value.(null === $theme->label ? '' : ' ('.$theme->label.')'),
+            static fn (Theme $theme): string => $theme->value
+                .(null === $theme->label ? '' : ' « '.$theme->label.' »')
+                .' ('.implode('+', array_map(static fn (Mode $mode): string => $mode->value, $theme->modes)).')',
             $this->catalog->all(),
         )) ?: 'aucune'));
+        $console->writeln(\sprintf('Défaut  : %s', $this->catalog->default()->value));
 
         $installation = $this->installation($fix);
 

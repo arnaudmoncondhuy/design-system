@@ -8,7 +8,7 @@ namespace ArnaudMoncondhuy\DesignSystem\Theme;
  * Lit dans des feuilles de style les palettes qu'elles déclarent.
  *
  * Une palette est un bloc dont le sélecteur est exactement `[data-theme="…"]`. Ce qui suit le
- * sélecteur — `[data-theme="dark"] .app-card` — repeint un composant sous une palette et n'en
+ * sélecteur — `[data-theme="contrast"] .app-card` — repeint un composant sous une palette et n'en
  * déclare aucune.
  *
  * Les commentaires sont retirés avant lecture : un bloc montré en exemple dans une
@@ -59,6 +59,28 @@ final class StylesheetThemes
             static fn (array $properties): ?string => isset($properties[self::LABEL])
                 ? trim($properties[self::LABEL], " \t\"'")
                 : null,
+            self::declarations(...$paths),
+        );
+    }
+
+    /**
+     * Les modes que chaque palette sait rendre, lus dans son `color-scheme`.
+     *
+     * `light`, `dark`, ou les deux : c'est ce que la propriété déclare au navigateur, et c'est
+     * donc ce que la palette affiche. Sans `color-scheme`, elle hérite du `light dark` de `:root`
+     * et a les deux modes.
+     *
+     * @return array<string, list<string>> palette => modes, parmi `light` et `dark`
+     */
+    public static function modes(string ...$paths): array
+    {
+        return array_map(
+            static function (array $properties): array {
+                $declared = preg_split('/\s+/', strtolower($properties['color-scheme'] ?? ''), -1, \PREG_SPLIT_NO_EMPTY) ?: [];
+                $modes = array_values(array_intersect([Mode::Light->value, Mode::Dark->value], $declared));
+
+                return [] === $modes ? [Mode::Light->value, Mode::Dark->value] : $modes;
+            },
             self::declarations(...$paths),
         );
     }

@@ -1,15 +1,20 @@
 import { Controller } from '@hotwired/stimulus';
 
 /*
- * Applique la palette choisie et retient le choix.
+ * Applique le thème et le mode choisis, et retient chacun des deux.
  *
- * L'attribut `data-theme` posé sur <html> suffit à repeindre la page : tokens.css y accroche
- * le `color-scheme` et les alias, et rien ici ne touche à une propriété de style.
+ * `<html>` porte tout l'état : `data-mode`, et pour chaque côté le thème qui s'y affiche —
+ * `data-theme-light`, `data-theme-dark`. Choisir un thème réécrit les deux côtés depuis l'option
+ * choisie ; choisir un mode réécrit `data-mode`. `data-theme` s'en déduit, et tokens.css fait le
+ * reste : rien ici ne touche à une propriété de style.
  *
- * Une valeur vide retire l'attribut et efface le cookie : la préférence du système reprend
- * alors la main. Le cookie est relu côté serveur au chargement suivant, ce qui évite que la
- * page s'affiche dans la mauvaise palette avant que ce contrôleur ne démarre. Son nom doit
- * rester celui que le serveur relit, ce que `design-system:doctor` vérifie.
+ * Le menu du thème et celui du mode peuvent vivre dans deux instances distinctes : chacune ne
+ * lit que son propre menu, et l'état commun reste sur `<html>`.
+ *
+ * Le thème se retient sous le cookie `cookie`, le mode sous le même nom suivi de `_mode`. Le
+ * serveur les relit au chargement suivant, ce qui évite que la page s'affiche dans les mauvaises
+ * couleurs avant que ce contrôleur ne démarre. Le nom doit rester celui que le serveur relit, ce
+ * que `design-system:doctor` vérifie.
  */
 export default class extends Controller {
     static values = {
@@ -17,16 +22,41 @@ export default class extends Controller {
         days: { type: Number, default: 365 },
     };
 
-    change(event) {
-        const chosen = event.target.value;
+    connect() {
+        this.system = window.matchMedia('(prefers-color-scheme: dark)');
+        this.follow = () => this.render();
+        this.system.addEventListener('change', this.follow);
+    }
 
-        if (chosen) {
-            document.documentElement.dataset.theme = chosen;
-        } else {
-            delete document.documentElement.dataset.theme;
-        }
+    disconnect() {
+        this.system.removeEventListener('change', this.follow);
+    }
 
-        const age = chosen ? this.daysValue * 86400 : 0;
-        document.cookie = `${this.cookieValue}=${chosen}; path=/; max-age=${age}; samesite=lax`;
+    chooseTheme(event) {
+        const option = event.target.selectedOptions[0];
+        const root = document.documentElement;
+
+        root.dataset.themeLight = option.dataset.light;
+        root.dataset.themeDark = option.dataset.dark;
+        this.remember(this.cookieValue, option.value);
+        this.render();
+    }
+
+    chooseMode(event) {
+        document.documentElement.dataset.mode = event.target.value;
+        this.remember(`${this.cookieValue}_mode`, event.target.value);
+        this.render();
+    }
+
+    /* Le thème du côté que le mode désigne ; en automatique, du côté que le système réclame. */
+    render() {
+        const root = document.documentElement;
+        const dark = root.dataset.mode === 'dark' || (root.dataset.mode === 'auto' && this.system.matches);
+
+        root.dataset.theme = dark ? root.dataset.themeDark : root.dataset.themeLight;
+    }
+
+    remember(name, value) {
+        document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${this.daysValue * 86400}; samesite=lax`;
     }
 }

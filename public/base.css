@@ -468,10 +468,16 @@ hr {
     flex: 1;
 }
 
-/* Le choix de palette : un champ ordinaire, dont l'étiquette n'est lue que par les lecteurs
-   d'écran. Un menu déroulant plutôt qu'une bascule, parce qu'il y a plus de deux réponses et
-   qu'aucune ne se devine depuis l'icône de la précédente. */
+/* Le choix du thème et celui du mode : deux champs ordinaires, côte à côte, dont les étiquettes
+   ne sont lues que par les lecteurs d'écran. Des menus déroulants plutôt qu'une bascule, parce
+   que chacun a plus de deux réponses et qu'aucune ne se devine depuis l'icône de la précédente. */
 .app-theme-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--app-space-sm);
+}
+
+.app-theme-picker > .app-field {
     max-width: 13rem;
 }
 
@@ -566,6 +572,13 @@ hr {
 
 .app-muted {
     color: var(--app-ink-muted);
+}
+
+/* Dans le menu latéral, le texte discret prend la couleur discrète du menu, que son fond peut
+   rendre illisible pour celle de la page. Un panneau ouvert depuis le menu a le fond de la page,
+   et en garde les couleurs. */
+.app-sidebar .app-muted:not(.app-menu-panel *) {
+    color: var(--app-sidebar-ink-muted);
 }
 
 /* Réservé aux lecteurs d'écran : lu à voix haute, invisible à l'œil. */

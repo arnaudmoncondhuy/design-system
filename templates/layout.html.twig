@@ -2,9 +2,12 @@
     Le squelette du design system. Une application l'étend, et n'a rien d'autre à écrire pour
     obtenir la charpente, le choix de palette et le lien d'évitement.
 
-    `data-theme` n'est posé que si un choix a été exprimé. Absent, c'est `color-scheme: light dark`
-    de tokens.css qui laisse la préférence du système trancher — sans script, donc sans que la
-    page s'affiche d'abord dans la mauvaise palette.
+    `<html>` porte le thème et le mode, rendus par le serveur : la page ne s'affiche pas d'abord
+    dans les mauvaises couleurs. `data-theme-light` et `data-theme-dark` disent quel thème
+    s'affiche de chaque côté — le thème choisi s'il a ce mode, le thème par défaut sinon.
+
+    En mode automatique, un thème qui n'a qu'un mode laisse au navigateur le soin de dire lequel
+    des deux montrer : c'est le seul cas où un script se pose dans `<head>`, avant toute peinture.
 
     Les blocs qu'une application remplit : `title`, `javascripts`, `brand`, `nav`,
     `header_actions`, `sidebar`, `sidebar_actions`, `body`, `footer`. `stylesheets` appelle
@@ -29,11 +32,16 @@
 {% set layout %}{% block layout %}{% endblock %}{% endset %}
 {% set layout = has_sidebar ? 'sidebar' : layout|trim %}
 <!DOCTYPE html>
-<html lang="{% block lang %}fr{% endblock %}"{% if current_theme() %} data-theme="{{ current_theme() }}"{% endif %}>
+{% set appearance = theme_appearance() %}
+<html lang="{% block lang %}fr{% endblock %}" data-theme="{{ appearance.shown.value }}" data-mode="{{ appearance.mode.value }}" data-theme-light="{{ appearance.light.value }}" data-theme-dark="{{ appearance.dark.value }}">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}{% endblock %}</title>
+        {% if appearance.followsSystem %}
+            {# Bloquant exprès, et avant les feuilles : il choisit le thème avant la première peinture. #}
+            <script src="{{ asset('bundles/designsystem/theme-mode.js') }}"></script>
+        {% endif %}
         {% block head %}{% endblock %}
 
         {% block stylesheets %}
@@ -104,30 +112,42 @@
                     <span class="app-header-spacer"></span>
                     {% block header_actions %}{% endblock %}
                     {#
-                        L'emplacement du choix de palette et le choix lui-même sont deux blocs :
-                        une application qui le veut ailleurs — au bas de son menu de compte —
-                        vide `theme_picker` et appelle `block('theme_control')` où elle veut.
+                        L'emplacement du choix et le choix lui-même sont des blocs distincts : une
+                        application qui le veut ailleurs — au bas de son menu de compte — vide
+                        `theme_picker` et appelle `block('theme_control')` où elle veut, ou
+                        `block('theme_select')` et `block('mode_select')` séparément, chacun sous
+                        sa propre étiquette.
                     #}
                     {% block theme_picker %}
                         {% block theme_control %}
-                            <div class="app-field app-theme-picker" data-size="sm" data-controller="theme">
-                                <label class="app-sr-only" for="app-theme">{{ 'theme.label'|trans({}, 'design_system') }}</label>
-                                <select id="app-theme" data-action="theme#change">
-                                    {# L'absence de choix ouvre la liste : elle ne vient d'aucune feuille.
-                                       Quand l'application a une palette d'ouverture, c'est elle que
-                                       l'absence de choix désigne, et l'option n'a plus lieu d'être. #}
-                                    {% if not default_theme() %}
-                                        <option value=""{{ current_theme() ? '' : ' selected' }}>
-                                            {{ 'theme.system'|trans({}, 'design_system') }}
-                                        </option>
-                                    {% endif %}
-                                    {% for palette in available_themes() %}
-                                        {# Le libellé vient de la feuille quand elle en déclare un ; sinon de la traduction. #}
-                                        <option value="{{ palette.value }}"{{ current_theme() == palette.value ? ' selected' : '' }}>
-                                            {{ palette.label ?? ('theme.' ~ palette.value)|trans({}, 'design_system') }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
+                            <div class="app-theme-picker">
+                                {% block theme_select %}
+                                    {% set appearance = theme_appearance() %}
+                                    <div class="app-field" data-size="sm" data-controller="theme">
+                                        <label class="app-sr-only" for="app-theme">{{ 'theme.label'|trans({}, 'design_system') }}</label>
+                                        <select id="app-theme" data-action="theme#chooseTheme">
+                                            {% for palette in available_themes() %}
+                                                {# Le libellé vient de la feuille quand elle en déclare un ; sinon de la traduction. #}
+                                                <option value="{{ palette.value }}" data-light="{{ theme_shown_in(palette, 'light') }}" data-dark="{{ theme_shown_in(palette, 'dark') }}"{{ appearance.theme.value == palette.value ? ' selected' : '' }}>
+                                                    {{ palette.label ?? ('theme.' ~ palette.value)|trans({}, 'design_system') }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                {% endblock %}
+                                {% block mode_select %}
+                                    {% set appearance = theme_appearance() %}
+                                    <div class="app-field" data-size="sm" data-controller="theme">
+                                        <label class="app-sr-only" for="app-mode">{{ 'mode.label'|trans({}, 'design_system') }}</label>
+                                        <select id="app-mode" data-action="theme#chooseMode">
+                                            {% for mode in theme_modes() %}
+                                                <option value="{{ mode.value }}"{{ appearance.mode == mode ? ' selected' : '' }}>
+                                                    {{ ('mode.' ~ mode.value)|trans({}, 'design_system') }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                {% endblock %}
                             </div>
                         {% endblock %}
                     {% endblock %}

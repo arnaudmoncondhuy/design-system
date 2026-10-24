@@ -41,10 +41,14 @@ espacement, largeur de contenu, ordre d'empilement et durée sont des alias eux 
   déclarerait là-bas, sans reprendre une ligne du catalogue.
 - **`hidden` cache, quoi que porte l'élément.** L'attribut du HTML l'emporte sur le `display` que
   déclare un composant, sans quoi une alerte ou une carte cachée par le HTML resterait à l'écran.
-- **Le thème est rendu par le serveur**, donc sans clignotement au chargement et sans script
-  bloquant dans le `<head>`.
-- **Sans attribut, la préférence du système s'applique** : `color-scheme: light dark` suffit,
-  il n'y a pas de media-query à dupliquer.
+- **Le thème et le mode sont deux choix.** Le thème dit quelles couleurs — Indigo, Violet,
+  Contraste renforcé… —, le mode dit clair, sombre ou automatique. Un thème qui n'a pas le mode
+  choisi cède la place, dans ce mode, au thème par défaut de l'application.
+- **Le thème est rendu par le serveur**, donc sans clignotement au chargement. Un seul cas pose
+  un script bloquant dans le `<head>` : le mode automatique avec un thème qui n'a qu'un mode,
+  où seul le navigateur sait si le système réclame l'autre.
+- **En mode automatique, la préférence du système s'applique** : `color-scheme: light dark`
+  suffit, il n'y a pas de media-query à dupliquer.
 
 ## Installer
 
@@ -154,7 +158,7 @@ squelette du paquet ne pose aucun script de lui-même.
 # config/packages/design_system.yaml
 design_system:
     theme_storage: cookie   # ou « none » : rien n'est retenu
-    cookie_name: theme
+    cookie_name: theme      # celui du mode y ajoute `_mode` : theme_mode
 
     # Les dossiers dont chaque fichier est une palette : lue, servie, proposée.
     theme_directories: ['%kernel.project_dir%/assets/styles/themes']
@@ -164,16 +168,22 @@ design_system:
 
     # Les palettes réellement proposées, dans l'ordre du menu. Absente : toutes, dans l'ordre
     # des feuilles, celles à contraste renforcé en dernier.
-    themes: ['light', 'dark', 'contrast']
+    themes: ['indigo', 'violet', 'contrast']
 
-    # La palette d'ouverture, tant que le visiteur n'en a choisi aucune. Absente : le système.
-    default_theme: ~
+    # Le thème d'ouverture, tant que le visiteur n'en a choisi aucun.
+    default_theme: indigo
+
+    # Le mode d'ouverture : auto, light ou dark.
+    default_mode: auto
 ```
 
-`default_theme` donne à une application sa palette de base. Le visiteur reste libre d'en changer,
-et le menu ne propose plus « selon mon système » : sans choix, c'est cette palette qui
-s'applique. Elle doit figurer parmi celles que le menu propose, faute de quoi la compilation
-s'arrête.
+`default_theme` donne à une application son thème de base. Le visiteur reste libre d'en changer ;
+c'est aussi lui qui s'affiche dans le mode qu'un autre thème n'a pas — Contraste renforcé, qui
+n'existe qu'en sombre, montre ce thème-là en mode clair. Il doit donc avoir les deux modes, et
+figurer parmi les thèmes que le menu propose : sinon, la compilation s'arrête.
+
+`default_mode` fait de même pour le mode. Les deux choix sont indépendants : un visiteur qui n'a
+choisi que le mode garde le thème par défaut, et l'inverse.
 
 `themes` ne sert qu'à restreindre et à ordonner ; nommer une palette qu'aucune feuille ne
 déclare arrête la compilation du conteneur, en disant ce que les feuilles déclarent. C'est le
@@ -404,13 +414,17 @@ Ce que le panneau sait faire, et qu'il ne faut pas réécrire :
 - **`app-dot`** sur le déclencheur dit qu'il y a du nouveau, sans dire combien. Le compte, quand
   il compte, s'écrit dans un `app-badge`.
 
-Le choix de palette se rend par défaut dans la barre. Pour le poser dans son propre menu de
-compte, une application vide son emplacement et appelle le contrôle où elle veut :
+Le choix du thème et du mode se rend par défaut dans la barre, en deux menus côte à côte. Pour
+le poser dans son propre menu de compte, une application vide son emplacement et appelle le
+contrôle où elle veut — les deux menus ensemble, ou chacun sous sa propre étiquette :
 
 ```twig
 {% block theme_picker %}{% endblock %}
 {# … puis, dans le panneau : #}
 {{ block('theme_control') }}
+{# … ou séparément : #}
+{{ block('theme_select') }}
+{{ block('mode_select') }}
 ```
 
 Ce qui reste à l'application : quels liens, quelles notifications, quel bonjour, quelles icônes.
@@ -563,17 +577,18 @@ le même fichier.
 Une police se déclare dans le même fichier, par un `@font-face` dont le fichier se range à côté :
 elle ne se télécharge que lorsque la palette est choisie.
 
-**Une palette fige le clair ou le sombre, ou suit le système.** `color-scheme: light` ou `dark` la
-fige ; `color-scheme: light dark`, et des alias écrits en `light-dark()`, la font suivre le
-réglage de l'ordinateur — y compris dans les arrêts d'un dégradé. `qa/contrast.py` mesure alors
-les deux côtés. Pour proposer un même thème en clair et en sombre, deux palettes partagent un
-bloc d'alias écrits en `light-dark()`, puis chacune fige son `color-scheme` :
+**`color-scheme` dit les modes qu'une palette sait rendre.** `color-scheme: light` ou `dark` la
+réserve à l'un des deux ; `color-scheme: light dark` — ou rien, puisqu'elle hérite alors de
+`:root` —, avec des alias écrits en `light-dark()`, lui donne les deux, y compris dans les
+arrêts d'un dégradé. C'est le mode choisi qui décide ensuite de quel côté la page se lit, et
+`qa/contrast.py` mesure chacun des côtés que la palette déclare :
 
 ```css
-[data-theme="ocean-light"], [data-theme="ocean-dark"] { --app-accent: light-dark(#0e7490, #22d3ee); … }
-[data-theme="ocean-light"] { color-scheme: light; }
-[data-theme="ocean-dark"]  { color-scheme: dark; }
+[data-theme="ocean"] { --app-accent: light-dark(#0e7490, #22d3ee); … }
 ```
+
+Dans un mode qu'elle n'a pas, une palette cède la place au thème par défaut de l'application :
+une palette claire seulement, choisie en mode sombre, montre ce thème-là en sombre.
 
 ### Où le déposer
 
@@ -582,13 +597,12 @@ bloc d'alias écrits en `light-dark()`, puis chacune fige son `color-scheme` :
   la compilation s'arrête en le disant — une palette qu'AssetMapper ne peut pas servir serait
   proposée sans jamais arriver au navigateur.
 - **Dans le paquet** — `public/themes/`, pour une palette qui appartient au design system
-  lui-même. C'est là que vivent « contraste renforcé », et trois thèmes plus colorés, chacun en
-  palette claire et sombre : « violet » (`violet-light`, `violet-dark` — menu en aplat violet,
-  police Poppins), « magenta » (`magenta-light`, `magenta-dark` — page en cours et boutons en
-  dégradé, police Nunito) et « multicolore » (`multicolor-light`, `multicolor-dark` — quatre
-  couleurs vives, police Montserrat). Leurs polices sont dans `public/fonts/`, avec leur licence
-  (SIL Open Font License). Le thème de base, celui de `tokens.css`, s'appelle « Indigo » dans le
-  menu : `light` et `dark`, ou le réglage du système.
+  lui-même. C'est là que vivent « contraste renforcé » (`contrast`, en sombre seulement), et trois
+  thèmes plus colorés, chacun en clair et en sombre : « violet » (`violet` — menu en aplat
+  violet, police Poppins), « magenta » (`magenta` — page en cours et boutons en dégradé, police
+  Nunito) et « multicolore » (`multicolor` — quatre couleurs vives, police Montserrat). Leurs
+  polices sont dans `public/fonts/`, avec leur licence (SIL Open Font License). Le thème de base,
+  celui de `tokens.css`, s'appelle « Indigo » (`indigo`), en clair et en sombre.
 
 `theme_stylesheets` couvre l'autre cas : une feuille que l'application sert **déjà** — sa
 `app.css`, par exemple — et où une palette est écrite au milieu d'autre chose. Le paquet l'y lit,
