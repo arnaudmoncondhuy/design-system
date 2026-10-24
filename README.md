@@ -9,7 +9,7 @@ renforcé, destinée à la basse vision.
 --app-indigo-600: #4f46e5;
 
 /* Étage 2 — les alias. Un rôle, pas une couleur. C'est le seul étage qu'un composant emploie. */
---app-accent: light-dark(var(--app-indigo-600), var(--app-indigo-400));
+--app-accent: light-dark(var(--app-indigo-600), var(--app-indigo-350));
 ```
 
 Une palette se change donc en réécrivant l'étage 2. Ajouter « contraste renforcé » a coûté

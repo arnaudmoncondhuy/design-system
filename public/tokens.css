@@ -29,6 +29,7 @@
     --app-indigo-100: #e0e7ff;
     --app-indigo-200: #c7d2fe;
     --app-indigo-300: #a5b4fc;
+    --app-indigo-350: #8e98f9;
     --app-indigo-400: #818cf8;
     --app-indigo-500: #6366f1;
     --app-indigo-600: #4f46e5;
@@ -45,7 +46,7 @@
     --app-slate-200: #e2e8f0;
     --app-slate-250: #b4c0ce;
     --app-slate-300: #cbd5e1;
-    --app-slate-350: #8b98ab;
+    --app-slate-350: #a0acbe;
     --app-slate-400: #94a3b8;
     --app-slate-450: #78889c;
     --app-slate-500: #64748b;
@@ -153,7 +154,7 @@
     --app-on-neutral: var(--app-ink-inverse);
 
     /* Accent : l'action principale et l'état actif. */
-    --app-accent: light-dark(var(--app-indigo-600), var(--app-indigo-400));
+    --app-accent: light-dark(var(--app-indigo-600), var(--app-indigo-350));
     --app-accent-hover: light-dark(var(--app-indigo-700), var(--app-indigo-300));
     --app-accent-soft: light-dark(var(--app-indigo-50), var(--app-indigo-950));
     --app-accent-ink: light-dark(var(--app-indigo-800), var(--app-indigo-100));

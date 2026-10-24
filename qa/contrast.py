@@ -126,6 +126,8 @@ PAIRS = [
  ('menu : lien',            'sidebar-ink',        'sidebar-bg',      4.5),
  ('menu : marque',          'sidebar-ink-strong', 'sidebar-bg',      4.5),
  ('menu : texte discret',   'sidebar-ink-muted',  'sidebar-bg',      4.5),
+ ('estompé / relief',       'ink-muted',          'raised',          4.5),
+ ('estompé / survol',       'ink-muted',          'hover',           4.5),
  ('menu : lien survolé',    'sidebar-ink-strong', 'sidebar-hover',   4.5),
  ('menu : page en cours',   'sidebar-current-ink','sidebar-current', 4.5),
  # L'aplat de l'action principale peut différer de l'accent — un dégradé, par exemple.
@@ -147,6 +149,7 @@ for ton in TONS:
         (f'{ton} : plein survolé',    f'on-{ton}',    f'{ton}-hover',  4.5),
         (f'{ton} : trait / carte',    ton,            'surface',       4.5),
         (f'{ton} : trait / page',     ton,            'bg',            4.5),
+        (f'{ton} : trait / relief',   ton,            'raised',        4.5),
         (f'{ton} : trait / teinté',   ton,            f'{ton}-soft',   4.5),
         (f'{ton} : étiquette',        f'{ton}-ink',   f'{ton}-soft',   4.5),
     ]
