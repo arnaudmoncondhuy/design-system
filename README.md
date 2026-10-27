@@ -285,8 +285,10 @@ numéros :
 Un lien téléphone, `<a href="tel:…">`, a d'office des chiffres de même largeur.
 
 La règle demande ces chiffres à la police, qui doit les avoir. La police du système et celle du
-thème Multicolore les ont ; celle du thème Magenta n'en connaît pas d'autres. Celle du thème
-Violet, Poppins, n'en a pas, et garde ses chiffres de largeur propre.
+thème Multicolore les ont ; celle du thème Magenta n'en connaît pas d'autres. Poppins, celle du
+thème Violet, n'en a pas : le thème lui prend ses chiffres dans « Poppins Figures », les dix
+chiffres de Poppins recentrés chacun sur la même largeur. Sous Violet, comme sous Magenta, tous
+les chiffres s'alignent donc, avec ou sans la classe.
 
 ### La densité
 
@@ -626,6 +628,11 @@ une palette claire seulement, choisie en mode sombre, montre ce thème-là en so
   Nunito) et « multicolore » (`multicolor` — quatre couleurs vives, police Montserrat). Leurs
   polices sont dans `public/fonts/`, avec leur licence (SIL Open Font License). Le thème de base,
   celui de `tokens.css`, s'appelle « Indigo » (`indigo`), en clair et en sombre.
+
+  Les chiffres de Poppins y ont leur propre fichier par graisse, `poppins-figures-<graisse>.woff2` :
+  un peu plus d'un kilo-octet chacun, sous la licence de Poppins. `tools/poppins_figures.py` les
+  produit depuis les graisses livrées, et dit comment le relancer — quand une graisse de Poppins
+  est ajoutée ou remplacée.
 
 `theme_stylesheets` couvre l'autre cas : une feuille que l'application sert **déjà** — sa
 `app.css`, par exemple — et où une palette est écrite au milieu d'autre chose. Le paquet l'y lit,
