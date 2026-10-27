@@ -84,6 +84,12 @@ a:hover {
     text-decoration: underline;
 }
 
+/* Les chiffres d'un numéro de téléphone prennent tous la même largeur : deux numéros posés l'un
+   sous l'autre s'alignent chiffre à chiffre. La police reste celle du texte. */
+a[href^="tel:"] {
+    font-variant-numeric: tabular-nums;
+}
+
 code,
 kbd,
 pre {
@@ -572,6 +578,13 @@ hr {
 
 .app-muted {
     color: var(--app-ink-muted);
+}
+
+/* Des chiffres de même largeur, sans changer de police : des nombres posés l'un sous l'autre —
+   montants, quantités, dates, numéros — s'alignent chiffre à chiffre. Une police qui n'a pas de
+   chiffres de même largeur garde les siens. */
+.app-tabular-nums {
+    font-variant-numeric: tabular-nums;
 }
 
 /* Dans le menu latéral, le texte discret prend la couleur discrète du menu, que son fond peut

@@ -161,6 +161,25 @@
                         <code>--{{ token }}</code>
                     </p>
                 {% endfor %}
+                {# Les mêmes montants deux fois, sans puis avec la classe : tant que les chiffres
+                   gardent leur largeur propre, une ligne de « 1 » est plus étroite qu'une ligne
+                   de « 8 ». #}
+                <p class="app-sg-setting">
+                    <span>{{ 'styleguide.typography.tabular'|trans({}, 'design_system') }}</span>
+                    <code>.app-tabular-nums</code>
+                </p>
+                <div class="app-row" style="--app-row-gap: var(--app-space-2xl)">
+                    <span>1 111,11 €<br>8 888,88 €</span>
+                    <span class="app-tabular-nums">1 111,11 €<br>8 888,88 €</span>
+                </div>
+                <p class="app-sg-setting">
+                    <span>{{ 'styleguide.typography.phone'|trans({}, 'design_system') }}</span>
+                    <code>a[href^="tel:"]</code>
+                </p>
+                <p>
+                    <a href="tel:+33639981111">06 39 98 11 11</a><br>
+                    <a href="tel:+33639988888">06 39 98 88 88</a>
+                </p>
                 {# L'exemple porte l'interligne qu'il nomme : il lui faut donc deux lignes pour
                    que l'écart se voie. #}
                 {% for token, label in {

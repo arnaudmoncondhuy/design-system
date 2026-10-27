@@ -103,6 +103,8 @@ styleguide:
     typography:
         hint: aucun composant n'écrit une taille ni une graisse
         sample: Portez ce vieux whisky au juge blond
+        tabular: "Des chiffres de même largeur, pour des nombres posés en colonne : le premier bloc sans, le second avec"
+        phone: Un numéro de téléphone en lien les prend d'office
 
     weight:
         medium: Texte appuyé

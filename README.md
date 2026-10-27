@@ -271,6 +271,23 @@ data-size="sm">CL</span>`. Une étiquette qui dit un état — en ligne, en pann
 tête avec `data-variant="dot"`. Une jauge que l'on compare d'une ligne à l'autre s'épaissit avec
 `data-size="lg"`.
 
+### Des chiffres qui s'alignent
+
+Dans la plupart des polices, un « 1 » est plus étroit qu'un « 8 » : deux montants posés l'un sous
+l'autre ne tombent pas juste. `app-tabular-nums` donne à chaque chiffre la même largeur, sans
+changer de police. Elle se pose sur ce qui s'affiche en colonne — montants, quantités, dates,
+numéros :
+
+```twig
+<td class="app-tabular-nums">1 280,00 €</td>
+```
+
+Un lien téléphone, `<a href="tel:…">`, a d'office des chiffres de même largeur.
+
+La règle demande ces chiffres à la police, qui doit les avoir. La police du système et celle du
+thème Multicolore les ont ; celle du thème Magenta n'en connaît pas d'autres. Celle du thème
+Violet, Poppins, n'en a pas, et garde ses chiffres de largeur propre.
+
 ### La densité
 
 Tout espacement est un multiple de `--app-gap`, par une échelle de huit paliers
