@@ -302,10 +302,10 @@ hr {
  * En tiroir, `showModal()` lui donne la couche supérieure, le voile, le piège au clavier et la
  * fermeture par Échap — tout ce qu'un tiroir demande, et que le navigateur sait déjà faire.
  *
- * Sans script, aucun `data-drawer` n'est posé : le panneau s'affiche, dans le flux, à toute
+ * Sans script, aucun `data-sidebar-mode` n'est posé : le panneau s'affiche, dans le flux, à toute
  * largeur. C'est le pire cas acceptable.
  */
-.app-sidebar:not([data-drawer]) > .app-sidebar-panel {
+.app-sidebar:not([data-sidebar-mode="drawer"]) > .app-sidebar-panel {
     display: flex;
     position: static;
     inset: auto;
@@ -323,7 +323,7 @@ hr {
  * plutôt que de le pousser : un menu de quinze entrées repousserait la page de plusieurs
  * écrans, et on perdrait ce qu'on était en train de lire.
  */
-.app-sidebar[data-drawer] > .app-sidebar-panel[open] {
+.app-sidebar[data-sidebar-mode="drawer"] > .app-sidebar-panel[open] {
     display: flex;
     position: fixed;
     inset: 0 0 0 auto;
@@ -347,7 +347,7 @@ hr {
     display: none;
 }
 
-.app-sidebar[data-drawer] > .app-sidebar-panel > .app-sidebar-close {
+.app-sidebar[data-sidebar-mode="drawer"] > .app-sidebar-panel > .app-sidebar-close {
     display: inline-flex;
     align-self: flex-end;
 }
@@ -367,7 +367,7 @@ hr {
 
 /* En tiroir, il ne reste du menu qu'une ligne : elle se colle en haut plutôt que de partir avec
    la page, sans quoi il faudrait remonter pour rouvrir. */
-.app-shell > .app-sidebar[data-drawer] {
+.app-shell > .app-sidebar[data-sidebar-mode="drawer"] {
     position: sticky;
     top: 0;
     z-index: var(--app-z-sticky);

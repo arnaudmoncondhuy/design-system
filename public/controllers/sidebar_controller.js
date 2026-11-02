@@ -8,7 +8,7 @@ import { Controller } from '@hotwired/stimulus';
  * ne fait que dire quand le menu est un tiroir, et l'ouvrir.
  *
  * Hors tiroir, le dialogue reste fermé et c'est la feuille de style qui l'affiche : une colonne
- * ordinaire, que rien n'annonce comme une fenêtre. Sans script, aucun `data-drawer` n'est posé
+ * ordinaire, que rien n'annonce comme une fenêtre. Sans script, aucun `data-sidebar-mode` n'est posé
  * et le panneau s'affiche partout — visible et utilisable, ce qui est le pire cas acceptable.
  *
  * Le seuil est celui où la charpente rend sa seconde colonne.
@@ -68,7 +68,11 @@ export default class extends Controller {
             this.panelTarget.close();
         }
 
-        this.element.toggleAttribute('data-drawer', !wide);
+        if (wide) {
+            this.element.removeAttribute('data-sidebar-mode');
+        } else {
+            this.element.setAttribute('data-sidebar-mode', 'drawer');
+        }
         this.setExpanded(wide);
     }
 

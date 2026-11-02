@@ -396,6 +396,10 @@ feuille qui l'affiche — une colonne ordinaire, que rien n'annonce comme une fe
 de l'un à l'autre est le fait du comportement `sidebar`, avec une conséquence voulue : **sans
 script, le panneau reste affiché dans le flux**, visible et utilisable.
 
+En tiroir, la barre latérale porte `data-sidebar-mode="drawer"` : c'est le sélecteur d'une règle
+d'application qui ne vise que le tiroir — `.app-sidebar[data-sidebar-mode="drawer"]`. Le nom est
+propre au paquet, pour qu'aucun attribut d'application ne le croise.
+
 Pour la disposition inverse — une barre du haut sur toute la largeur, le menu en dessous — il
 suffit de réécrire la grille de la charpente :
 
